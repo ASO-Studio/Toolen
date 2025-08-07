@@ -9,8 +9,7 @@ CC = gcc
 C_FLAGS = -c -MMD -Iinclude/
 LD_FLAGS = 
 
-SOURCES = basic/echo.c basic/clear.c basic/env.c file/ls.c module.c main.c sys/whoami.c sys/kill.c
-HEADERS = $(shell find -name "*.h")
+SOURCES = $(shell find -name "*.c")
 OBJS = $(SOURCES:%.c=%.o)
 DEPS = $(OBJS:%.o=%.d)
 
