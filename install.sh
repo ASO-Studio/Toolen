@@ -12,7 +12,7 @@ if [ -z "$installDir" ]; then
 	exit 1;
 fi
 
-echo "Install Toolen to dir: $installDir"
+echo "Install Toolen to directory: $installDir"
 if [ ! -d "$installDir" ]; then
 	mkdir "$installDir"
 	if [ ! $? -eq 0 ]; then

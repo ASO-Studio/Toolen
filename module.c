@@ -25,7 +25,7 @@ static ModApi *module_registry = NULL;
 	ModApi *__stop_module_section = NULL;
 #endif
 
-// 插入排序将功能按优先级排序
+// Sort
 static void insert_sorted(ModApi *new_module) {
 	if (!module_registry || new_module->priority < module_registry->priority) {
 		new_module->next = module_registry;
@@ -42,7 +42,7 @@ static void insert_sorted(ModApi *new_module) {
 	current->next = new_module;
 }
 
-// 初始化功能注册表
+// Initialize function table
 void module_registry_init(void) {
 	// 如果已经初始化则返回
 	static int initialized = 0;
@@ -52,18 +52,16 @@ void module_registry_init(void) {
 	//printf("Initializing module registry...\n");
 	
 #if !(defined(__linux__) || defined(__APPLE__) || (defined(_WIN32) && defined(_MSC_VER)))
-	// 不支持自动注册的平台需要手动注册
+	// Unsupport platforms
 	printf("WARNING: Manual registration required on this platform\n");
 	return;
 #endif
 
-	// 计算功能数量
+	// Get numbers of functions
 	size_t count = (size_t)((char*)__stop_module_section - (char*)__start_module_section) / sizeof(ModApi);
-	//printf("Found %zu modules in registry\n", count);
-	
-	// 遍历所有功能并插入排序链表
+
 	for (ModApi *f = __start_module_section; f < __stop_module_section; f++) {
-		// 创建副本（原始数据在只读段）
+		// Create a copy
 		ModApi *new_module = malloc(sizeof(ModApi));
 		if (!new_module) {
 			fprintf(stderr, "Memory allocation failed\n");
@@ -74,7 +72,7 @@ void module_registry_init(void) {
 	}
 }
 
-// 打印所有注册功能
+// Print all functions
 void list_all_modules(void) {
 	module_registry_init();
 
@@ -94,6 +92,7 @@ int find_module(const char *name) {
 	return 1;
 }
 
+// Run a module
 int run_module(const char* name, int argc, char **argv) {
 	module_registry_init();
 

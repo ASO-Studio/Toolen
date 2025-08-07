@@ -10,6 +10,7 @@
 
 #define _IS(x) (strcmp(argv[1], x) == 0)
 
+// Show help
 static void show_help() {
 	printf("Toolen "VERSION", Copyright (C) ASO-Studio & Xigua\n");
 	printf("Usage: toolen [command|options] [Args...]\n");
@@ -52,15 +53,16 @@ static bool iself(const char *b) {
 }
 
 int main(int argc, char *argv[]) {
-	const char *progname = basename(argv[0]);
-	if (find_module(progname) != 0) {
+	const char *progname = basename(argv[0]); // Would you like './program'?
+
+	if (find_module(progname) != 0) {	// Try to find program from argv[0], this is to solve symlinks
 		if(argc <= 1) {
 			show_help();
 			return 1;
-		} else if (find_module(argv[1]) == 0 && argv[1][0] != '-') {
+		} else if (find_module(argv[1]) == 0 && argv[1][0] != '-') { // It doesn't start with '-' and it is exsits
 			return run_module(argv[1], argc - 1, &argv[1]);
 		} else if (argv[1][0] == '-') {
-			if(argv[1][1] == '-') { // "--", --help, --list, e.g
+			if(argv[1][1] == '-') { // "--", like --help, --list, e.g
 				if(_IS("--help")) {
 					show_help();
 					return 0;
@@ -76,13 +78,13 @@ int main(int argc, char *argv[]) {
 				}
 			} else {
 				switch(argv[1][1]) {
-					case 'h':
+					case 'h':	// -h
 						show_help();
 						return 0;
-					case 'l':
+					case 'l':	// -l
 						list_all_modules();
 						return 0;
-					case 'v':
+					case 'v':	// -v
 						printf("Toolen "VERSION"\n");
 						return 0;
 					default:
@@ -94,8 +96,9 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "%s: %s: Command not support\n", progname, argv[1]);
 			return 1;
 		}
-	} else {
+	} else {	// Found module from argv[0], then run it directly
 		return run_module(progname, argc, argv);
 	}
+
 	return 0;
 }
