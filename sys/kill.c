@@ -7,7 +7,7 @@
 
 #define _IS(s) (strcasecmp(&argv[1][1], s) == 0)
 
-static int kill_show_help() {
+static void kill_show_help() {
 	fprintf(stderr,
 		"Toolen "VERSION" "COPYRIGHT"\n"
 		"Usage: kill [SIG] pid\n"
@@ -15,7 +15,7 @@ static int kill_show_help() {
 		"   --help, -h  show this page\n");
 }
 
-static int kill_list() {
+static void kill_list() {
 	printf("HUP INT QUIT ILL TRAP ABRT BUS FPE KILL USR1 SEGV USR2"
 		"PIPE ALRM TERM STKFLT CHLD CONT STOP TSTP"
 		"TTIN TTOU URG XCPU XFSZ VTALRM PROF WINCH"
