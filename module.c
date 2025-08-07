@@ -44,7 +44,7 @@ static void insert_sorted(ModApi *new_module) {
 
 // Initialize function table
 void module_registry_init(void) {
-	// 如果已经初始化则返回
+	// Already initialized, return
 	static int initialized = 0;
 	if (initialized) return;
 	initialized = 1;

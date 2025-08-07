@@ -13,12 +13,12 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <libgen.h>
-#include <getopt.h> // 添加 getopt_long 支持
+#include <getopt.h>
 
 #include "module.h"
 #include "config.h"
 
-// 文件类型和权限的字符表示
+// Convert file type and permission to string
 const char *file_type(mode_t mode) {
 	if (S_ISREG(mode)) return "-";
 	if (S_ISDIR(mode)) return "d";
@@ -49,46 +49,46 @@ const char *permission_str(mode_t mode) {
 	return str;
 }
 
-// 获取用户名
+// Get user name
 const char *get_username(uid_t uid) {
 	struct passwd *pw = getpwuid(uid);
 	return pw ? pw->pw_name : "unknown";
 }
 
-// 获取组名
+// Get group name
 const char *get_groupname(gid_t gid) {
 	struct group *gr = getgrgid(gid);
 	return gr ? gr->gr_name : "unknown";
 }
 
-// 获取终端宽度
+// Get terminal width
 int get_terminal_width() {
 	struct winsize w;
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &w) == -1) {
-		return 80; // 默认宽度
+		return 80; // Default width
 	}
 	return w.ws_col;
 }
 
 // 颜色定义
 #define COLOR_RESET   "\033[0m"
-#define COLOR_DIR	 "\033[1;34m"   // 蓝色
-#define COLOR_LINK	"\033[1;36m"   // 青色
-#define COLOR_EXEC	"\033[1;32m"   // 绿色
-#define COLOR_SOCKET  "\033[1;35m"   // 紫色
-#define COLOR_PIPE	"\033[33m"	 // 黄色
-#define COLOR_BLOCK   "\033[1;33m"   // 黄色
-#define COLOR_CHAR	"\033[1;33m"   // 黄色
-#define COLOR_ORPHAN  "\033[1;31m"   // 红色（损坏的链接）
+#define COLOR_DIR	 "\033[1;34m"   // Blue
+#define COLOR_LINK	"\033[1;36m"   // Cyan
+#define COLOR_EXEC	"\033[1;32m"   // Green
+#define COLOR_SOCKET  "\033[1;35m"   // Purple
+#define COLOR_PIPE	"\033[33m"	 // Yellow
+#define COLOR_BLOCK   "\033[1;33m"   // Light yellow
+#define COLOR_CHAR	"\033[1;33m"   // Light yello
+#define COLOR_ORPHAN  "\033[1;31m"   // Red (Broken links)
 
-// 根据文件类型获取颜色
+// Get color from file types
 const char *get_file_color(mode_t mode, const char *path) {
 	if (S_ISDIR(mode)) return COLOR_DIR;
 	if (S_ISLNK(mode)) {
-		// 检查链接是否有效
+		// Check it's a valid link
 		struct stat st;
 		if (stat(path, &st) == -1) {
-			return COLOR_ORPHAN; // 损坏的链接
+			return COLOR_ORPHAN; // Broken
 		}
 		return COLOR_LINK;
 	}
@@ -104,7 +104,7 @@ const char *get_file_color(mode_t mode, const char *path) {
 	return "";
 }
 
-// 将文件大小转换为人类可读格式
+// Convert file size to human readable
 const char *human_readable(off_t size, bool use_human) {
 	static char buffer[32];
 	
@@ -122,7 +122,7 @@ const char *human_readable(off_t size, bool use_human) {
 		unit_index++;
 	}
 	
-	// 根据大小决定精度
+	// Determine the accuracy according to the size
 	if (unit_index == 0) {
 		snprintf(buffer, sizeof(buffer), "%lld", (long long)display_size);
 	} else if (display_size < 10) {
@@ -134,42 +134,42 @@ const char *human_readable(off_t size, bool use_human) {
 	return buffer;
 }
 
-// 选项结构体
+// Struct of options
 typedef struct {
 	bool list;	  // -l
 	bool all;	   // -a
 	bool color;	 // --color
 	bool unsorted;  // -f
-	bool directory; // 是否显示目录本身
-	bool human;	 // -h: 人类可读的文件大小
+	bool directory; // Whether to display the directory itself
+	bool human;	 // -h: human readable file size
 } Options;
 
-// 文件信息结构体
+// Struct of file
 typedef struct {
 	char *name;
 	struct stat st;
-	char *path; // 完整路径（用于符号链接解析）
+	char *path; // Full path
 } FileInfo;
 
-// 比较函数用于排序
+// Compare string
 int compare_files(const void *a, const void *b) {
 	const FileInfo *fa = (const FileInfo *)a;
 	const FileInfo *fb = (const FileInfo *)b;
 	return strcmp(fa->name, fb->name);
 }
 
-// 显示长格式信息
+// Displays long-form information
 void display_long_format(FileInfo *files, int count, Options opts) {
-	// 计算最大宽度用于对齐
+	// Calculate the maximum width for alignment
 	int max_nlink = 0, max_size = 0, max_user = 0, max_group = 0;
-	int max_size_chars = 0; // 人类可读大小的字符长度
+	int max_size_chars = 0; // Human-readable size character length
 	long total_blocks = 0;
 	
-	// 第一轮循环：收集最大值
+	// Collect the maximum value
 	for (int i = 0; i < count; i++) {
 		if (files[i].st.st_nlink > max_nlink) max_nlink = files[i].st.st_nlink;
 		
-		// 原始大小（用于对齐计算）
+		// Original size
 		if (files[i].st.st_size > max_size) max_size = files[i].st.st_size;
 		
 		const char *user = get_username(files[i].st.st_uid);
@@ -181,7 +181,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 		total_blocks += files[i].st.st_blocks;
 	}
 	
-	// 第二轮循环：计算人类可读大小的最大宽度
+	// Calculate the maximum width of a human-readable size
 	if (opts.human) {
 		for (int i = 0; i < count; i++) {
 			const char *hr = human_readable(files[i].st.st_size, true);
@@ -189,18 +189,18 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 			if (len > max_size_chars) max_size_chars = len;
 		}
 	} else {
-		// 计算原始大小的字符串表示的最大宽度
+		// Calculate the maximum width represented by the original size string
 		char tmp[32];
 		snprintf(tmp, sizeof(tmp), "%lld", (long long)max_size);
 		max_size_chars = strlen(tmp);
 	}
 	
-	// 转换为字符串长度
+	// Convert to string length
 	char nlink_buf[20];
 	sprintf(nlink_buf, "%d", max_nlink);
 	int nlink_width = strlen(nlink_buf);
 	
-	// 打印总块数（如果有多个文件）
+	// Total number of blocks printed (if there are multiple files)
 	if (count > 1) {
 		printf("total %ld\n", total_blocks / 2);
 	}
@@ -209,37 +209,37 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 		struct stat *st = &files[i].st;
 		const char *name = files[i].name;
 		
-		// 文件类型和权限
+		// File type and permission
 		printf("%s%s ", file_type(st->st_mode), permission_str(st->st_mode));
 		
-		// 硬链接数
+		// Numbers of hard-link
 		printf("%*d ", nlink_width, (int)st->st_nlink);
 		
-		// 所有者
+		// Owner
 		const char *user = get_username(st->st_uid);
 		printf("%-*s ", max_user, user);
 		
-		// 组
+		// Group
 		const char *group = get_groupname(st->st_gid);
 		printf("%-*s ", max_group, group);
 		
-		// 大小（人类可读或原始格式）
+		// Size
 		const char *size_str = human_readable(st->st_size, opts.human);
 		if (opts.human) {
-			// 人类可读格式右对齐
+			// Human-readable
 			printf("%*s ", max_size_chars, size_str);
 		} else {
-			// 原始大小右对齐
+			// Original size
 			printf("%*s ", max_size_chars, size_str);
 		}
 		
-		// 修改时间
+		// Change time
 		char time_buf[20];
 		struct tm *tm = localtime(&st->st_mtime);
 		strftime(time_buf, sizeof(time_buf), "%b %d %H:%M", tm);
 		printf("%s ", time_buf);
 		
-		// 文件名（带颜色）
+		// File name
 		if (opts.color) {
 			const char *color = get_file_color(st->st_mode, files[i].path);
 			printf("%s%s%s", color, name, COLOR_RESET);
@@ -247,7 +247,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 			printf("%s", name);
 		}
 		
-		// 如果是符号链接，显示目标
+		// If it's a symbolic link, show the target
 		if (S_ISLNK(st->st_mode)) {
 			char link_target[PATH_MAX];
 			ssize_t len = readlink(files[i].path, link_target, sizeof(link_target) - 1);
@@ -261,7 +261,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 	}
 }
 
-// 显示简单格式（多列）
+// Show simple format
 void display_simple_format(FileInfo *files, int count, Options opts) {
 	int max_len = 0;
 	for (int i = 0; i < count; i++) {
@@ -270,7 +270,7 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 	}
 	
 	int term_width = get_terminal_width();
-	int col_width = max_len + 2; // 列宽
+	int col_width = max_len + 2; // Column
 	int num_cols = term_width / col_width;
 	if (num_cols == 0) num_cols = 1;
 	
@@ -290,7 +290,7 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 				printf("%-*s", max_len, name);
 			}
 			
-			// 列间空格（最后一列除外）
+			// Spaces between columns (except for the last column)
 			if (col < num_cols - 1) {
 				printf("  ");
 			}
@@ -299,7 +299,7 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 	}
 }
 
-// 列出目录内容
+// List the contents of the catalog
 void list_directory(const char *path, Options opts) {
 	DIR *dir = opendir(path);
 	if (!dir) {
@@ -307,7 +307,7 @@ void list_directory(const char *path, Options opts) {
 		return;
 	}
 	
-	// 如果是目录本身，打印目录名
+	// If it is the directory itself, print the directory name
 	if (opts.directory) {
 		printf("%s:\n", path);
 	}
@@ -317,27 +317,27 @@ void list_directory(const char *path, Options opts) {
 	int count = 0;
 	int capacity = 0;
 	
-	// 读取目录内容
+	// Get contents of the catalog
 	while ((entry = readdir(dir)) != NULL) {
-		// 跳过隐藏文件（除非 -a 选项）
+		// Skip hidden file
 		if (!opts.all && entry->d_name[0] == '.') {
 			continue;
 		}
 		
-		// 分配空间
+		// Allocate memory
 		if (count >= capacity) {
 			capacity = capacity ? capacity * 2 : 16;
 			files = realloc(files, capacity * sizeof(FileInfo));
 		}
 		
-		// 创建完整路径
+		// Create full path
 		char *full_path = NULL;
 		if (asprintf(&full_path, "%s/%s", path, entry->d_name) == -1) {
 			perror("asprintf");
 			continue;
 		}
 		
-		// 获取文件信息
+		// Get file information
 		FileInfo *fi = &files[count];
 		if (lstat(full_path, &fi->st) == -1) {
 			perror("lstat");
@@ -346,25 +346,25 @@ void list_directory(const char *path, Options opts) {
 		}
 		
 		fi->name = strdup(entry->d_name);
-		fi->path = full_path; // 存储完整路径用于符号链接和颜色显示
+		fi->path = full_path; // Storage full path
 		
 		count++;
 	}
 	closedir(dir);
 	
-	// 排序（除非 -f 选项）
+	// Sort
 	if (!opts.unsorted) {
 		qsort(files, count, sizeof(FileInfo), compare_files);
 	}
 	
-	// 显示文件
+	// Show files
 	if (opts.list) {
 		display_long_format(files, count, opts);
 	} else {
 		display_simple_format(files, count, opts);
 	}
 	
-	// 清理
+	// Clean up
 	for (int i = 0; i < count; i++) {
 		free(files[i].name);
 		free(files[i].path);
@@ -372,8 +372,9 @@ void list_directory(const char *path, Options opts) {
 	free(files);
 }
 
-// 显示帮助信息
-void print_help() {
+// Show help informations
+static void print_help() {
+	SHOW_VERSION(stderr);
 	printf("Usage: ls [OPTION]... [FILE]...\n");
 	printf("List information about the FILEs (the current directory by default).\n");
 	printf("\n");
@@ -387,10 +388,9 @@ void print_help() {
 	printf("	  --help		  display this help and exit\n");
 }
 
-// 显示版本信息
-void print_version() {
-	printf("Toolen "VERSION" "COPYRIGHT"\n");
-	printf("ls (custom implementation) 1.0\n");
+// Show version informations
+static void print_version() {
+	SHOW_VERSION(stderr);
 }
 
 int ls_main(int argc, char *argv[]) {

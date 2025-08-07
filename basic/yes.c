@@ -5,7 +5,7 @@
 #include "config.h"
 
 static void yes_show_help() {
-	fprintf(stderr, "Toolen "VERSION" "COPYRIGHT"\n");
+	SHOW_VERSION(stderr);
 	fprintf(stderr,
 		"Usage: yes [String]\n"
 		"   or: yes [Options]\n"

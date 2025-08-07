@@ -5,7 +5,7 @@
 #include "config.h"
 
 static void clear_show_help() {
-	fprintf(stderr, "Toolen "VERSION" "COPYRIGHT"\n\n");
+	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: clear\n\n"
 		"Clear screen\n");
 }

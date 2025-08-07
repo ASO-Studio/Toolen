@@ -8,8 +8,8 @@
 #define _IS(s) (strcasecmp(&argv[1][1], s) == 0)
 
 static void kill_show_help() {
+	SHOW_VERSION(stderr);
 	fprintf(stderr,
-		"Toolen "VERSION" "COPYRIGHT"\n"
 		"Usage: kill [SIG] pid\n"
 		"   --list, -l  list all support signal\n"
 		"   --help, -h  show this page\n");

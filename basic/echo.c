@@ -66,8 +66,8 @@ static int ansi_echo(const char *s) {
 
 // Show help page
 static void echo_show_help() {
+	SHOW_VERSION(stderr);
 	fprintf(stderr,
-		"Toolen "VERSION" "COPYRIGHT"\n\n"
 		"echo v1.0  Print string on the display\n"
 		"Usage: echo [OPTIONS] [STRING...]\n"
 		"Support options:\n"
