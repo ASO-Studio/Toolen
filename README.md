@@ -18,8 +18,7 @@ pkg update && pkg install clang build-essential make
 
 ## Build
 ```bash
-# Clone this repository
-cd Toolen
+git clone https://github.com/RoofAlan/Toolen && cd Toolen
 make
 ```
 
