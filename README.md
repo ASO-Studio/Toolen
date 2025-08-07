@@ -1,7 +1,7 @@
 # Toolen
 A simple GNU/Linux core tool implementation
 
-***Prepare environment***
+## Prepare environment
 **On Ubuntu/Debian**
 ```bash
 sudo apt update && sudo apt install gcc build-essential make
@@ -16,14 +16,14 @@ sudo pacman -Syy gcc build-essential make
 pkg update && pkg install clang build-essential make
 ```
 
-***Build***
+## Build
 ```bash
 # Clone this repository
 cd Toolen
 make
 ```
 
-***Usage***
+## Usage
 ```bash
 ./toolen [command|options] [args...]
 ```
