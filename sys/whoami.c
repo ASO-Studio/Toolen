@@ -7,7 +7,7 @@
 #include "module.h"
 #include "config.h"
 
-static int whoami_show_help() {
+static void whoami_show_help() {
 	fprintf(stderr, "Toolen "VERSION" "COPYRIGHT"\n");
 	fprintf(stderr, "Usage: whoami\n"
 		"   --help  show this page\n");
