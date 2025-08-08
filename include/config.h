@@ -3,7 +3,7 @@
 
 #define PROGRAM_NAME "Toolen"
 #define VERSION "v0.1Beta"
-#define COPYRIGHT "Copyright (C) ASO-Studio & Xigua"
+#define COPYRIGHT "Copyright (C) ASO-Studio"
 
 #ifndef _STDIO_H
 # include <stdio.h>
