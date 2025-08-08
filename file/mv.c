@@ -26,27 +26,27 @@ typedef enum {
 
 // Update strategy type
 typedef enum {
-	UPDATE_ALL,		  // Update all existing files
-	UPDATE_NONE,		 // Do not update any existing files
+	UPDATE_ALL,		// Update all existing files
+	UPDATE_NONE,		// Do not update any existing files
 	UPDATE_NONE_FAIL,	// Fail if trying to update existing files
-	UPDATE_OLDER		 // Update only if source is newer than destination
+	UPDATE_OLDER		// Update only if source is newer than destination
 } UpdateType;
 
 // Global option variables
 static struct {
-	int force;			   // -f: force overwrite
-	int interactive;		 // -i: interactive prompt before overwrite
-	int no_clobber;		  // -n: do not overwrite existing files
-	int verbose;			 // -v: show detailed operation information
-	int debug;			   // --debug: show debug information
-	int exchange;			// --exchange: swap source and destination
-	int no_copy;			 // --no-copy: do not copy if rename fails
-	int strip_trailing;	  // --strip-trailing-slashes: remove trailing slashes from source paths
-	int no_target_dir;	   // -T: do not treat destination as directory
-	char *target_dir;		// -t: target directory for multiple sources
-	const char *suffix;	  // -S: custom backup suffix
-	BackupType backup_type;  // Type of backup to create
-	UpdateType update_type;  // Strategy for updating existing files
+	int force;		// -f: force overwrite
+	int interactive;	// -i: interactive prompt before overwrite
+	int no_clobber;		// -n: do not overwrite existing files
+	int verbose;		// -v: show detailed operation information
+	int debug;		// --debug: show debug information
+	int exchange;		// --exchange: swap source and destination
+	int no_copy;		// --no-copy: do not copy if rename fails
+	int strip_trailing;	// --strip-trailing-slashes: remove trailing slashes from source paths
+	int no_target_dir;	// -T: do not treat destination as directory
+	char *target_dir;	// -t: target directory for multiple sources
+	const char *suffix;	// -S: custom backup suffix
+	BackupType backup_type;	// Type of backup to create
+	UpdateType update_type;	// Strategy for updating existing files
 } opts = {
 	.suffix = DEFAULT_BACKUP_SUFFIX,
 	.backup_type = BACKUP_NONE,
