@@ -388,34 +388,26 @@ static void print_help() {
 	printf("	  --help		  display this help and exit\n");
 }
 
-// Show version informations
-static void print_version() {
-	SHOW_VERSION(stderr);
-}
-
 int ls_main(int argc, char *argv[]) {
 	Options opts = {0};
 	char **paths = NULL;
 	int path_count = 0;
 	int path_capacity = 0;
 	
-	// 修复：正确的选项定义
+	// Options
 	static struct option long_options[] = {
 		{"all", no_argument, NULL, 'a'},
 		{"help", no_argument, NULL, 'H'},
-		{"version", no_argument, NULL, 'v'},
 		{"human-readable", no_argument, NULL, 'r'},
 		{"color", optional_argument, NULL, 'c'},
 		{NULL, 0, NULL, 0}
 	};
 	
-	// 修复：正确的选项字符串
 	const char* short_options = "alHrfc:h?v";
 	
-	// 解析命令行参数
+	// Parse command line arguments
 	int opt;
 	int option_index = 0;
-	bool version_requested = false;
 	bool help_requested = false;
 	int ret_value = 0;
 	
@@ -431,11 +423,11 @@ int ls_main(int argc, char *argv[]) {
 				
 			case 'f':
 				opts.unsorted = true;
-				opts.all = true; // -f 隐含 -a
+				opts.all = true; // -f
 				break;
 				
-			case 'r': // --human-readable 或 -r
-			case 'h': // -h 表示人类可读大小
+			case 'r': // --human-readable or -r
+			case 'h': // -h
 				opts.human = true;
 				break;
 				
@@ -462,12 +454,8 @@ int ls_main(int argc, char *argv[]) {
 				help_requested = true;
 				break;
 				
-			case 'v': // --version
-				version_requested = true;
-				break;
-				
 			case '?':
-				// 未知选项，getopt 已经打印错误信息
+				// Unknown option
 				print_help();
 				exit(EXIT_FAILURE);
 				
@@ -478,20 +466,14 @@ int ls_main(int argc, char *argv[]) {
 		}
 	}
 	
-	// 处理帮助和版本请求
+	// Process help and version requests
 	if (help_requested) {
 		print_help();
 		exit(EXIT_SUCCESS);
 	}
-	
-	if (version_requested) {
-		print_version();
-		exit(EXIT_SUCCESS);
-	}
-	
-	// 处理剩余参数作为路径
+
 	for (int i = optind; i < argc; i++) {
-		// 添加路径
+		// Add path
 		if (path_count >= path_capacity) {
 			path_capacity = path_capacity ? path_capacity * 2 : 4;
 			paths = realloc(paths, path_capacity * sizeof(char *));
@@ -499,14 +481,14 @@ int ls_main(int argc, char *argv[]) {
 		paths[path_count++] = argv[i];
 	}
 	
-	// 如果没有指定路径，使用当前目录
+
 	if (path_count == 0) {
 		path_count = 1;
 		paths = malloc(sizeof(char *));
 		paths[0] = ".";
 	}
 	
-	// 处理多个路径
+	// Process multiple paths
 	for (int i = 0; i < path_count; i++) {
 		struct stat st;
 		if (stat(paths[i], &st) == -1) {
@@ -517,16 +499,16 @@ int ls_main(int argc, char *argv[]) {
 		}
 		
 		if (S_ISDIR(st.st_mode)) {
-			// 如果是目录
+			// If it is a direcory
 			opts.directory = (path_count > 1);
 			list_directory(paths[i], opts);
 			if (i < path_count - 1) {
 				printf("\n");
 			}
 		} else {
-			// 如果是文件
+			// If it is a file
 			FileInfo file;
-			// 修复：复制文件名以确保释放
+			// Copy file name
 			file.name = strdup(basename(strdup(paths[i])));
 			file.path = strdup(paths[i]);
 			
