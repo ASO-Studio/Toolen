@@ -253,4 +253,4 @@ int encsh_main(int argc, char *argv[]) {
     printf("  ./decryptor\n");    
     return 0;
 }
-REGISTER_MODULE(md5sum)
+REGISTER_MODULE(encsh)
