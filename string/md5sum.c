@@ -425,19 +425,19 @@ static void print_help() {
 	printf("Usage: md5sum [OPTION]... [FILE]...\n");
 	printf("Print or check MD5 (128-bit) checksums.\n\n");
 	printf("With no FILE, or when FILE is -, read standard input.\n");
-	printf("  -b, --binary      read in binary mode\n");
+	printf("  -b, --binary     read in binary mode\n");
 	printf("  -c, --check      read checksums from the FILEs and check them\n");
-	printf("    --tag       create a BSD-style checksum\n");
+	printf("    --tag          create a BSD-style checksum\n");
 	printf("  -t, --text       read in text mode (default)\n");
 	printf("  -z, --zero       end each output line with NUL, not newline,\n");
-	printf("        and disable file name escaping\n\n");
+	printf("                   and disable file name escaping\n\n");
 	printf("The following five options are useful only when verifying checksums:\n");
 	printf("    --ignore-missing  don't fail or report status for missing files\n");
-	printf("    --quiet      don't print OK for each successfully verified file\n");
-	printf("    --status      don't output anything, status code shows success\n");
-	printf("    --strict      exit non-zero for improperly formatted checksum lines\n");
+	printf("    --quiet        don't print OK for each successfully verified file\n");
+	printf("    --status       don't output anything, status code shows success\n");
+	printf("    --strict       exit non-zero for improperly formatted checksum lines\n");
 	printf("  -w, --warn       warn about improperly formatted checksum lines\n\n");
-	printf("    --help       display this help and exit\n");
+	printf("    --help         display this help and exit\n");
 }
 
 int md5sum_main(int argc, char *argv[]) {
