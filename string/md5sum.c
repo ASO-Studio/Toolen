@@ -8,7 +8,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <ctype.h>
-
+#include "module.h"
+#include "config.h"
 /* MD5 context structure */
 typedef struct {
     unsigned int state[4];        /* state (ABCD) */
@@ -420,22 +421,23 @@ static int check_checksums(const char *filename, bool ignore_missing, bool quiet
 
 /* Print help information */
 static void print_help() {
-    printf("Usage: md5sum [OPTION]... [FILE]...\n");
-    printf("Print or check MD5 (128-bit) checksums.\n\n");
-    printf("With no FILE, or when FILE is -, read standard input.\n");
-    printf("  -b, --binary          read in binary mode\n");
-    printf("  -c, --check           read checksums from the FILEs and check them\n");
-    printf("      --tag             create a BSD-style checksum\n");
-    printf("  -t, --text            read in text mode (default)\n");
-    printf("  -z, --zero            end each output line with NUL, not newline,\n");
-    printf("                          and disable file name escaping\n\n");
-    printf("The following five options are useful only when verifying checksums:\n");
-    printf("      --ignore-missing  don't fail or report status for missing files\n");
-    printf("      --quiet           don't print OK for each successfully verified file\n");
-    printf("      --status          don't output anything, status code shows success\n");
-    printf("      --strict          exit non-zero for improperly formatted checksum lines\n");
-    printf("  -w, --warn            warn about improperly formatted checksum lines\n\n");
-    printf("      --help        display this help and exit\n");
+    SHOW_VERSION(stdout);
+    printf("Usage:\040md5sum\040[OPTION]...\040[FILE]...\n");
+    printf("Print\040or\040check\040MD5\040(128-bit)\040checksums.\n\n");
+    printf("With\040no\040FILE,\040or\040when\040FILE\040is\040-,\040read\040standard\040input.\n");
+    printf("\040\040-b,\040--binary\t\040\040read\040in\040binary\040mode\n");
+    printf("\040\040-c,\040--check\t\040\040read\040checksums\040from\040the\040FILEs\040and\040check\040them\n");
+    printf("\t--tag\t\040\040\040create\040a\040BSD-style\040checksum\n");
+    printf("\040\040-t,\040--text\t\040\040\040read\040in\040text\040mode\040(default)\n");
+    printf("\040\040-z,\040--zero\t\040\040\040end\040each\040output\040line\040with\040NUL,\040not\040newline,\n");
+    printf("\t\tand\040disable\040file\040name\040escaping\n\n");
+    printf("The\040following\040five\040options\040are\040useful\040only\040when\040verifying\040checksums:\n");
+    printf("\t--ignore-missing\040\040don't\040fail\040or\040report\040status\040for\040missing\040files\n");
+    printf("\t--quiet\t\040\040don't\040print\040OK\040for\040each\040successfully\040verified\040file\n");
+    printf("\t--status\t\040\040don't\040output\040anything,\040status\040code\040shows\040success\n");
+    printf("\t--strict\t\040\040exit\040non-zero\040for\040improperly\040formatted\040checksum\040lines\n");
+    printf("\040\040-w,\040--warn\t\040\040\040warn\040about\040improperly\040formatted\040checksum\040lines\n\n");
+    printf("\t--help\t\040\040\040display\040this\040help\040and\040exit\n");
 }
 
 int md5sum_main(int argc, char *argv[]) {
