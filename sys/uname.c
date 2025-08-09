@@ -50,7 +50,8 @@ int uname_main(int argc, char *argv[]) {
 		{"v", no_argument, 0, 'v'},
 		{"m", no_argument, 0, 'm'},
 		{"o", no_argument, 0, 'o'},
-		{"help", no_argument, 0, 'h'}
+		{"help", no_argument, 0, 'h'},
+		{0, 0, 0, 0}
 	};
 
 	if (argc < 2) {
