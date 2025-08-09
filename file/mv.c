@@ -348,6 +348,7 @@ int mv_main(int argc, char *argv[]) {
 		{"no-target-directory", no_argument, NULL, 'T'},
 		{"update", optional_argument, NULL, 'U'},
 		{"help", no_argument, NULL, 'h'},
+		{"version", no_argument, NULL, 'V'},
 		{NULL, 0, NULL, 0}
 	};
 
@@ -370,6 +371,7 @@ int mv_main(int argc, char *argv[]) {
 			case 'u': parse_update_type("older"); break;
 			case 'v': opts.verbose = 1; break;
 			case 'h': print_help(); break;
+			case 'V': JUST_VERSION(); break;
 			default: die("Try '%s --help' for more information.", argv[0]);
 		}
 	}

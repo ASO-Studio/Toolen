@@ -99,6 +99,9 @@ int echo_main(int argc, char *argv[]) {
 				ansi = 1;
 				count_start++;
 				break;
+			case 'v':
+				JUST_VERSION();
+				return 0;
 			default:
 				break;
 		}

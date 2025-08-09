@@ -61,6 +61,9 @@ int sleep_main(int argc, char **argv) {
 		if(strcmp(argv[1], "--help") == 0) {
 			show_sleep_help();
 			return 0;
+		} else if (strcmp(argv[1], "--version") == 0) {
+			JUST_VERSION();
+			return 0;
 		}
 		usleep(toSecond(argv[i]) * 1000000); // Get seconds
 	}
@@ -78,6 +81,9 @@ int usleep_main(int argc, char **argv) {
 	for (int i = 1; i < argc; i++) {
 		if(strcmp(argv[1], "--help") == 0) {
 			show_usleep_help();
+			return 0;
+		} else if (strcmp(argv[1], "--version") == 0) {
+			JUST_VERSION();
 			return 0;
 		}
 		usleep(strtoull(argv[i], NULL, 0));	// Just use strtoull

@@ -196,6 +196,7 @@ int base64_main(int argc, char *argv[]) {
 		{"ignore-garbage", no_argument, 0, 'i'},
 		{"wrap", required_argument, 0, 'w'},
 		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'V'},
 		{0, 0, 0, 0}
 	};
 	
@@ -219,6 +220,9 @@ int base64_main(int argc, char *argv[]) {
 				break;
 			case 'h':
 				print_help();
+				return 0;
+			case 'V':
+				JUST_VERSION();
 				return 0;
 			case '?':
 				return 1;

@@ -15,6 +15,9 @@ int clear_main(int argc, char *argv[]) {
 		if(strcmp(argv[1], "--help") == 0) {
 			clear_show_help();
 			return 0;
+		} else if(strcmp(argv[1], "--version") == 0) {
+			JUST_VERSION();
+			return 0;
 		}
 	}
 	printf("\e[H\e[2J\e[3J");

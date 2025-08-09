@@ -36,6 +36,9 @@ int kill_main(int argc, char *argv[]) {
 	} else if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
 		kill_show_help();
 		return 0;
+	} else if (strcmp(argv[1], "--version") == 0) {
+		JUST_VERSION();
+		return 0;
 	}
 	
 	if(argv[1][0] == '-') {

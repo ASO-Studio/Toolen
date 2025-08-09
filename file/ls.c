@@ -400,6 +400,7 @@ int ls_main(int argc, char *argv[]) {
 		{"help", no_argument, NULL, 'H'},
 		{"human-readable", no_argument, NULL, 'r'},
 		{"color", optional_argument, NULL, 'c'},
+		{"version", no_argument, NULL, 'V'},
 		{NULL, 0, NULL, 0}
 	};
 	
@@ -453,7 +454,10 @@ int ls_main(int argc, char *argv[]) {
 			case 'H': // --help
 				help_requested = true;
 				break;
-				
+			case 'V': // --version
+				JUST_VERSION();
+				return 0;
+
 			case '?':
 				// Unknown option
 				print_help();

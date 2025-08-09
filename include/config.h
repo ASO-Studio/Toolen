@@ -10,5 +10,6 @@
 #endif  // _STDIO_H
 
 #define SHOW_VERSION(stream) fprintf(stream, PROGRAM_NAME" "VERSION" "COPYRIGHT"\n")
+#define JUST_VERSION()	printf(PROGRAM_NAME" "VERSION"\n");
 
 #endif // CONFIG_H

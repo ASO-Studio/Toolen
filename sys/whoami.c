@@ -17,6 +17,9 @@ int whoami_main(int argc, char *argv[]) {
 	if(argv[1] && strcmp(argv[1], "--help") == 0) {
 		whoami_show_help();
 		return 0;
+	} else if(argv[1] && strcmp(argv[1], "--version") == 0) {
+		JUST_VERSION();
+		return 0;
 	}
 
 	struct passwd *pw = NULL;

@@ -19,6 +19,9 @@ int yes_main(int argc, char *argv[]) {
 		if(strcmp(argv[1], "--help") == 0) {
 			yes_show_help();
 			return 0;
+		} else if (strcmp(argv[1], "--version") == 0) {
+			JUST_VERSION();
+			return 0;
 		} else {
 			fprintf(stderr, "Unknown option -- '%s'\n", argv[1]);
 			fprintf(stderr, "Try pass '--help' for more details\n");
