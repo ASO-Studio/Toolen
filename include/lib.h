@@ -10,4 +10,7 @@ int isDirectory(const char *path);
 /* Convert time expression to seconds */
 unsigned long timeToSeconds(const char *str);
 
+/* Generate UUID (Version 4) */
+void uuidGen(char *uuid);
+
 #endif // _LIB_H
