@@ -1,0 +1,21 @@
+mainmenu "Toolen settings"
+
+menu "Basic Commands"
+	source generated/basic.conf
+endmenu
+
+menu "File operations"
+	source generated/file.conf
+endmenu
+
+menu "Systen operations"
+	source generated/sys.conf
+endmenu
+
+menu "String operations"
+	source generated/string.conf
+endmenu
+
+menu "Other commands"
+	source generated/others.conf
+endmenu
