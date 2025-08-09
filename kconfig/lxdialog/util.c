@@ -21,9 +21,6 @@
 
 #include "dialog.h"
 
-// Fixed: implicit function declaration: index
-char *index(const char*, int);
-
 struct dialog_info dlg;
 
 static void set_mono_theme(void)
