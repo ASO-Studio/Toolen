@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define PROGRAM_NAME "Toolen"
-#define VERSION "v0.1Beta"
+#define VERSION "v0.2Beta"
 #define COPYRIGHT "Copyright (C) ASO-Studio"
 
 #ifndef _STDIO_H
