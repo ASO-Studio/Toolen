@@ -34,8 +34,8 @@ int rmmod_main(int argc, char *argv[]) {
 		{NULL, 0, 0, 0},
 	};
 
-	int shouldWait = 0;
-	int shouldForce = 0;
+	int shouldWait = 0;	// Wait until module is no longer used
+	int shouldForce = 0;	// Force unload module
 
 	while ((opt = getopt_long(argc, argv, "hwf", opts, &option_index)) != -1) {
 		switch(opt) {
@@ -63,9 +63,11 @@ int rmmod_main(int argc, char *argv[]) {
 
 	int flags = 0;
 
+	// -w
 	if (shouldWait) {
 		flags |= O_NONBLOCK;
 	}
+	// -f
 	if (shouldForce) {
 		flags |= O_TRUNC;
 	}
