@@ -10,8 +10,12 @@ PHONY += clean menuconfig
 
 menuconfig: $(obj)/mconf $(KCONFIG_TOP)
 	@bash scripts/optCmd.sh
-	$< $(KCONFIG_TOP)
+	@$< $(KCONFIG_TOP)
 	@bash scripts/finalGen.sh .config generated/sources.mk
+
+allyesconfig:
+	@bash scripts/optCmd.sh
+	@bash scripts/allYes.sh
 
 SHIPPED = kconfig/zconf.tab.c kconfig/lex.zconf.c kconfig/zconf.hash.c
 

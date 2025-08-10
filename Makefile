@@ -21,8 +21,8 @@ OUTPUT = toolen
 all: check $(OUTPUT)
 
 check:
-	$(Q)if [ ! -f ".config" ]; then \
-		echo "No .config file found, please run 'make menuconfig' first!"; \
+	$(Q)if [ ! -f "generated/sources.mk" ]; then \
+		echo "No sources.mk file found, please run 'make menuconfig' first!"; \
 		exit 1; \
 	fi
 
@@ -30,7 +30,7 @@ $(OUTPUT): $(OBJS)
 	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"; printf " All objects was compiled\n"
 	$(Q)$(CC) $(LD_FLAGS) -o $(OUTPUT) $(OBJS)
 
-%.o: %.c .config
+%.o: %.c
 	$(V)$(CC) $(C_FLAGS) $< -o $@
 
 clean:
