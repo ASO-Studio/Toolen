@@ -105,12 +105,12 @@ static int truncate_file(const char *filename, off_t size, bool no_create) {
 }
 
 static void truncate_show_help() {
-	fprintf(stderr, "Usage: truncate -s SIZE [-c] FILE...\n");
-	fprintf(stderr, "Truncate FILE(s) to the specified SIZE\n\n");
-	fprintf(stderr, "Options:\n");
-	fprintf(stderr, "  -c, --no-create  do not create any files\n");
-	fprintf(stderr, "  -s, --size=SIZE   set file size (e.g., 10K, 5M, 1G)\n");
-	fprintf(stderr, "  -h, --help		display this help and exit\n");
+	fprintf(stderr, "Usage: truncate -s SIZE [-c] FILE...\n\n"
+			"Truncate FILE(s) to the specified SIZE\n\n"
+			"Options:\n"
+			"  -c, --no-create   do not create any files\n"
+			"  -s, --size=SIZE   set file size (e.g., 10K, 5M, 1G)\n"
+			"  -h, --help        display this help and exit\n");
 }
 
 int truncate_main(int argc, char *argv[]) {
