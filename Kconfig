@@ -8,7 +8,7 @@ menu "File operations"
 	source generated/file.conf
 endmenu
 
-menu "Systen operations"
+menu "System operations"
 	source generated/sys.conf
 endmenu
 

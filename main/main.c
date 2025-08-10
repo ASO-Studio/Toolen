@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
 		if(argc <= 1) {
 			show_help();
 			return 1;
-		} else if (find_module(argv[1]) == 0 && argv[1][0] != '-') { // It doesn't start with '-' and it's an exsit module
+		} else if (find_module(argv[1]) == 0 && argv[1][0] != '-') { // It doesn't start with '-' and it's an exist module
 			return run_module(argv[1], argc - 1, &argv[1]);
 		} else if (argv[1][0] == '-') {
 			if(argv[1][1] == '-') { // "--", like --help, --list, e.g

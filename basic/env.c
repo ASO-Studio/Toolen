@@ -48,7 +48,7 @@ int env_main(int argc, char **argv) {
 		const char *eq_pos = strchr(var_name, '=');
 		size_t name_len = eq_pos - var_name;
 		
-		// Check environ exsits
+		// Check environ exists
 		int found = 0;
 		for (int j = 0; j < env_count; j++) {
 			if (strncmp(new_environ[j], var_name, name_len) == 0 && 
