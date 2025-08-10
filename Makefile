@@ -42,4 +42,6 @@ cleanall: clean kconfig_clean
 
 # menuconfig
 -include kconfig/Makefile
+
+# Dependence
 -include $(DEPS)
