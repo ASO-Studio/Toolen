@@ -22,7 +22,7 @@ all: check $(OUTPUT)
 
 check:
 	$(Q)if [ ! -f "generated/sources.mk" ]; then \
-		echo "No sources.mk file found, please run 'make menuconfig' first!"; \
+		echo "No sources.mk file found, please run 'make menuconfig' or 'make allyesconfig' first!"; \
 		exit 1; \
 	fi
 
