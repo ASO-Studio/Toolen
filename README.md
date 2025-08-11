@@ -36,7 +36,7 @@ ln -sf toolen CommandName
 ```
 
 ## TODO
-[ ] uname: Print userspace type
-[ ] reboot: Send SIGTERM & SIGKILL to all processes
-[ ] reboot: Force reboot
-[ ] Fix warnings at link-time
+[] uname: Print userspace type
+[] reboot: Send SIGTERM & SIGKILL to all processes
+[] reboot: Force reboot
+[] Fix warnings at link-time
