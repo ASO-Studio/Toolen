@@ -1,5 +1,5 @@
 # Toolen
-A simple GNU/Linux core tool implementation
+Toolen is a simple GNU/Linux core tool implementation. It includes some of the more standard core features and some "homebrew tools"
 
 ## Prepare environment
 **On Ubuntu/Debian**
@@ -35,4 +35,8 @@ ln -sf toolen CommandName
 #  ./echo "Hello world!"
 ```
 
-
+## TODO
+[ ] uname: Print userspace type
+[ ] reboot: Send SIGTERM & SIGKILL to all processes
+[ ] reboot: Force reboot
+[ ] Fix warnings at link-time
