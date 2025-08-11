@@ -49,4 +49,7 @@ generate "$ROOT_DIR/string" "$output" "y" "false"
 # Generate for other commands
 generate "$ROOT_DIR/others" "$output" "y" "false"
 
+# Generate for tools in development
+generate "$ROOT_DIR/devel" "$output" "y" "false"
+
 printf "\nSOURCES += \$(shell find lib -name '*.c') \$(shell find main -name '*.c')\n\n" >> "$output"

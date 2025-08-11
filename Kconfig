@@ -20,10 +20,24 @@ menu "Other commands"
 	source generated/others.conf
 endmenu
 
+menu "In Development"
+	source generated/devel.conf
+endmenu
+
 # Cut line
 comment "Global settings"
 
 menu "Build options"
+	config HOST_C_CPLR
+		string "Host C Compiler"
+		default "gcc"
+		help
+			Set host C compiler
+	config C_CPLR
+		string "C Compiler"
+		default "gcc"
+		help
+			Set default C compiler
 	config STATIC_LINK
 		bool "Static link"
 		default n

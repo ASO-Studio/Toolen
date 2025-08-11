@@ -26,6 +26,23 @@ ifeq ($(CONFIG_STATIC_LINK),y)
  LD_FLAGS += -static
 endif
 
+# Sometimes it will be like 'CONFIG... is not set', and sometimes it will be 'CONFIG_...=""'
+# Set to new compiler if CONFIG_C_CPLR is not empty
+ifneq ($(CONFIG_C_CPLR),"")
+ CC = $(CONFIG_C_CPLR)
+ ifeq ($(CONFIG_C_CPLR),)
+  CC = gcc
+ endif
+endif
+
+# Host C compiler is same as above
+ifneq ($(CONFIG_HOST_C_CPLR),"")
+ HOSTCC = $(CONFIG_HOST_C_CPLR)
+ ifeq ($(CONFIG_HOST_C_CPLR),)
+  HOSTCC = gcc
+ endif
+endif
+
 # Strip
 ifeq ($(CONFIG_STRIP),y)
  LD_FLAGS += -s

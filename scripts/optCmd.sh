@@ -9,10 +9,7 @@ function generate() {
 	output="$2"
 	default="$3"
 
-	# If it was already exist, then delete
-	if [ -f "$output" ]; then
-		rm -rf "$output"
-	fi
+	echo > "$output"
 
 	for cmd in $(find "$dir" -name "*.c"); do
 		aCmd=$(basename "$cmd" | awk -F'.' '{print $1}')
@@ -55,3 +52,6 @@ generate "$ROOT_DIR/string" "$string_output" "y"
 others_output="${GENDIR}/others.conf"
 generate "$ROOT_DIR/others" "$others_output" "y"
 
+# Generate for tools in development
+devel_output="${GENDIR}/devel.conf"
+generate "$ROOT_DIR/devel" "$devel_output" "n"
