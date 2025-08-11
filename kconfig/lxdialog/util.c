@@ -21,6 +21,32 @@
 
 #include "dialog.h"
 
+// instead of 'index'
+char *strIndex(const char *s, int c)
+{
+	/* Handle NULL pointer input */
+	if (s == NULL)
+		return NULL;
+
+	/* Convert the integer character to char type */
+	char ch = (char)c;
+
+	/* Iterate through the string until we find the character or reach the end */
+	while (*s != '\0') {
+		/* Check if current character matches the search character */
+		if (*s == ch)
+			return (char *)s;  // Cast to non-const to match standard signature
+		s++;
+	}
+
+	/* Special case: searching for the null terminator itself */
+	if (ch == '\0')
+		return (char *)s;
+
+	/* Character not found in the string */
+	return NULL;
+}
+
 struct dialog_info dlg;
 
 static void set_mono_theme(void)
@@ -338,7 +364,7 @@ void print_autowrap(WINDOW * win, const char *prompt, int width, int y, int x)
 		newl = 1;
 		word = tempstr;
 		while (word && *word) {
-			sp = index(word, ' ');
+			sp = strIndex(word, ' ');
 			if (sp)
 				*sp++ = 0;
 
