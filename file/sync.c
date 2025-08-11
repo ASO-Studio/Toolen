@@ -5,7 +5,7 @@
 #include "module.h"
 #include "lib.h"
 
-static int sync_show_help() {
+static void sync_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: sync\n\n"
 			"Write pending cached data to disk, blocking until done\n");
