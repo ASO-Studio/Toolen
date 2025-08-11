@@ -4,13 +4,31 @@ Q=@
 HOSTCC = gcc
 CC = gcc
 C_FLAGS = -c -MMD -Iinclude/
-LD_FLAGS = 
+LD_FLAGS =
 
 # Include source file
 ifneq ($(wildcard generated/sources.mk),)
  include generated/sources.mk
 else
  SOURCES :=
+endif
+
+# Include config file
+ifneq ($(wildcard .config),)
+ include .config
+endif
+
+# Parse build options
+# Static link
+#  TIPS: It will cause some warnings such as 'Using xxx in statically linked application'
+#  TODO: Fix warnings
+ifeq ($(CONFIG_STATIC_LINK),y)
+ LD_FLAGS += -static
+endif
+
+# Strip
+ifeq ($(CONFIG_STRIP),y)
+ LD_FLAGS += -s
 endif
 
 OBJS = $(SOURCES:%.c=%.o)

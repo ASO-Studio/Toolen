@@ -19,3 +19,20 @@ endmenu
 menu "Other commands"
 	source generated/others.conf
 endmenu
+
+# Cut line
+comment "Global settings"
+
+menu "Build options"
+	config STATIC_LINK
+		bool "Static link"
+		default n
+		help
+			Static link
+			TIPS: It will cause some warnings so we don't recommend you enable this option
+	config STRIP
+		bool "Strip symbols"
+		default n
+		help
+			Strip symbols in final executable
+endmenu

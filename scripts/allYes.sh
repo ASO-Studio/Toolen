@@ -17,12 +17,13 @@ function generate() {
 
 	for cmd in $(find "$dir" -name "*.c"); do
 		printf "$cmd " >> $output
+		printf "CONFIG_$(basename "$cmd" | awk -F'.' '{print $1}')=y\n" >> "$ROOT_DIR/.config"
 	done
 }
 
 # .config file is exist, exit
 if [ -f ".config" ]; then
-	exit 0
+	rm -rf ".config"
 fi
 
 if [ ! -d "$GENDIR" ]; then
