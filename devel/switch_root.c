@@ -60,20 +60,16 @@ static void sys_error(const char *context) {
  * Display help information
  */
 static void usage(void) {
-	SHOW_VERSION(stdout);
-	printf("Usage: switch_root [OPTION]... NEW_ROOT INIT [ARG]...\n");
-	printf("Switch from temporary filesystem to real root filesystem.\n\n");
-	printf("Mandatory arguments:\n");
-	printf("  NEW_ROOT  path to new root directory\n");
-	printf("  INIT	  path to init program relative to NEW_ROOT\n");
-	printf("  ARG	   arguments passed to INIT program\n\n");
-	printf("Options:\n");
-	printf("  -h, --help	 display this help and exit\n");
-	printf("  -v, --version  output version information and exit\n\n");
-	printf("Exit status:\n");
-	printf("  0  success\n");
-	printf("  1  operation failed\n");
-	printf("  2  invalid arguments\n\n");
+	SHOW_VERSION(stderr);
+	fprintf(stderr,
+		"Usage: switch_root [OPTION]... NEW_ROOT INIT [ARG]...\n\n"
+		"Switch from temporary filesystem to real root filesystem.\n\n"
+		"Support options:\n"
+		"  -h, --help	 display this help and exit\n"
+		"  -v, --version  output version information and exit\n\n"
+		"  NEW_ROOT  path to new root directory\n"
+		"  INIT	     path to init program relative to NEW_ROOT\n"
+		"  ARG       arguments passed to INIT program\n\n");
 }
 
 /**
