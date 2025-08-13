@@ -66,7 +66,6 @@ static void usage(void) {
 		"Switch from temporary filesystem to real root filesystem.\n\n"
 		"Support options:\n"
 		"  -h, --help	 display this help and exit\n"
-		"  -v, --version  output version information and exit\n\n"
 		"  NEW_ROOT  path to new root directory\n"
 		"  INIT	     path to init program relative to NEW_ROOT\n"
 		"  ARG       arguments passed to INIT program\n\n");

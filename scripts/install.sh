@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dirn="$(dirname $0)"
+dirn="$(dirname $0)/.."
 installDir="$1"
 if [ ! -f "${dirn}/toolen" ]; then
 	echo "Cannot access Toolen, please make it first" >&2
