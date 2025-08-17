@@ -48,6 +48,11 @@ ifeq ($(CONFIG_STRIP),y)
  LD_FLAGS += -s
 endif
 
+# Compile license
+ifeq ($(CONFIG_COMPILE_LICENSE),y)
+ C_FLAGS += -DCOMPILE_LICENSE
+endif
+
 OBJS = $(SOURCES:%.c=%.o)
 DEPS = $(OBJS:%.o=%.d)
 

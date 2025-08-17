@@ -49,4 +49,9 @@ menu "Build options"
 		default n
 		help
 			Strip symbols in final executable
+	config COMPILE_LICENSE
+		bool "Compile LICENSE"
+		default y
+		help
+			Compile MIT LICENSE in main/main.c
 endmenu

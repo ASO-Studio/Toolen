@@ -11,7 +11,7 @@ static bool markWithD = false;
 static bool tabAsI = false;
 
 // Show help informations
-static int cat_show_help() {
+static void cat_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: cat [options] [FILE]...\n\n"
 			"Copy (concatenate) files to stdout. If no files gave, copy from stdin\n\n"
