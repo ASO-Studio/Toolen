@@ -18,8 +18,9 @@ pkg update && pkg install clang build-essential make
 
 ## Build
 ```bash
-git clone https://github.com/RoofAlan/Toolen && cd Toolen
-make
+git clone https://github.com/RoofAlan/Toolen
+cd Toolen && make menuconfig # or 'make allyesconfig'
+make -j$(nproc)
 ```
 
 ## Usage

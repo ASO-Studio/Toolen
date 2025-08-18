@@ -1,27 +1,28 @@
+// Simple shell program
+//   Designed by BeiYe.
+//   Modified by RoofAlan
+//               2025/8/17
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 #include "config.h"
 #include "module.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
-static size_t strLength(const char *str) {
-	size_t ret = 0;
-	while(*str++) ret++;
-	return ret;
-}
-
 static void sprint(const char *str) {
-	write(1, str, strLength(str));
+	write(1, str, strlen(str));
 }
 
 static void eprint(const char *str) {
-	write(2, str, strLength(str));
+	fprintf(stderr, "%s: %s\n", str, strerror(errno));
 }
 
 static void itoa(unsigned int num,char *buffer){
@@ -47,7 +48,7 @@ static bool scmp(const char* d, const char *s) {
 	if(!d||!s)
 		return false;
 
-	if(strLength(d) != strLength(s))
+	if(strlen(d) != strlen(s))
 		return false;
 
 	while(*d && *s) {
@@ -63,42 +64,19 @@ static void padz(void* m, size_t len) {
 	}
 }
 
-static void mcpy(void* d, const void* s, size_t len) {
-	for(size_t i=0; i<len; i++) {
-		UNSIG(d)[i] = UNSIG(s)[i];
-	}
-}
-
+// Allocate memory
 static void *fmalloc(size_t size) {
-#if USE_FALLOC
-	size_t rsize = size + sizeof(size_t);
-	void *p = mmap(NULL, rsize, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-	if(p == MAP_FAILED) {
-		eprint("spsh: mmap failed\n");
-		exit(1);
-	}
-	mcpy(p, &rsize, sizeof(size_t));
-	return (void*)&(UNSIG(p)[sizeof(size_t)]);
-#else
 	void *p = malloc(size);
 	if(!p) {
-		eprint("spsh: mmap failed\n");
+		eprint("spsh: malloc failed");
 		exit(1);
 	}
 	return p;
-#endif
 }
 
+// Free memory
 static void ffree(void *ptr) {
-#if USE_FALLOC
-	void *rptr = (void*)UNSIG(ptr - sizeof(size_t));
-	size_t rsize;
-	mcpy(&rsize, rptr, sizeof(size_t));
-	padz(rptr, rsize);
-	munmap(rptr, rsize);
-#else
 	free(ptr);
-#endif
 }
 
 static bool is_delimiter(char c, const char *delimiters) {
@@ -110,6 +88,7 @@ static bool is_delimiter(char c, const char *delimiters) {
 	return false;
 }
 
+// Split command
 static char** parse_command(const char *input, const char *delimiters) {
 	char **tokens = fmalloc(32 * sizeof(char*));
 	char tokenBuffer[2048];
@@ -150,12 +129,12 @@ static char** parse_command(const char *input, const char *delimiters) {
 								capacity *= 2;
 								char **newTokens = fmalloc(capacity * sizeof(char*));
 								padz(newTokens, capacity * sizeof(char*));
-								mcpy(newTokens, tokens, token_count * sizeof(char*));
+								memcpy(newTokens, tokens, token_count * sizeof(char*));
 								ffree(tokens);
 								tokens = newTokens;
 							}
 							tokens[token_count] = fmalloc(buf_index + 1);
-							mcpy(tokens[token_count], tokenBuffer, buf_index + 1);
+							memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
 							token_count++;
 							buf_index = 0;
 						}
@@ -198,12 +177,12 @@ static char** parse_command(const char *input, const char *delimiters) {
 			capacity++;
 			char **newTokens = fmalloc(capacity * sizeof(char*));
 			padz(newTokens, capacity * sizeof(char*));
-			mcpy(newTokens, tokens, token_count * sizeof(char*));
+			memcpy(newTokens, tokens, token_count * sizeof(char*));
 			ffree(tokens);
 			tokens = newTokens;
 		}
 		tokens[token_count] = fmalloc(buf_index + 1);
-		mcpy(tokens[token_count], tokenBuffer, buf_index + 1);
+		memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
 		token_count++;
 	}
 
@@ -211,7 +190,7 @@ static char** parse_command(const char *input, const char *delimiters) {
 		capacity++;
 		char **newTokens = fmalloc(capacity * sizeof(char*));
 		padz(newTokens, capacity * sizeof(char*));
-		mcpy(newTokens, tokens, token_count * sizeof(char*));
+		memcpy(newTokens, tokens, token_count * sizeof(char*));
 		ffree(tokens);
 		tokens = newTokens;
 	}
@@ -269,7 +248,7 @@ int simpsh_main(int argc, char *argv[]) {
 					chdir(getenv("HOME") ? getenv("HOME") : "/");
 				} else {
 					if(chdir(cmdStruct[1])) {
-						eprint("spsh: no such file or directory or permission denied\n");
+						eprint("spsh");
 					}
 				}
 				for(int i = 0; cmdStruct[i]; i++) {
@@ -287,10 +266,10 @@ int simpsh_main(int argc, char *argv[]) {
 
 		pid_t spid = fork();
 		if(spid < 0) {
-			eprint("spsh: fork failed\n");
+			eprint("spsh: fork failed");
 		} else if (spid == 0) {
 			execvp(cmdStruct[0], cmdStruct);
-			eprint("spsh: command not found or no such file or directory\n");
+			eprint("spsh");
 			exit(1);
 		} else {
 			wait(&retValue);
