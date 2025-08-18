@@ -31,7 +31,6 @@ int rmmod_main(int argc, char *argv[]) {
 		{"help", no_argument, 0, 'h'},
 		{"force", no_argument, 0, 'f'},
 		{"wait", no_argument, 0, 'w'},
-		{"version", no_argument, 0, 'V'},
 		{NULL, 0, 0, 0},
 	};
 
@@ -49,9 +48,6 @@ int rmmod_main(int argc, char *argv[]) {
 			case 'f':
 				shouldForce = 1;
 				break;
-			case 'V':
-				JUST_VERSION();
-				return 0;
 			case '?':
 				fprintf(stderr, "Try pass '--help' for more details\n");
 				return 1;

@@ -452,7 +452,6 @@ int md5sum_main(int argc, char *argv[]) {
 	bool strict = false;
 	bool warn = false;
 	bool help = false;
-	bool version = false;
 
 	/* Command line options */
 	static struct option long_options[] = {
@@ -467,7 +466,6 @@ int md5sum_main(int argc, char *argv[]) {
 		{"strict", no_argument, 0, 0},
 		{"warn", no_argument, 0, 'w'},
 		{"help", no_argument, 0, 0},
-		{"version", no_argument, 0, 0},
 		{0, 0, 0, 0}
 	};
 
@@ -506,8 +504,6 @@ int md5sum_main(int argc, char *argv[]) {
 					strict = true;
 				} else if (strcmp(long_options[option_index].name, "help") == 0) {
 					help = true;
-				} else if (strcmp(long_options[option_index].name, "version") == 0) {
-					version = true;
 				}
 				break;
 			default:
@@ -516,17 +512,11 @@ int md5sum_main(int argc, char *argv[]) {
 		}
 	}
 
-	/* Handle help and version */
+	/* Handle help */
 	if (help) {
 		print_help();
 		return 0;
 	}
-
-	if (version) {
-		JUST_VERSION();
-		return 0;
-	}
-
 
 	/* Determine files to process */
 	int num_files = argc - optind;

@@ -400,11 +400,10 @@ int ls_main(int argc, char *argv[]) {
 		{"help", no_argument, NULL, 'H'},
 		{"human-readable", no_argument, NULL, 'r'},
 		{"color", optional_argument, NULL, 'c'},
-		{"version", no_argument, NULL, 'V'},
 		{NULL, 0, NULL, 0}
 	};
 	
-	const char* short_options = "alHrfc:h?v";
+	const char* short_options = "alHrfc:h?";
 	
 	// Parse command line arguments
 	int opt;
@@ -446,7 +445,7 @@ int ls_main(int argc, char *argv[]) {
 						exit(EXIT_FAILURE);
 					}
 				} else {
-					// 默认行为：--color 等同于 --color=auto
+					// Default action: --color = --color=auto
 					opts.color = isatty(STDOUT_FILENO);
 				}
 				break;
@@ -454,10 +453,6 @@ int ls_main(int argc, char *argv[]) {
 			case 'H': // --help
 				help_requested = true;
 				break;
-			case 'V': // --version
-				JUST_VERSION();
-				return 0;
-
 			case '?':
 				// Unknown option
 				print_help();

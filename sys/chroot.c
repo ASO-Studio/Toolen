@@ -22,9 +22,6 @@ int chroot_main(int argc, char *argv[]) {
 	if(findArg(argv, argc, "--help")) {
 		chroot_show_help();
 		return 0;
-	} else if(findArg(argv, argc, "--version")) {
-		JUST_VERSION();
-		return 0;
 	}
 
 	// We should change directory to NEWROOT first

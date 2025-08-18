@@ -1,5 +1,5 @@
 /*
- * module.c - 功能注册系统实现
+ * module.c - Module registration
  */
 #include "module.h"
 #include <string.h>

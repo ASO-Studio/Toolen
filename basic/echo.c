@@ -72,8 +72,7 @@ static void echo_show_help() {
 		"Usage: echo [OPTIONS] [STRING...]\n"
 		"Support options:\n"
 		"  -e      Print string with interpretation of backslash escapes\n"
-		"  -n      Print without drawing new line\n"
-		"  --help  Show this page\n");
+		"  -n      Print without drawing new line\n");
 }
 
 int echo_main(int argc, char *argv[]) {
@@ -99,9 +98,6 @@ int echo_main(int argc, char *argv[]) {
 				ansi = 1;
 				count_start++;
 				break;
-			case 'v':
-				JUST_VERSION();
-				return 0;
 			default:
 				break;
 		}

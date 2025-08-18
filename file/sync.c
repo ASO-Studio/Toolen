@@ -16,8 +16,9 @@ int sync_main(int argc, char *argv[]) {
 	if (findArg(argv, argc, "--help")) {
 		sync_show_help();
 		return 0;
-	} else if (findArg(argv, argc, "--version")) {
-		JUST_VERSION();
+	} else {
+		fprintf(stderr, "sync: unknown option -- '%s'\n", argv[1]);
+		fprintf(stderr, "Try pass '--help' for more details\n");
 		return 0;
 	}
 

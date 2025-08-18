@@ -388,7 +388,6 @@ static int parse_args(int argc, char *argv[]) {
 		{"strict",		no_argument, NULL, 0},
 		{"warn",		no_argument, NULL, 'w'},
 		{"help",		no_argument, NULL, 0},
-		{"version",		no_argument, NULL, 0},
 		{NULL, 0, NULL, 0}
 	};
 
@@ -407,10 +406,6 @@ static int parse_args(int argc, char *argv[]) {
 				else if (!strcmp(long_opts[idx].name, "status")) { flag_status = 1; flag_quiet = 1; }
 				else if (!strcmp(long_opts[idx].name, "strict")) flag_strict = 1;
 				else if (!strcmp(long_opts[idx].name, "help")) flag_help = 1;
-				else if (!strcmp(long_opts[idx].name, "version")) {
-					JUST_VERSION();
-					exit(0);
-				}
 				break;
 			case '?': return -1;
 			default: abort();

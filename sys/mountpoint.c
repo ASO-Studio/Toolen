@@ -30,8 +30,7 @@ static void usage(int status) {
 		"Determine whether directories are mountpoints.\n\n"
 		"Support options:\n"
 		"  -q, --quiet      suppress output, only return exit status\n"
-		"  -d, --devno      print filesystem device numbers (major:minor)\n"
-		"  -h, --help       display this help and exit\n");
+		"  -d, --devno      print filesystem device numbers (major:minor)\n");
 	exit(status);
 }
 
@@ -88,12 +87,11 @@ int mountpoint_main(int argc, char *argv[]) {
 		{"quiet", no_argument, 0, 'q'},
 		{"devno", no_argument, 0, 'd'},
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'v'},
 		{NULL, 0, NULL, 0}
 	};
 	
 	int opt;
-	while ((opt = getopt_long(argc, argv, "qdvh", long_options, NULL)) != -1) {
+	while ((opt = getopt_long(argc, argv, "qdh", long_options, NULL)) != -1) {
 		if (opt == -1) break;
 		
 		switch (opt) {
@@ -103,9 +101,6 @@ int mountpoint_main(int argc, char *argv[]) {
 		case 'd':
 			devno_mode = 1;  // Enable device number output
 			break;
-		case 'v':
-			JUST_VERSION();   // Show version
-			return EXIT_SUCCESS;
 		case 'h':
 			usage(EXIT_SUCCESS);  // Show help
 		default:

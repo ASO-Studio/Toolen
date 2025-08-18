@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+#include "lib.h"
+
 #define _IS(x) (strcmp(argv[1], x) == 0)
 
 #if defined(COMPILE_LICENSE)
@@ -58,6 +60,10 @@ int main(int argc, char *argv[]) {
 			show_help();
 			return 1;
 		} else if (find_module(argv[1]) == 0 && argv[1][0] != '-') { // It doesn't start with '-' and it's an exist module
+			if (findArg(argv, argc, "--version") || findArg(argv, argc, "-V")) {
+				JUST_VERSION();
+				return 0;
+			}
 			return run_module(argv[1], argc - 1, &argv[1]);
 		} else if (argv[1][0] == '-') {
 			if(argv[1][1] == '-') { // "--", like --help, --list, e.g
@@ -66,9 +72,6 @@ int main(int argc, char *argv[]) {
 					return 0;
 				} else if (_IS("--list")) {
 					list_all_modules();
-					return 0;
-				} else if (_IS("--version")) {
-					printf(PROGRAM_NAME" "VERSION"\n");
 					return 0;
 				} else {
 					fprintf(stderr, "Unknown option: %s\n", argv[1]);
@@ -95,6 +98,10 @@ int main(int argc, char *argv[]) {
 			return 1;
 		}
 	} else {	// Found module from argv[0], then run it directly
+		if (findArg(argv, argc, "--version") || findArg(argv, argc, "-V")) {
+			JUST_VERSION();
+			return 0;
+		}
 		return run_module(progname, argc, argv);
 	}
 

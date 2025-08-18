@@ -28,7 +28,6 @@ int reboot_main(int argc, char *argv[]) {
 		{"f", no_argument, 0, 'f'},
 		{"n", no_argument, 0, 'n'},
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'V'},
 		{0, 0, 0, 0}
 	};
 
@@ -47,7 +46,6 @@ int reboot_main(int argc, char *argv[]) {
 			case 'f': force = 1; break;
 			case 'n': syncRes = 0; break;
 			case 'h': reboot_show_help(); return 0;
-			case 'V': JUST_VERSION(); return 0;
 			case '?': fprintf(stderr, "Try pass '--help' for more details\n"); return 1;
 			default:
 				abort();

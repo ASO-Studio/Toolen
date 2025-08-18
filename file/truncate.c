@@ -109,8 +109,7 @@ static void truncate_show_help() {
 			"Truncate FILE(s) to the specified SIZE\n\n"
 			"Options:\n"
 			"  -c, --no-create   do not create any files\n"
-			"  -s, --size=SIZE   set file size (e.g., 10K, 5M, 1G)\n"
-			"  -h, --help        display this help and exit\n");
+			"  -s, --size=SIZE   set file size (e.g., 10K, 5M, 1G)\n");
 }
 
 int truncate_main(int argc, char *argv[]) {
@@ -124,7 +123,6 @@ int truncate_main(int argc, char *argv[]) {
 		{"no-create", no_argument, NULL, 'c'},
 		{"size", required_argument, NULL, 's'},
 		{"help", no_argument, NULL, 'h'},
-		{"version", no_argument, NULL, 'V'},
 		{NULL, 0, NULL, 0}
 	};
 	
@@ -138,9 +136,6 @@ int truncate_main(int argc, char *argv[]) {
 				break;
 			case 'h':
 				truncate_show_help();
-				exit(EXIT_SUCCESS);
-			case 'V':
-				JUST_VERSION();
 				exit(EXIT_SUCCESS);
 			default:
 				truncate_show_help();

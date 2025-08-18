@@ -20,22 +20,18 @@ int pwd_main(int argc, char *argv[]) {
 	struct option opts[] = {
 		{"L", no_argument, 0, 'L'},
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'V'}
 	};
 
 	int useEnv = 0;
 
 	// Parse arguments
-	while((opt = getopt_long(argc, argv, "LhV", opts, &opt_index)) != -1) {
+	while((opt = getopt_long(argc, argv, "Lh", opts, &opt_index)) != -1) {
 		switch(opt) {
 			case 'L':
 				useEnv = 1;
 				break;
 			case 'h':
 				pwd_show_help();
-				return 0;
-			case 'V':
-				JUST_VERSION();
 				return 0;
 			case '?':
 				fprintf(stderr, "Try pass '--help' for more details\n");

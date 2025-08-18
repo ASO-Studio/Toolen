@@ -47,11 +47,10 @@ int cat_main(int argc, char *argv[]) {
 		{"e", no_argument, 0, 'e'},
 		{"t", no_argument, 0, 't'},
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 
-	while((opt = getopt_long(argc, argv, "ethv", opts, &optidx)) != -1) {
+	while((opt = getopt_long(argc, argv, "eth", opts, &optidx)) != -1) {
 		switch(opt) {
 			case 'e':
 				markWithD = true;
@@ -61,9 +60,6 @@ int cat_main(int argc, char *argv[]) {
 				break;
 			case 'h':
 				cat_show_help();
-				return 0;
-			case 'v':
-				JUST_VERSION();
 				return 0;
 			case '?':
 				fprintf(stderr, "Try pass '--help' for more details\n");
@@ -75,6 +71,7 @@ int cat_main(int argc, char *argv[]) {
 
 	if(argc - optind <= 0) {
 		catFd(0);
+		return 0;
 	}
 
 	int ret = 0;

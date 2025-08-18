@@ -398,7 +398,6 @@ static int parse_args(int argc, char *argv[]) {
 		{"strict",		no_argument, NULL, 0},
 		{"warn",		no_argument, NULL, 'w'},
 		{"help",		no_argument, NULL, 0},
-		{"version",		no_argument, NULL, 0},
 		{NULL, 0, NULL, 0}  // Terminator
 	};
 
@@ -440,9 +439,6 @@ static int parse_args(int argc, char *argv[]) {
 					flag_strict = 1;
 				} else if (strcmp(long_options[option_index].name, "help") == 0) {
 					flag_help = 1;
-				} else if (strcmp(long_options[option_index].name, "version") == 0) {
-					JUST_VERSION();
-					exit(0);
 				} 
 				break;
 			case '?':

@@ -60,14 +60,14 @@ int mkswap_main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 	device = argv[optind];
-	
+
 	// Open device
 	int fd = open(device, O_RDWR);
 	if (fd < 0) {
 		perror(device);
 		return 0;
 	}
-	
+
 	// Get page size
 	int pagesize = sysconf(_SC_PAGE_SIZE);
 	if (pagesize < 0) {

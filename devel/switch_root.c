@@ -65,7 +65,6 @@ static void usage(void) {
 		"Usage: switch_root [OPTION]... NEW_ROOT INIT [ARG]...\n\n"
 		"Switch from temporary filesystem to real root filesystem.\n\n"
 		"Support options:\n"
-		"  -h, --help	 display this help and exit\n"
 		"  NEW_ROOT  path to new root directory\n"
 		"  INIT	     path to init program relative to NEW_ROOT\n"
 		"  ARG       arguments passed to INIT program\n\n");
@@ -190,20 +189,16 @@ int switch_root_main(int argc, char *argv[]) {
 	// Parse command-line options
 	static struct option long_options[] = {
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'v'},
 		{0, 0, 0, 0}
 	};
 	
 	int opt;
-	while ((opt = getopt_long(argc, argv, "hv", long_options, NULL)) != -1 ) {
+	while ((opt = getopt_long(argc, argv, "h", long_options, NULL)) != -1 ) {
 		if (opt == -1) break;
 		
 		switch (opt) {
 			case 'h':
 				usage();
-				return EXIT_SUCCESS;
-			case 'v':
-				JUST_VERSION();
 				return EXIT_SUCCESS;
 			default:
 				usage();

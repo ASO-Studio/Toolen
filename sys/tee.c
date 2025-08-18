@@ -28,7 +28,6 @@ int tee_main(int argc, char *argv[]) {
 		switch (opt) {
 			case 'a': append = 1; break;
 			case 'i': signal(SIGINT, SIG_IGN); break;
-			case 'V': JUST_VERSION(); break;
 			case 'h': tee_show_help(); return 0; break;
 			default: 
 				fprintf(stderr, "Usage: %s [-ai] [file...]\n", argv[0]);

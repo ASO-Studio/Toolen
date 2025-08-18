@@ -46,7 +46,6 @@ static void print_help() {
 	printf("  -i, --ignore-garbage  when decoding, ignore non-alphabet characters\n");
 	printf("  -w, --wrap=COLS       wrap encoded lines after COLS character (default %d).\n", DEFAULT_WRAP);
 	printf("                        Use 0 to disable line wrapping\n");
-	printf("      --help            display this help and exit\n");
 }
 
 /**
@@ -196,14 +195,13 @@ int base64_main(int argc, char *argv[]) {
 		{"ignore-garbage", no_argument, 0, 'i'},
 		{"wrap", required_argument, 0, 'w'},
 		{"help", no_argument, 0, 'h'},
-		{"version", no_argument, 0, 'V'},
 		{0, 0, 0, 0}
 	};
 	
 	// Parse command-line options
 	int opt;
 	int option_index = 0;
-	while ((opt = getopt_long(argc, argv, "diw:hV", long_options, &option_index)) != -1) {
+	while ((opt = getopt_long(argc, argv, "diw:h", long_options, &option_index)) != -1) {
 		switch (opt) {
 			case 'd':
 				decode = 1;
@@ -220,9 +218,6 @@ int base64_main(int argc, char *argv[]) {
 				break;
 			case 'h':
 				print_help();
-				return 0;
-			case 'V':
-				JUST_VERSION();
 				return 0;
 			case '?':
 				return 1;

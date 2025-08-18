@@ -348,12 +348,11 @@ int mv_main(int argc, char *argv[]) {
 		{"no-target-directory", no_argument, NULL, 'T'},
 		{"update", optional_argument, NULL, 'U'},
 		{"help", no_argument, NULL, 'h'},
-		{"version", no_argument, NULL, 'V'},
 		{NULL, 0, NULL, 0}
 	};
 
 	int c;
-	while ((c = getopt_long(argc, argv, "bfint:TS:uv", long_opts, NULL)) != -1) {
+	while ((c = getopt_long(argc, argv, "bfint:TS:u", long_opts, NULL)) != -1) {
 		switch (c) {
 			case 'b': parse_backup_control("simple"); break;
 			case 'B': parse_backup_control(optarg); break;
@@ -369,7 +368,6 @@ int mv_main(int argc, char *argv[]) {
 			case 'T': opts.no_target_dir = 1; break;
 			case 'U': parse_update_type(optarg); break;
 			case 'u': parse_update_type("older"); break;
-			case 'v': opts.verbose = 1; break;
 			case 'h': print_help(); break;
 			case 'V': JUST_VERSION(); break;
 			default: die("Try '%s --help' for more information.", argv[0]);

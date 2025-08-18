@@ -1,6 +1,6 @@
 /*
- * module.h - 功能注册系统头文件
- * 支持平台：Linux/macOS/Windows (GCC/Clang/MSVC)
+ * module.h - Module registration
+ * Support Platforms: Linux/macOS/Windows (GCC/Clang/MSVC)
  */
 #pragma once
 
@@ -11,32 +11,30 @@
 extern "C" {
 #endif
 
-// 功能描述结构体
 typedef struct ModApi {
-	const char *name;		// 功能名称
-	int (*main)(int,char**);	// 主函数
+	const char *name;	// Function name
+	int (*main)(int,char**);// Main function
 	int priority;
-	struct ModApi *next;	// 链表指针
+	struct ModApi *next;	// Pointer
 
 } ModApi;
 
-// 平台特定的段属性声明
 #if defined(__GNUC__) || defined(__clang__)
-	// GCC/Clang 使用section属性
+	// GCC/Clang use section atrribute
 	#define FEATURE_SECTION __attribute__((section("module_section"), used))
 #elif defined(_MSC_VER)
-	// MSVC 使用pragma section + allocate
+	// MSVC use pragma section + allocate
 	#pragma section("module_section", read)
 	#define FEATURE_SECTION __declspec(allocate("module_section"))
 #else
-	// 其他编译器不支持段属性
+	// Other compilers don't support
 	#define FEATURE_SECTION
 	#warning "Unsupported compiler, using basic registration"
 #endif
 
 /**
- * 模块注册宏
- * @param module_name 功能名称(需要实现 module_name_init 和 module_name_run 函数)
+ * Module registration macro
+ * @param module_name (need function 'module_name_main')
  */
 #define REGISTER_MODULE(module_name) \
 	static void module_name##_init(void); \
@@ -48,16 +46,16 @@ typedef struct ModApi {
 		.next = NULL \
 	}
 
-// 初始化功能注册表
+// Initialize
 void module_registry_init(void);
 
-// 打印所有注册功能
+// List all modules
 void list_all_modules(void);
 
-// 寻找指定模块
+// Find module
 int find_module(const char*);
 
-// 运行指定模块
+// Execute module
 int run_module(const char*, int, char**);
 
 #ifdef __cplusplus
