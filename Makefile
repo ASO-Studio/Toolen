@@ -13,6 +13,10 @@ else
  SOURCES :=
 endif
 
+ifneq ($(wildcard generated/defs.mk),)
+ include generated/defs.mk
+endif
+
 # Include config file
 ifneq ($(wildcard .config),)
  include .config

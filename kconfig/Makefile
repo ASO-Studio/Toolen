@@ -12,6 +12,7 @@ menuconfig: $(obj)/mconf $(KCONFIG_TOP)
 	@bash scripts/optCmd.sh
 	@$< $(KCONFIG_TOP)
 	@bash scripts/finalGen.sh .config generated/sources.mk
+	@bash scripts/genDefs.sh .config generated/defs.mk
 
 allyesconfig:
 	@bash scripts/optCmd.sh

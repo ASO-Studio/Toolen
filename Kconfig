@@ -27,6 +27,14 @@ endmenu
 # Cut line
 comment "Global settings"
 
+menu "System configurations"
+	config DEF_HAVE_URANDOM
+		bool "Have /dev/urandom device"
+		default y
+		help
+			/dev/urandom device support
+endmenu
+
 menu "Build options"
 	config HOST_C_CPLR
 		string "Host C Compiler"

@@ -9,8 +9,8 @@ echo "It will take some seconds to finish something..."
 
 # Check config file is exsit
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Error: Configuration file $CONFIG_FILE not found!"
-    exit 1
+	echo "Error: Configuration file $CONFIG_FILE not found!"
+	exit 1
 fi
 
 # Create output file
@@ -24,10 +24,10 @@ ENABLED_CONFIGS=$(grep -E '^[[:space:]]*CONFIG_[A-Za-z0-9_]+[[:space:]]*=[[:spac
 # Add sources list
 echo "SOURCES = \\" >> $OUTPUT_FILE
 echo "$ENABLED_CONFIGS" | while read line; do
-    var=$(echo "$line" | cut -d '=' -f 1 | sed 's/[[:space:]]//g')
-    module=$(echo "$var" | sed 's/^CONFIG_//')
-    source_file=$(echo "$module" | tr '[:upper:]' '[:lower:]').c
-    echo "    \$(shell find -name '$source_file') \\" >> $OUTPUT_FILE
+	var=$(echo "$line" | cut -d '=' -f 1 | sed 's/[[:space:]]//g')
+	module=$(echo "$var" | sed 's/^CONFIG_//')
+	source_file=$(echo "$module" | tr '[:upper:]' '[:lower:]').c
+	echo "	\$(shell find -name '$source_file') \\" >> $OUTPUT_FILE
 done
 
 sed -i '$ d' $OUTPUT_FILE

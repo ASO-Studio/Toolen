@@ -10,8 +10,9 @@
 
 void uuidGen(char *uuid) {
 	unsigned char bytes[16];
-	int fd;
+	int fd = -1;
 
+#if HAVE_URANDOM
 	// Open /dev/urandom
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd >= 0) {
@@ -23,6 +24,7 @@ void uuidGen(char *uuid) {
 			close(fd);
 		}
 	}
+#endif
 
 	// If /dev/urandom is invalid, try fallback
 	if (fd < 0) {
