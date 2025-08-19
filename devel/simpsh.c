@@ -1,7 +1,7 @@
 // Simple shell program
-//   Designed by BeiYe.
+//   Designed by BeiYe
 //   Modified by RoofAlan
-//               2025/8/17
+//			   2025/8/17
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -229,6 +229,81 @@ int simpsh_main(int argc, char *argv[]) {
 			continue;
 		}
 		cmdBuf[readsize - 1] = '\0';
+
+		// Parse pipe commands
+		char **pipeCommands = parse_command(cmdBuf, "|");
+		int pipeCount = 0;
+		for(pipeCount = 0; pipeCommands[pipeCount]; pipeCount++);
+		
+		if (pipeCount > 1) {
+			// Handle pipe commands with fork/pipe/dup2/execvp
+			int pipefd[2];
+			pid_t pid1, pid2;
+			
+			if (pipe(pipefd) == -1) {
+				eprint("pipe");
+				freeCmdStruct(pipeCommands);
+				continue;
+			}
+			
+			// First command
+			if ((pid1 = fork()) == 0) {
+				close(pipefd[0]);
+				dup2(pipefd[1], STDOUT_FILENO);
+				close(pipefd[1]);
+				
+				char **cmdArgs = parse_command(pipeCommands[0], " ");
+				execvp(cmdArgs[0], cmdArgs);
+				eprint("execvp");
+				_exit(1);
+			}
+			
+			// Middle commands
+			for (int i = 1; i < pipeCount - 1; i++) {
+				if ((pid2 = fork()) == 0) {
+					close(pipefd[1]);
+					dup2(pipefd[0], STDIN_FILENO);
+					close(pipefd[0]);
+					
+					if (pipe(pipefd) == -1) {
+						eprint("pipe");
+						_exit(1);
+					}
+					
+					dup2(pipefd[1], STDOUT_FILENO);
+					close(pipefd[1]);
+					
+					char **cmdArgs = parse_command(pipeCommands[i], " ");
+					execvp(cmdArgs[0], cmdArgs);
+					eprint("execvp");
+					_exit(1);
+				}
+				waitpid(pid2, NULL, 0);
+			}
+			
+			// Last command
+			if ((pid2 = fork()) == 0) {
+				close(pipefd[1]);
+				dup2(pipefd[0], STDIN_FILENO);
+				close(pipefd[0]);
+				
+				char **cmdArgs = parse_command(pipeCommands[pipeCount-1], " ");
+				execvp(cmdArgs[0], cmdArgs);
+				eprint("execvp");
+				_exit(1);
+			}
+			
+			// Close pipes and wait
+			close(pipefd[0]);
+			close(pipefd[1]);
+			waitpid(pid1, NULL, 0);
+			waitpid(pid2, NULL, 0);
+			
+			freeCmdStruct(pipeCommands);
+			continue;
+		}
+		
+		freeCmdStruct(pipeCommands);
 
 		char **cmdStruct = parse_command(cmdBuf, " ");
 

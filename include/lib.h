@@ -2,15 +2,17 @@
 #define _LIB_H
 
 /* Find string in string group */
-int findArg(char *args[], int argc, const char *str);
+int findArg(char *args[], int argc, const char *str);	// return: 1->true, 0->false
 
 /* Check is it a directory */
-int isDirectory(const char *path);
+int isDirectory(const char *path);	// return: 1->true, 0->false
 
 /* Convert time expression to seconds */
-unsigned long timeToSeconds(const char *str);
+unsigned long timeToSeconds(const char *str);	// return: microsecond
 
 /* Generate UUID (Version 4) */
-void uuidGen(char *uuid);
+void uuidGen(char *uuid);	// Non-return, output->@arg1
 
+/* Execute command and redirect to pipe */
+char *execInPipe(const char *command, char *const *args);	// return: command output
 #endif // _LIB_H

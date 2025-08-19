@@ -5,6 +5,7 @@ bin
 generated
 .config
 .config.old
+test
 kconfig/mconf
 kconfig/lex.zconf.c
 kconfig/zconf.hash.c
