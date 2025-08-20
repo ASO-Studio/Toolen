@@ -236,69 +236,66 @@ int simpsh_main(int argc, char *argv[]) {
 		for(pipeCount = 0; pipeCommands[pipeCount]; pipeCount++);
 		
 		if (pipeCount > 1) {
-			// Handle pipe commands with fork/pipe/dup2/execvp
-			int pipefd[2];
-			pid_t pid1, pid2;
-			
-			if (pipe(pipefd) == -1) {
-				eprint("pipe");
-				freeCmdStruct(pipeCommands);
-				continue;
+			// Create pipes
+			int *pipefds = fmalloc((pipeCount - 1) * 2 * sizeof(int));
+			for (int i = 0; i < pipeCount - 1; i++) {
+				if (pipe(pipefds + i * 2) == -1) {
+					eprint("pipe");
+					ffree(pipefds);
+					freeCmdStruct(pipeCommands);
+					continue;
+				}
 			}
-			
-			// First command
-			if ((pid1 = fork()) == 0) {
-				close(pipefd[0]);
-				dup2(pipefd[1], STDOUT_FILENO);
-				close(pipefd[1]);
-				
-				char **cmdArgs = parse_command(pipeCommands[0], " ");
-				execvp(cmdArgs[0], cmdArgs);
-				eprint("execvp");
-				_exit(1);
-			}
-			
-			// Middle commands
-			for (int i = 1; i < pipeCount - 1; i++) {
-				if ((pid2 = fork()) == 0) {
-					close(pipefd[1]);
-					dup2(pipefd[0], STDIN_FILENO);
-					close(pipefd[0]);
-					
-					if (pipe(pipefd) == -1) {
-						eprint("pipe");
-						_exit(1);
+
+			// Create processes for each command
+			pid_t *pids = fmalloc(pipeCount * sizeof(pid_t));
+			for (int i = 0; i < pipeCount; i++) {
+				pids[i] = fork();
+				if (pids[i] < 0) {
+					eprint("fork");
+					continue;
+				}
+
+				if (pids[i] == 0) {
+					// Set up input redirection
+					if (i > 0) {
+						dup2(pipefds[(i-1)*2], STDIN_FILENO);
 					}
-					
-					dup2(pipefd[1], STDOUT_FILENO);
-					close(pipefd[1]);
-					
+
+					// Set up output redirection
+					if (i < pipeCount - 1) {
+						dup2(pipefds[i*2 + 1], STDOUT_FILENO);
+					}
+
+					// Close all pipe ends
+					for (int j = 0; j < pipeCount - 1; j++) {
+						close(pipefds[j*2]);
+						close(pipefds[j*2 + 1]);
+					}
+
+					// Execute command
 					char **cmdArgs = parse_command(pipeCommands[i], " ");
 					execvp(cmdArgs[0], cmdArgs);
 					eprint("execvp");
 					_exit(1);
 				}
-				waitpid(pid2, NULL, 0);
 			}
-			
-			// Last command
-			if ((pid2 = fork()) == 0) {
-				close(pipefd[1]);
-				dup2(pipefd[0], STDIN_FILENO);
-				close(pipefd[0]);
-				
-				char **cmdArgs = parse_command(pipeCommands[pipeCount-1], " ");
-				execvp(cmdArgs[0], cmdArgs);
-				eprint("execvp");
-				_exit(1);
+
+			// Parent closes all pipe ends
+			for (int i = 0; i < pipeCount - 1; i++) {
+				close(pipefds[i*2]);
+				close(pipefds[i*2 + 1]);
 			}
-			
-			// Close pipes and wait
-			close(pipefd[0]);
-			close(pipefd[1]);
-			waitpid(pid1, NULL, 0);
-			waitpid(pid2, NULL, 0);
-			
+
+			// Wait for all child processes
+			for (int i = 0; i < pipeCount; i++) {
+				if (pids[i] > 0) {
+					waitpid(pids[i], NULL, 0);
+				}
+			}
+
+			ffree(pipefds);
+			ffree(pids);
 			freeCmdStruct(pipeCommands);
 			continue;
 		}
@@ -344,7 +341,7 @@ int simpsh_main(int argc, char *argv[]) {
 			eprint("spsh: fork failed");
 		} else if (spid == 0) {
 			execvp(cmdStruct[0], cmdStruct);
-			eprint("spsh");
+			eprint(cmdStruct[0]);
 			exit(1);
 		} else {
 			wait(&retValue);
