@@ -9,7 +9,21 @@
 # include <stdio.h>
 #endif  // _STDIO_H
 
-#define SHOW_VERSION(stream) fprintf(stream, PROGRAM_NAME" "VERSION" "COPYRIGHT"\n")
-#define JUST_VERSION()	printf(PROGRAM_NAME" "VERSION"\n");
+#ifdef __x86_64__	// x86_64
+# define PLATFORM "x86_64"
+#elif __aarch64__ || __arm64__	// aarch64
+# define PLATFORM "AArch64"
+#elif __arm__	// arm32
+# define PLATFORM "Arm"
+#elif __i386__		// i386
+# define PLATFORM "i386"
+#endif
+
+#ifndef CCVER
+# define "UNKNOWN"
+#endif
+
+#define SHOW_VERSION(stream) fprintf(stream, PROGRAM_NAME" "VERSION APPEND " (" CCVER ", "  PLATFORM  ")\n")
+#define JUST_VERSION()	printf(PROGRAM_NAME" "VERSION APPEND" "COPYRIGHT"\n");
 
 #endif // CONFIG_H

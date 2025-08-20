@@ -73,6 +73,9 @@ int main(int argc, char *argv[]) {
 				} else if (_IS("--list")) {
 					list_all_modules();
 					return 0;
+				} else if (_IS("--version")) {
+					SHOW_VERSION(stdout);
+					return 0;
 				} else {
 					fprintf(stderr, "Unknown option: %s\n", argv[1]);
 					return 1;

@@ -57,6 +57,8 @@ ifeq ($(CONFIG_COMPILE_LICENSE),y)
  C_FLAGS += -DCOMPILE_LICENSE
 endif
 
+C_FLAGS += -DCCVER='"$(shell $(CC) --version | head -n1)"' -DAPPEND='"'$(CONFIG_VERSION_APPEND)'"'
+
 OBJS = $(SOURCES:%.c=%.o)
 DEPS = $(OBJS:%.o=%.d)
 

@@ -29,13 +29,18 @@ comment "Global settings"
 
 menu "System configurations"
 	config DEF_HAVE_URANDOM
-		bool "Have /dev/urandom device"
+		bool "/dev/urandom device support"
 		default y
 		help
 			/dev/urandom device support
 endmenu
 
 menu "Build options"
+	config VERSION_APPEND
+		string "Local version - append to Toolen release"
+		default ""
+		help
+			Set local version that append to Toolen release
 	config HOST_C_CPLR
 		string "Host C Compiler"
 		default "gcc"
