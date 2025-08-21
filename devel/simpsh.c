@@ -310,10 +310,7 @@ int simpsh_main(int argc, char *argv[]) {
 				sprint("exit\n");
 				if(cmdStruct[1])
 					retValue = atoi(cmdStruct[1]);
-				for(int i = 0; cmdStruct[i]; i++) {
-					ffree(cmdStruct[i]);
-				}
-				ffree(cmdStruct);
+				freeCmdStruct(cmdStruct);
 				break;
 			}
 			else if (scmp(cmdStruct[0], "cd")) {
@@ -324,15 +321,12 @@ int simpsh_main(int argc, char *argv[]) {
 						eprint("spsh");
 					}
 				}
-				for(int i = 0; cmdStruct[i]; i++) {
-					ffree(cmdStruct[i]);
-				}
-				ffree(cmdStruct);
-				continue;
+				goto skipThis;
 			}
 		}
 
 		if (!cmdStruct[0]) {
+skipThis:
 			freeCmdStruct(cmdStruct);
 			continue;
 		}
@@ -364,6 +358,14 @@ checkAgain:
 			shouldUnsetLast = 1;
 		}
 
+		if (!cmdStruct[cmd_start]) {
+			for (size_t i = 0; i < varNameGroupCount; i++) {
+				ffree(varNameGroup[i]);
+			}
+			varNameGroupCount = 0;
+			goto skipThis;
+		}
+
 		pid_t spid = fork();
 		if(spid < 0) {
 			eprint("spsh: fork failed");
@@ -376,13 +378,14 @@ checkAgain:
 			retValue /= 256;
 
 			// like 'a=b env', we should unset this enviroment
-			if (shouldUnsetLast && varName) {
-				for (; varNameGroupCount > 0; --varNameGroupCount) {
-					unsetenv(varNameGroup[varNameGroupCount]);
-					ffree(varNameGroup[varNameGroupCount]);
-					shouldUnsetLast = 0;
+			for (size_t i = 0; i < varNameGroupCount; i++) {
+				if (shouldUnsetLast) {
+					unsetenv(varNameGroup[i]);
 				}
+				ffree(varNameGroup[i]); // Make sure that all memory are freed
 			}
+			varNameGroupCount = 0;
+			shouldUnsetLast = 0;
 		}
 
 		freeCmdStruct(cmdStruct);

@@ -57,6 +57,17 @@ ifeq ($(CONFIG_COMPILE_LICENSE),y)
  C_FLAGS += -DCOMPILE_LICENSE
 endif
 
+# Debug support
+ifeq ($(CONFIG_DEBUG_SPT),y)
+ C_FLAGS += -g
+endif
+
+# Memory leak check
+ifeq ($(CONFIG_MEMLEAK_CHECK),y)
+ C_FLAGS += -fsanitize=address
+ LD_FLAGS += -lasan
+endif
+
 C_FLAGS += -DCCVER='"$(shell $(CC) --version | head -n1)"' -DAPPEND='"'$(CONFIG_VERSION_APPEND)'"'
 
 OBJS = $(SOURCES:%.c=%.o)

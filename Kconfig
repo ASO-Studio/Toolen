@@ -51,6 +51,19 @@ menu "Build options"
 		default "gcc"
 		help
 			Set default C compiler
+
+	config DEBUG_SPT
+		bool "Debug support"
+		default y
+		help
+			Compile with '-g'
+
+	config MEMLEAK_CHECK
+		bool "Check memory leak"
+		default n
+		help
+			Compile with '-fsanitize=address' and link library asan
+
 	config STATIC_LINK
 		bool "Static link"
 		default n
