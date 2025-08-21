@@ -15,4 +15,7 @@ void uuidGen(char *uuid);	// Non-return, output->@arg1
 
 /* Execute command and redirect to pipe */
 char *execInPipe(const char *command, char *const *args);	// return: command output
+
+/* Check if a string is equation */
+int isEquation(const char *str);	// return: 1->true, 0->false
 #endif // _LIB_H

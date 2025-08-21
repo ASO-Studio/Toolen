@@ -14,6 +14,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
@@ -336,16 +337,52 @@ int simpsh_main(int argc, char *argv[]) {
 			continue;
 		}
 
+		size_t varNameGroupCount = 0;
+		size_t cmd_start = 0;
+		int shouldUnsetLast = 0;
+		char *varNameGroup[1024];
+		char *varName;
+checkAgain:
+		if (cmdStruct[cmd_start]
+			&& isEquation(cmdStruct[cmd_start])
+			) {
+			char *eq = strchr(cmdStruct[cmd_start], '=');
+			varName = strdup(cmdStruct[cmd_start]);
+			if (varName) {
+				varNameGroup[varNameGroupCount++] = varName;
+
+				varName[eq - cmdStruct[cmd_start]] = '\0';
+				setenv(varName, ++eq, 1);
+
+				// Clean up
+				cmd_start ++;
+
+				// Check again
+				goto checkAgain;
+			}
+		} else if (cmdStruct[cmd_start] && cmd_start != 0) {	// Not NULL and equation, like 'a=b env'
+			shouldUnsetLast = 1;
+		}
+
 		pid_t spid = fork();
 		if(spid < 0) {
 			eprint("spsh: fork failed");
 		} else if (spid == 0) {
-			execvp(cmdStruct[0], cmdStruct);
-			eprint(cmdStruct[0]);
+			execvp(cmdStruct[cmd_start], &cmdStruct[cmd_start]);
+			eprint(cmdStruct[cmd_start]);
 			exit(1);
 		} else {
 			wait(&retValue);
 			retValue /= 256;
+
+			// like 'a=b env', we should unset this enviroment
+			if (shouldUnsetLast && varName) {
+				for (; varNameGroupCount > 0; --varNameGroupCount) {
+					unsetenv(varNameGroup[varNameGroupCount]);
+					ffree(varNameGroup[varNameGroupCount]);
+					shouldUnsetLast = 0;
+				}
+			}
 		}
 
 		freeCmdStruct(cmdStruct);

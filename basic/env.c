@@ -5,17 +5,9 @@
 
 #include "module.h"
 #include "config.h"
+#include "lib.h"
 
 extern char **environ;
-
-static int has_equal(const char *str) {
-	for (; *str; str++) {
-		if (*str == '=') {
-			return 1;
-		}
-	}
-	return 0;
-}
 
 int env_main(int argc, char **argv) {
 	int i = 1;
@@ -43,11 +35,11 @@ int env_main(int argc, char **argv) {
 	new_environ[env_count] = NULL;
 
 	// Process all environ
-	while (i < argc && has_equal(argv[i])) {
+	while (i < argc && strstr(argv[i], "=")) {
 		const char *var_name = argv[i];
 		const char *eq_pos = strchr(var_name, '=');
 		size_t name_len = eq_pos - var_name;
-		
+
 		// Check environ exists
 		int found = 0;
 		for (int j = 0; j < env_count; j++) {
