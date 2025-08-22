@@ -323,6 +323,19 @@ int simpsh_main(int argc, char *argv[]) {
 				}
 				goto skipThis;
 			}
+			else if (scmp(cmdStruct[0], "unset")) {
+				if(!cmdStruct[1]) {
+					fprintf(stderr, "unset: no enough arguments\n");
+					retValue = 1;
+					goto skipThis;
+				} else {
+					int unsetCount = 1;
+					for(; cmdStruct[unsetCount]; unsetCount++) {
+						unsetenv(cmdStruct[unsetCount]);
+					}
+					goto skipThis;
+				}
+			}
 		}
 
 		if (!cmdStruct[0]) {
