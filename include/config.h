@@ -3,7 +3,7 @@
 
 #define PROGRAM_NAME "Toolen"
 #define VERSION "v0.25Beta"
-#define COPYRIGHT "Copyright (C) 2025 RoofAlan"
+#define COPYRIGHT "Copyright (C) 2025 ASO-Studio"
 
 #ifndef _STDIO_H
 # include <stdio.h>
@@ -17,13 +17,18 @@
 # define PLATFORM "Arm"
 #elif __i386__		// i386
 # define PLATFORM "i386"
+#else
+# define PLATFORM "Unknown"
 #endif
 
 #ifndef CCVER
-# define "UNKNOWN"
+# define CCVER "UNKNOWN"
 #endif
 
-#define SHOW_VERSION(stream) fprintf(stream, PROGRAM_NAME" "VERSION APPEND " (" CCVER ", "  PLATFORM  ")\n")
-#define JUST_VERSION()	printf(PROGRAM_NAME" "VERSION APPEND" "COPYRIGHT"\n");
+#define SHOW_VERSION(stream) fprintf(stream, \
+		PROGRAM_NAME" " VERSION APPEND \
+		" (" CCVER ", "  PLATFORM  ")\n")
+#define JUST_VERSION()	printf(PROGRAM_NAME " " \
+		VERSION APPEND" " COPYRIGHT "\n")
 
 #endif // CONFIG_H
