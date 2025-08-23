@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #define PROGRAM_NAME "Toolen"
-#define VERSION "v0.2Beta"
+#define VERSION "v0.25Beta"
 #define COPYRIGHT "Copyright (C) 2025 RoofAlan"
 
 #ifndef _STDIO_H
