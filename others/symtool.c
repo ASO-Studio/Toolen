@@ -380,7 +380,7 @@ int symtool_main(int argc, char *argv[]) {
 	} 
 	else {
 		fprintf(stderr, "Error: Unknown command '%s'\n", command);
-		symtool_show_help(argv[0]);
+		symtool_show_help();
 		return 1;
 	}
 	
