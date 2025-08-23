@@ -16,6 +16,8 @@ sudo pacman -Syy gcc build-essential make
 pkg update && pkg install clang build-essential make
 ```
 
+Tips: If you are using windows, you could use Cygwin or WSL
+
 ## Build
 ```bash
 git clone https://github.com/RoofAlan/Toolen
