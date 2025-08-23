@@ -5,21 +5,21 @@
 #include "module.h"
 #include "lib.h"
 
-static void dirname_show_help() {
+static void basename_show_help() {
 	SHOW_VERSION(stderr);
-	fprintf(stderr, "Usage: dirname PATH...\n\n"
+	fprintf(stderr, "Usage: basename PATH...\n\n"
 			"Show directory portion of path\n");
 }
 
 int basename_main(int argc, char *argv[]) {
 	if (argc < 2) {
-		fprintf(stderr, "dirname: Need 1 argument\n"
+		fprintf(stderr, "basename: Need 1 argument\n"
 				"Try pass '--help' for more details\n");
 		return 1;
 	}
 
 	if (findArg(argv, argc, "--help")) {
-		dirname_show_help();
+		basename_show_help();
 		return 0;
 	}
 
