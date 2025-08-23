@@ -1,28 +1,46 @@
 mainmenu "Toolen settings"
 
-menu "Basic Commands"
-	source generated/basic.conf
-endmenu
+menuconfig BASIC_CMDS
+	bool "Basic Commands"
+	default y
+	if BASIC_CMDS
+		source generated/basic.conf
+	endif
 
-menu "File operations"
-	source generated/file.conf
-endmenu
+menuconfig FILE_CMDS
+	bool "File operations"
+	default y
+	if FILE_CMDS
+		source generated/file.conf
+	endif
 
-menu "System operations"
-	source generated/sys.conf
-endmenu
+menuconfig SYS_CMDS
+	bool "System operations"
+	default y
+	if SYS_CMDS
+		source generated/sys.conf
+	endif
 
-menu "String operations"
-	source generated/string.conf
-endmenu
+menuconfig STR_CMDS
+	bool "String operations"
+	default y
+	if STR_CMDS
+		source generated/string.conf
+	endif
 
-menu "Other commands"
-	source generated/others.conf
-endmenu
+menuconfig OTHER_CMDS
+	bool "Other commands"
+	default y
+	if OTHER_CMDS
+		source generated/others.conf
+	endif
 
-menu "In Development"
-	source generated/devel.conf
-endmenu
+menuconfig DEVEL_CMDS
+	bool "In Development"
+	default n
+	if DEVEL_CMDS
+		source generated/devel.conf
+	endif
 
 # Cut line
 comment "Global settings"
@@ -52,18 +70,6 @@ menu "Build options"
 		help
 			Set default C compiler
 
-	config DEBUG_SPT
-		bool "Debug support"
-		default y
-		help
-			Compile with '-g'
-
-	config MEMLEAK_CHECK
-		bool "Check memory leak"
-		default n
-		help
-			Compile with '-fsanitize=address' and link library asan
-
 	config STATIC_LINK
 		bool "Static link"
 		default n
@@ -75,9 +81,25 @@ menu "Build options"
 		default n
 		help
 			Strip symbols in final executable
+	
+	# MIT LICENSE
 	config COMPILE_LICENSE
 		bool "Compile LICENSE"
 		default y
 		help
 			Compile MIT LICENSE in main/main.c
+
+	# Debug options
+	comment 'Debug options'
+	config DEBUG_SPT
+		bool "Debug support"
+		default y
+		help
+			Compile with '-g'
+
+	config MEMLEAK_CHECK
+		bool "Check memory leak"
+		default n
+		help
+			Compile with '-fsanitize=address' and link library asan
 endmenu
