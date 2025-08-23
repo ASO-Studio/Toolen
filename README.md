@@ -1,4 +1,8 @@
-# Toolen
+<div>
+  <img src="img/logo.png"/>
+  <h1 align="center">Toolen</h1>
+</div>
+
 Toolen is a simple GNU/Linux core tool implementation. It includes some of the more standard core features and some "homebrew tools"
 
 ## Prepare environment
