@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <sys/mman.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "config.h"
 #include "module.h"
@@ -200,11 +201,30 @@ static char** parse_command(const char *input, const char *delimiters) {
 	return tokens;
 }
 
-void freeCmdStruct(char **cmdStruct) {
+static void freeCmdStruct(char **cmdStruct) {
 	for(int i = 0; cmdStruct[i]; i++) {
 		ffree(cmdStruct[i]);
 	}
 	ffree(cmdStruct);
+}
+
+static void draw_prompt() {
+	if(!getenv("PS1") || getenv("PS1")[0] == '\0') {
+		if(getuid() == 0) {
+			sprint("# ");
+		} else {
+			sprint("$ ");
+		}
+	} else {
+		sprint(getenv("PS1"));
+	}
+}
+
+static void __sigint_callback(int sig) {
+	(void)sig;
+
+	sprint("\n");
+	draw_prompt();
 }
 
 int simpsh_main(int argc, char *argv[]) {
@@ -212,18 +232,12 @@ int simpsh_main(int argc, char *argv[]) {
 	char cmdBuf[2048];
 	int inputFd = 0;
 
+	signal(SIGINT, __sigint_callback);
+
 	while(1) {
 		padz(cmdBuf, sizeof(cmdBuf));
 
-		if(!getenv("PS1") || getenv("PS1")[0] == '\0') {
-			if(getuid() == 0) {
-				sprint("# ");
-			} else {
-				sprint("$ ");
-			}
-		} else {
-			sprint(getenv("PS1"));
-		}
+		draw_prompt();
 
 		size_t readsize = read(inputFd, cmdBuf, sizeof(cmdBuf));
 		if (readsize <= 1) {
@@ -305,6 +319,7 @@ int simpsh_main(int argc, char *argv[]) {
 
 		char **cmdStruct = parse_command(cmdBuf, " ");
 
+		// Built-in commands
 		if (cmdStruct[0]) {
 			if (scmp(cmdStruct[0], "exit")) {
 				sprint("exit\n");
