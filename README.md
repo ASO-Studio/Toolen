@@ -1,5 +1,5 @@
 <div>
-  <img src="img/logo.png" height="200" width="200"/>
+  <img src="img/logo.png" height="200" width="200" align="center"/>
   <h1 align="center">Toolen</h1>
 </div>
 
