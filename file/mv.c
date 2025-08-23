@@ -304,7 +304,6 @@ static void print_help() {
 	printf("                                  UPDATE={all,none,none-fail,older(default)}.\n");
 	printf("  -u                              equivalent to --update[=older].  See below\n");
 	printf("  -v, --verbose                   explain what is being done\n");
-	printf("      --help                      display this help and exit\n");
 	exit(EXIT_SUCCESS);
 }
 
