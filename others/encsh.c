@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "module.h"
 #include "config.h"
@@ -43,8 +44,8 @@ static char *bin2hex(const unsigned char *bin, size_t len) {
 
 // Read file content into buffer (returns buffer, out_len = file size)
 static unsigned char *read_file(const char *path, size_t *out_len) {
-	FILE *f = fopen(path, "rb");
-	if (!f) {
+	int f = open(path, O_RDONLY);
+	if (f < 0) {
 		perror("Failed to open file");
 		*out_len = 0;
 		return NULL;
@@ -52,16 +53,16 @@ static unsigned char *read_file(const char *path, size_t *out_len) {
 
 	// Get file size
 	struct stat st;
-	if (fstat(fileno(f), &st) != 0) {
+	if (fstat(f, &st) != 0) {
 		perror("Failed to get file size");
-		fclose(f);
+		close(f);
 		*out_len = 0;
 		return NULL;
 	}
 	size_t file_size = st.st_size;
 	if (file_size == 0) {
 		fprintf(stderr, "Error: File is empty\n");
-		fclose(f);
+		close(f);
 		*out_len = 0;
 		return NULL;
 	}
@@ -70,21 +71,21 @@ static unsigned char *read_file(const char *path, size_t *out_len) {
 	unsigned char *buf = (unsigned char*)malloc(file_size);
 	if (!buf) {
 		perror("Memory allocation failed");
-		fclose(f);
+		close(f);
 		*out_len = 0;
 		return NULL;
 	}
 
-	size_t bytes_read = fread(buf, 1, file_size, f);
+	size_t bytes_read = read(f,  buf, file_size);
 	if (bytes_read != file_size) {
 		fprintf(stderr, "Error: Incomplete read (expected %zu, got %zu)\n", file_size, bytes_read);
 		free(buf);
-		fclose(f);
+		close(f);
 		*out_len = 0;
 		return NULL;
 	}
 
-	fclose(f);
+	close(f);
 	*out_len = file_size;
 	return buf;
 }

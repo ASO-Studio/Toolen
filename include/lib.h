@@ -2,6 +2,7 @@
 #define _LIB_H
 
 #include "__getch.h"
+#include "xalloc.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
@@ -25,4 +26,5 @@ int isEquation(const char *str);	// return: 1->true, 0->false
 
 /* Split command */
 char **parse_command(const char *input, const char *delimiters);	// return: null->false, other->true
+
 #endif // _LIB_H

@@ -70,20 +70,9 @@ static void padz(void* m, size_t len) {
 	}
 }
 
-// Allocate memory
-static void *fmalloc(size_t size) {
-	void *p = malloc(size);
-	if(!p) {
-		eprint("spsh: malloc failed");
-		exit(1);
-	}
-	return p;
-}
 
-// Free memory
-static void ffree(void *ptr) {
-	free(ptr);
-}
+#define fmalloc(s) xmalloc(s)
+#define ffree(p) xfree(p)
 
 static void freeCmdStruct(char **cmdStruct) {
 	for(int i = 0; cmdStruct[i]; i++) {
