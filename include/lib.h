@@ -1,6 +1,8 @@
 #ifndef _LIB_H
 #define _LIB_H
 
+#include "__getch.h"
+
 /* Find string in string group */
 int findArg(char *args[], int argc, const char *str);	// return: 1->true, 0->false
 
