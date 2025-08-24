@@ -1,3 +1,14 @@
+/**
+ *	echo.c - Print string(s)
+ *
+ * 	Created by RoofAlan
+ *	Modified by yfy_227
+ *		2025/8/1
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include "module.h"
 #include "config.h"
 #include <stdio.h>
@@ -68,7 +79,6 @@ static int ansi_echo(const char *s) {
 static void echo_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr,
-		"echo v1.0  Print string on the display\n"
 		"Usage: echo [OPTIONS] [STRING...]\n"
 		"Support options:\n"
 		"  -e      Print string with interpretation of backslash escapes\n"

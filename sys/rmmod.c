@@ -1,3 +1,13 @@
+/**
+ *	rmmod.c - Unload kernel module(s)
+ *
+ * 	Created by RoofAlan
+ *		2025/8/11
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 #include <getopt.h>

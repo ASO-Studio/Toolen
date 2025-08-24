@@ -1,3 +1,14 @@
+/**
+ *	basename.c - Convert text files from DOS/MAX format
+ *		     to UNIX format
+ *
+ * 	Created by RoofAlan
+ *		2025/8/23
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

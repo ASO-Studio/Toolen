@@ -1,3 +1,13 @@
+/**
+ *	kill.c - Kill porcess (SIGTERM by default)
+ *
+ * 	Created by RoofAlan
+ *		2025/8/24
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
@@ -48,7 +58,7 @@ int kill_main(int argc, char *argv[]) {
 			return 1;
 		}
 
-		int sig = -1;
+		int sig = SIGTERM;
 		if(_IS("HUP") || _IS("1") || _IS("SIGHUP")) { sig = SIGHUP; }
 		if(_IS("INT") || _IS("2") || _IS("SIGINT")) { sig = SIGINT; }
 		if(_IS("QUIT") || _IS("3") || _IS("SIGQUIT")) { sig = SIGQUIT; }

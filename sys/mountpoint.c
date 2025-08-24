@@ -1,3 +1,13 @@
+/**
+ *	mountpoint.c - Determine whether directories are mountpoints
+ *
+ * 	Created by RoofAlan
+ *		2025/8/18
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>

@@ -1,3 +1,13 @@
+/**
+ *	base64.c - Base64 decode or encode
+ *
+ * 	Created by RoofAlan
+ *		2025/8/15
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -1,3 +1,13 @@
+/**
+ *	whoami.c - Print current user name
+ *
+ * 	Created by RoofAlan
+ *		2025/8/19
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -9,8 +19,8 @@
 
 static void whoami_show_help() {
 	SHOW_VERSION(stderr);
-	fprintf(stderr, "Usage: whoami\n"
-		"   --help  show this page\n");
+	fprintf(stderr, "Usage: whoami\n\n"
+			"Print current user name\n");
 }
 
 int whoami_main(int argc, char *argv[]) {

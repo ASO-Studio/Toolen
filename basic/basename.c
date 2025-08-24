@@ -1,3 +1,14 @@
+/**
+ *	basename.c - Return non-directory portion of a
+ * 		     pathname removing suffix.
+ *
+ * 	Created by RoofAlan
+ *		2025/8/24
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <libgen.h>
 
@@ -8,7 +19,7 @@
 static void basename_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: basename PATH...\n\n"
-			"Show directory portion of path\n");
+			"Return non-directory portion of a pathname removing suffix.\n");
 }
 
 int basename_main(int argc, char *argv[]) {

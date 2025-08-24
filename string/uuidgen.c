@@ -1,3 +1,13 @@
+/**
+ *	uuidgen.c - Generate a UUID
+ *
+ * 	Created by RoofAlan
+ *		2025/8/23
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 
 #include "config.h"
@@ -7,7 +17,7 @@
 static void uuidgen_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: uuidgen\n\n"
-			"Generate an UUID (Version 4)\n");
+			"Generate a UUID (Version 4)\n");
 }
 
 int uuidgen_main(int argc, char *argv[]) {

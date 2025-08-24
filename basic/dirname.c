@@ -1,3 +1,13 @@
+/**
+ *	basename.c - Show directory portion of path
+ *
+ * 	Created by RoofAlan
+ *		2025/8/24
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <libgen.h>
 

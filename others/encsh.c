@@ -1,3 +1,14 @@
+/**
+ *	enc.c - Encrypt a shell script
+ *
+ * 	Created by YangZlib
+ *	Modified by RoofAlan
+ *		2025/8/11
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

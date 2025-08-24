@@ -1,3 +1,14 @@
+/**
+ *	dd.c - Copy a file, converting and formatting
+ *	       according to the operands
+ *
+ * 	Created by RoofAlan
+ *		2025/8/24
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #define _GNU_SOURCE // For O_DIRECT and O_NOATIME
 #include <stdio.h>
 #include <stdlib.h>

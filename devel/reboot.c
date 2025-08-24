@@ -1,3 +1,13 @@
+/**
+ *	reboot.c - Restart system
+ *
+ * 	Created by RoofAlan
+ *		2025/8/14
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/reboot.h>

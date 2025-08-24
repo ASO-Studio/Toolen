@@ -1,3 +1,14 @@
+/**
+ *	sync.c - Write pending cached data to disk, blocking
+ *		 until done
+ *
+ * 	Created by RoofAlan
+ *		2025/8/18
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
+
 #include <stdio.h>
 #include <unistd.h>
 

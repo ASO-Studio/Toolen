@@ -1,7 +1,13 @@
-// Simple shell program
-//   Designed by BeiYe
-//   Modified by RoofAlan
-//			   2025/8/17
+/**
+ *	simpsh.c - Simple shell program
+ *
+ * 	Designed by BeiYe
+ * 	Modified by RoofAlan
+ *		2025/8/17
+ *
+ *	Copyright (C) 2025 ASO-Studio
+ *	Based on MIT protocol open source
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
