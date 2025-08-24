@@ -25,8 +25,12 @@
 # define CCVER "UNKNOWN"
 #endif
 
+#ifndef APPEND
+# define APPEND ""
+#endif
+
 #define SHOW_VERSION(stream) fprintf(stream, \
-		PROGRAM_NAME" " VERSION APPEND \
+		PROGRAM_NAME " " VERSION APPEND \
 		" (" CCVER ", "  PLATFORM  ")\n")
 #define JUST_VERSION()	printf(PROGRAM_NAME " " \
 		VERSION APPEND" " COPYRIGHT "\n")
