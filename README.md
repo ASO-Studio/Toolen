@@ -3,29 +3,53 @@
   <h1 align="center">Toolen</h1>
 </div>
 
-Toolen is a simple GNU/Linux core tool implementation. It includes some of the more standard core features and some "homebrew tools"
+## Overview
+
+Toolen is a simple GNU/Linux core tool implementation. It includes some of the more standard core features and some homebrew tools.
 
 ## Prepare environment
-**On Ubuntu/Debian**
+
+### Required tools & libraries
+
+1. **gcc**: GCC Version 14.0.0+ is recommended
+2. **make**: Used to build projects
+3. **ncurses**: Text-based user interface library
+4. **clang**: Optional, if you couldn't install gcc
+
+### Installation steps
+
+**Debian/Ubuntu**
 ```bash
-sudo apt update && sudo apt install gcc build-essential make
-```
-**On ArchLinx/Manjaro**
-```bash
-sudo pacman -Syy gcc build-essential make
+sudo apt update && sudo apt install make gcc libncurses-dev # clang
 ```
 
-**On Termux**
+**ArchLinux/Manjaro**
 ```bash
-pkg update && pkg install clang build-essential make
+sudo pacman -Sy make gcc ncurses # clang
 ```
 
-Tips: If you are using windows, you could use Cygwin or WSL
-
-## Build
+**Termux**
 ```bash
-git clone https://github.com/RoofAlan/Toolen
-cd Toolen && make menuconfig # or 'make allyesconfig'
+pkg update && pkg install make clang libncurses-dev
+```
+
+## Build steps
+
+### Clone this project
+
+```bash
+git clone https://github.com/ASO-Studio/Toolen
+```
+
+### Configuration
+
+```bash
+make menuconfig # or make allyesconfig
+```
+
+### Compile
+
+```bash
 make -j$(nproc)
 ```
 
