@@ -1,4 +1,4 @@
-V=@printf "\e[J  Compiling ==> $(shell basename $<) ...\n"; printf " Compiling all objects...\r";
+V=@printf "\033[J  Compiling ==> $(shell basename $<) ...\n"; printf " Compiling all objects...\r";
 Q=@
 
 HOSTCC = gcc
