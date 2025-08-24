@@ -3,6 +3,8 @@
 
 #include "__getch.h"
 
+#define UNSIG(x) ((unsigned char*)x)
+
 /* Find string in string group */
 int findArg(char *args[], int argc, const char *str);	// return: 1->true, 0->false
 
@@ -20,4 +22,7 @@ char *execInPipe(const char *command, char *const *args);	// return: command out
 
 /* Check if a string is equation */
 int isEquation(const char *str);	// return: 1->true, 0->false
+
+/* Split command */
+char **parse_command(const char *input, const char *delimiters);	// return: null->false, other->true
 #endif // _LIB_H

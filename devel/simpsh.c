@@ -23,8 +23,6 @@
 #include "module.h"
 #include "lib.h"
 
-#define UNSIG(x) ((unsigned char*)x)
-
 static void sprint(const char *str) {
 	write(1, str, strlen(str));
 }
@@ -85,126 +83,6 @@ static void *fmalloc(size_t size) {
 // Free memory
 static void ffree(void *ptr) {
 	free(ptr);
-}
-
-static bool is_delimiter(char c, const char *delimiters) {
-	for (size_t i = 0; delimiters[i] != '\0'; i++) {
-		if (c == delimiters[i]) {
-			return true;
-		}
-	}
-	return false;
-}
-
-// Split command
-static char** parse_command(const char *input, const char *delimiters) {
-	char **tokens = fmalloc(32 * sizeof(char*));
-	char tokenBuffer[2048];
-	int token_count = 0;
-	int capacity = 32;
-	int state = 0;
-	int esc = 0;
-	size_t buf_index = 0;
-	size_t start = 0;
-
-	padz(tokenBuffer, sizeof(tokenBuffer));
-	padz(tokens, capacity * sizeof(char*));
-
-	while (input[start] != '\0' && is_delimiter(input[start], delimiters)) {
-		start++;
-	}
-
-	for (size_t i = start; input[i] != '\0'; i++) {
-		char c = input[i];
-		if (esc) {
-			if (buf_index < sizeof(tokenBuffer) - 1) {
-				tokenBuffer[buf_index++] = c;
-			}
-			esc = 0;
-		} else {
-			switch(state) {
-				case 0:
-					if (c == '\\') {
-						esc = 1;
-					} else if (c == '"') {
-						state = 1;
-					} else if (c == '\'') {
-						state = 2;
-					} else if (is_delimiter(c, delimiters)) {
-						if (buf_index > 0) {
-							tokenBuffer[buf_index] = '\0';
-							if(token_count >= capacity) {
-								capacity *= 2;
-								char **newTokens = fmalloc(capacity * sizeof(char*));
-								padz(newTokens, capacity * sizeof(char*));
-								memcpy(newTokens, tokens, token_count * sizeof(char*));
-								ffree(tokens);
-								tokens = newTokens;
-							}
-							tokens[token_count] = fmalloc(buf_index + 1);
-							memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
-							token_count++;
-							buf_index = 0;
-						}
-					} else {
-						if (buf_index < sizeof(tokenBuffer) - 1) {
-							tokenBuffer[buf_index++] = c;
-						}
-					}
-					break;
-				case 1:
-					if (c == '"') {
-						state = 0;
-					} else if (c == '\\') {
-						esc = 1;
-					} else {
-						if (buf_index < sizeof(tokenBuffer) - 1) {
-							tokenBuffer[buf_index++] = c;
-						}
-					}
-					break;
-				case 2:
-					if (c == '\'') {
-						state = 0;
-					} else if (c == '\\') {
-						esc = 1;
-					} else {
-						if (buf_index < sizeof(tokenBuffer) - 1) {
-							tokenBuffer[buf_index++] = c;
-						}
-					}
-				default:
-					break;
-			}
-		}
-	}
-
-	if (buf_index > 0) {
-		tokenBuffer[buf_index] = '\0';
-		if(token_count >= capacity) {
-			capacity++;
-			char **newTokens = fmalloc(capacity * sizeof(char*));
-			padz(newTokens, capacity * sizeof(char*));
-			memcpy(newTokens, tokens, token_count * sizeof(char*));
-			ffree(tokens);
-			tokens = newTokens;
-		}
-		tokens[token_count] = fmalloc(buf_index + 1);
-		memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
-		token_count++;
-	}
-
-	if(token_count >= capacity) {
-		capacity++;
-		char **newTokens = fmalloc(capacity * sizeof(char*));
-		padz(newTokens, capacity * sizeof(char*));
-		memcpy(newTokens, tokens, token_count * sizeof(char*));
-		ffree(tokens);
-		tokens = newTokens;
-	}
-	tokens[token_count] = NULL;
-
-	return tokens;
 }
 
 static void freeCmdStruct(char **cmdStruct) {
@@ -314,7 +192,7 @@ lineExec:
 					}
 
 					// Execute command
-					char **cmdArgs = parse_command(pipeCommands[i], " ");
+					char **cmdArgs = parse_command(pipeCommands[i], " \t");
 					execvp(cmdArgs[0], cmdArgs);
 					eprint("execvp");
 					_exit(1);
@@ -343,7 +221,7 @@ lineExec:
 		
 		freeCmdStruct(pipeCommands);
 
-		char **cmdStruct = parse_command(lines[lineCount], " ");
+		char **cmdStruct = parse_command(lines[lineCount], " \t");
 
 		// Built-in commands
 		if (cmdStruct[0]) {
