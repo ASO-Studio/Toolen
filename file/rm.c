@@ -78,14 +78,14 @@ static int remove_directory(const char *path, int force, int interactive, int ve
 			
 			// Check if we need to prompt for read-only files
 			if (!force && is_readonly(full_path)) {
-				char prompt_msg[1024];
+				char prompt_msg[2048];
 				snprintf(prompt_msg, sizeof(prompt_msg), "rm: remove write-protected regular file '%s'? ", full_path);
 				should_remove = prompt_user(prompt_msg);
 			}
 			
 			// Check if we need to prompt for interactive mode
 			if (should_remove && interactive) {
-				char prompt_msg[1024];
+				char prompt_msg[2048];
 				snprintf(prompt_msg, sizeof(prompt_msg), "rm: remove '%s'? ", full_path);
 				should_remove = prompt_user(prompt_msg);
 			}
