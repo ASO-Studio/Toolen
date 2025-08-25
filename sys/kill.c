@@ -20,7 +20,8 @@
 static void kill_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr,
-		"Usage: kill [SIG] pid\n"
+		"Usage: kill [SIG] pid\n\n"
+		"Send signal to process(es)\n\n"
 		"   --list, -l  list all support signal\n");
 }
 

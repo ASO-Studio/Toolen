@@ -8,10 +8,12 @@
  *	Based on MIT protocol open source
  */
 
+#define _GNU_SOURCE // execvpe
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #include "module.h"
 #include "config.h"
@@ -19,10 +21,44 @@
 
 extern char **environ;
 
+static void env_show_help() {
+	SHOW_VERSION(stderr);
+	fprintf(stderr,
+		"Usage: env [NAME=VALUE...] [COMMAND] [ARGS]...\n\n"
+		"Set environment for command invocation, or list environment variables\n\n"
+		"  -i      Clear environment\n"
+		"  -u NAME Remove NAME from the environment\n");
+}
+
 int env_main(int argc, char **argv) {
 	int i = 1;
 	char **new_environ = NULL;
 	int env_count = 0;
+
+	int opr = 0;
+	bool cleanEnv = false;
+
+	while ((opr = getopt(argc, argv, "iu:h")) != -1) {
+		switch (opr) {
+			case 'i':
+				cleanEnv = true;
+				break;
+			case 'u':
+				unsetenv(optarg);
+				break;
+			case 'h':
+				env_show_help();
+				return 0;
+			case '?':
+				fprintf(stderr, "Try pass '--help' for more details\n");
+				return 1;
+			default:
+				abort();
+		}
+	}
+
+	if (cleanEnv)
+		environ = NULL;
 
 	if (environ) {
 		for (env_count = 0; environ[env_count]; env_count++);
@@ -45,7 +81,11 @@ int env_main(int argc, char **argv) {
 	new_environ[env_count] = NULL;
 
 	// Process all environ
-	while (i < argc && strstr(argv[i], "=")) {
+	while ((i < argc && strstr(argv[i], "=")) || argv[i][0] == '-') {
+		if (argv[i][0] == '-') {
+			i++;
+			continue;
+		}
 		const char *var_name = argv[i];
 		const char *eq_pos = strchr(var_name, '=');
 		size_t name_len = eq_pos - var_name;
@@ -91,7 +131,10 @@ int env_main(int argc, char **argv) {
 	// Update global pointer
 	environ = new_environ;
 
-	if (i < argc) {
+	for (; argv[i][0] == '-'; )
+		i++;
+
+	if (i < argc && !cleanEnv) {
 		// Execute command
 		execvp(argv[i], &argv[i]);
 		perror("env");

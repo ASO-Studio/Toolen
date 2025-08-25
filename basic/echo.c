@@ -79,7 +79,8 @@ static int ansi_echo(const char *s) {
 static void echo_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr,
-		"Usage: echo [OPTIONS] [STRING...]\n"
+		"Usage: echo [OPTIONS] [STRING...]\n\n"
+		"Print string on screen\n\n"
 		"Support options:\n"
 		"  -e      Print string with interpretation of backslash escapes\n"
 		"  -n      Print without drawing new line\n");
