@@ -62,6 +62,11 @@ ifeq ($(CONFIG_DEBUG_SPT),y)
  C_FLAGS += -g
 endif
 
+# Debug output
+ifeq ($(CONFIG_DEBUG_OUTPUT),y)
+ C_FLAGS += -DDEBUG
+endif
+
 # Memory leak check
 ifeq ($(CONFIG_MEMLEAK_CHECK),y)
  C_FLAGS += -fsanitize=address
@@ -85,7 +90,7 @@ check:
 
 $(OUTPUT): $(OBJS)
 	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"; printf " All objects was compiled\n"
-	$(Q)$(CC) $(LD_FLAGS) -o $(OUTPUT) $(OBJS)
+	$(Q)$(CC) -o $(OUTPUT) $(OBJS) $(LD_FLAGS)
 
 %.o: %.c
 	$(V)$(CC) $(C_FLAGS) $< -o $@

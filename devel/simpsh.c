@@ -70,15 +70,11 @@ static void padz(void* m, size_t len) {
 	}
 }
 
-
-#define fmalloc(s) xmalloc(s)
-#define ffree(p) xfree(p)
-
 static void freeCmdStruct(char **cmdStruct) {
 	for(int i = 0; cmdStruct[i]; i++) {
-		ffree(cmdStruct[i]);
+		xfree(cmdStruct[i]);
 	}
-	ffree(cmdStruct);
+	xfree(cmdStruct);
 }
 
 static void draw_prompt() {
@@ -143,19 +139,19 @@ lineExec:
 		
 		if (pipeCount > 1) {
 			// Create pipes
-			int *pipefds = fmalloc((pipeCount - 1) * 2 * sizeof(int));
+			int *pipefds = xmalloc((pipeCount - 1) * 2 * sizeof(int));
 			for (int i = 0; i < pipeCount - 1; i++) {
 				if (pipe(pipefds + i * 2) == -1) {
 					eprint("pipe");
-					ffree(pipefds);
-					ffree(lines);
+					xfree(pipefds);
+					xfree(lines);
 					freeCmdStruct(pipeCommands);
 					continue;
 				}
 			}
 
 			// Create processes for each command
-			pid_t *pids = fmalloc(pipeCount * sizeof(pid_t));
+			pid_t *pids = xmalloc(pipeCount * sizeof(pid_t));
 			for (int i = 0; i < pipeCount; i++) {
 				pids[i] = fork();
 				if (pids[i] < 0) {
@@ -201,9 +197,9 @@ lineExec:
 				}
 			}
 
-			ffree(pipefds);
-			ffree(pids);
-			ffree(lines);
+			xfree(pipefds);
+			xfree(pids);
+			xfree(lines);
 			freeCmdStruct(pipeCommands);
 			continue;
 		}
@@ -283,7 +279,7 @@ checkAgain:
 
 		if (!cmdStruct[cmd_start]) {
 			for (size_t i = 0; i < varNameGroupCount; i++) {
-				ffree(varNameGroup[i]);
+				xfree(varNameGroup[i]);
 			}
 			varNameGroupCount = 0;
 			goto skipThis;
@@ -305,7 +301,7 @@ checkAgain:
 				if (shouldUnsetLast) {
 					unsetenv(varNameGroup[i]);
 				}
-				ffree(varNameGroup[i]); // Make sure that all memory are freed
+				xfree(varNameGroup[i]); // Make sure that all memory are freed
 			}
 			varNameGroupCount = 0;
 			shouldUnsetLast = 0;

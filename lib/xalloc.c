@@ -7,6 +7,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include "debug.h"
+
 // Memory block node structure
 typedef struct mem_block {
 	void *ptr;
@@ -17,6 +19,7 @@ static mem_block_t *mem_list = NULL;
 
 // Add memory block to linked list
 static void add_block(void *ptr) {
+	LOG("Adding: %p\n", ptr);
 	mem_block_t *new_block = (mem_block_t *)malloc(sizeof(mem_block_t));
 	if (!new_block) {
 		// If even the management node allocation fails, exit directly
@@ -31,8 +34,9 @@ static void add_block(void *ptr) {
 
 // Remove memory block from linked list
 static void remove_block(void *ptr) {
+	LOG("Removing: %p\n", ptr);
 	mem_block_t **curr = &mem_list;
-	
+
 	while (*curr) {
 		if ((*curr)->ptr == ptr) {
 			mem_block_t *to_free = *curr;
@@ -46,8 +50,10 @@ static void remove_block(void *ptr) {
 
 // Clean up all memory blocks
 static void cleanup_all(void) {
+	LOG("Cleaning up...\n");
 	mem_block_t *curr = mem_list;
 	while (curr) {
+		LOG("-> %p\n", curr->ptr);
 		free(curr->ptr);
 		mem_block_t *to_free = curr;
 		curr = curr->next;
@@ -129,6 +135,8 @@ char *fstrdup(const char *s) {
 // Initialization function
 __attribute__((constructor))
 static void init_xalloc(void) {
+	LOG("initializing...\n");
 	// Register cleanup function to be called automatically on program exit
 	atexit(cleanup_all);
+	LOG("success\n");
 }

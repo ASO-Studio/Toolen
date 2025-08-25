@@ -21,7 +21,7 @@ static bool is_delimiter(char c, const char *delimiters) {
 
 // Split command
 char** parse_command(const char *input, const char *delimiters) {
-	char **tokens = malloc(32 * sizeof(char*));
+	char **tokens = xmalloc(32 * sizeof(char*));
 	char tokenBuffer[2048];
 	int token_count = 0;
 	int capacity = 32;
@@ -58,13 +58,13 @@ char** parse_command(const char *input, const char *delimiters) {
 							tokenBuffer[buf_index] = '\0';
 							if(token_count >= capacity) {
 								capacity *= 2;
-								char **newTokens = malloc(capacity * sizeof(char*));
+								char **newTokens = xmalloc(capacity * sizeof(char*));
 								padz(newTokens, capacity * sizeof(char*));
 								memcpy(newTokens, tokens, token_count * sizeof(char*));
 								free(tokens);
 								tokens = newTokens;
 							}
-							tokens[token_count] = malloc(buf_index + 1);
+							tokens[token_count] = xmalloc(buf_index + 1);
 							memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
 							token_count++;
 							buf_index = 0;
@@ -106,20 +106,20 @@ char** parse_command(const char *input, const char *delimiters) {
 		tokenBuffer[buf_index] = '\0';
 		if(token_count >= capacity) {
 			capacity++;
-			char **newTokens = malloc(capacity * sizeof(char*));
+			char **newTokens = xmalloc(capacity * sizeof(char*));
 			padz(newTokens, capacity * sizeof(char*));
 			memcpy(newTokens, tokens, token_count * sizeof(char*));
 			free(tokens);
 			tokens = newTokens;
 		}
-		tokens[token_count] = malloc(buf_index + 1);
+		tokens[token_count] = xmalloc(buf_index + 1);
 		memcpy(tokens[token_count], tokenBuffer, buf_index + 1);
 		token_count++;
 	}
 
 	if(token_count >= capacity) {
 		capacity++;
-		char **newTokens = malloc(capacity * sizeof(char*));
+		char **newTokens = xmalloc(capacity * sizeof(char*));
 		padz(newTokens, capacity * sizeof(char*));
 		memcpy(newTokens, tokens, token_count * sizeof(char*));
 		free(tokens);

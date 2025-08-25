@@ -97,6 +97,13 @@ menu "Build options"
 		help
 			Compile with '-g'
 
+	config DEBUG_OUTPUT
+		bool "Print log output"
+		depends DEBUG_SPT
+		default n
+		help
+			Print log to stderr
+
 	config MEMLEAK_CHECK
 		bool "Check memory leak"
 		default n
