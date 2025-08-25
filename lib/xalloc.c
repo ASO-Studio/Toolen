@@ -26,7 +26,7 @@ static void add_block(void *ptr) {
 		fprintf(stderr, "Fatal error: Cannot allocate memory for management structure\n");
 		exit(EXIT_FAILURE);
 	}
-	
+
 	new_block->ptr = ptr;
 	new_block->next = mem_list;
 	mem_list = new_block;
@@ -36,16 +36,27 @@ static void add_block(void *ptr) {
 static void remove_block(void *ptr) {
 	LOG("Removing: %p\n", ptr);
 	mem_block_t **curr = &mem_list;
+	mem_block_t *prev = NULL;
 
 	while (*curr) {
 		if ((*curr)->ptr == ptr) {
 			mem_block_t *to_free = *curr;
-			*curr = (*curr)->next;
+
+			// Update the list pointers
+			if (prev) {
+				prev->next = to_free->next;
+			} else {
+				mem_list = to_free->next;
+			}
+
 			free(to_free);
 			return;
 		}
+		prev = *curr;
 		curr = &(*curr)->next;
 	}
+
+	LOG("Block %p not found in management list\n", ptr);
 }
 
 // Clean up all memory blocks
@@ -61,7 +72,6 @@ static void cleanup_all(void) {
 #endif
 
 	while (curr) {
-		// if !curr, then here is unreachable
 		LOG("-> %p\n", curr->ptr);
 		free(curr->ptr);
 		mem_block_t *to_free = curr;
@@ -126,8 +136,8 @@ void *xrealloc(void *ptr, size_t size) {
 // Encapsulated free
 void xfree(void *ptr) {
 	if (ptr) {
-		free(ptr);
 		remove_block(ptr);
+		free(ptr);
 	}
 }
 
