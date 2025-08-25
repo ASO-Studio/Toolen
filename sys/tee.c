@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 // Show help page
 static void tee_show_help() {
@@ -47,11 +48,7 @@ int tee_main(int argc, char *argv[]) {
 	}
 
 	// Open all files
-	int *fds = malloc((argc - optind + 1) * sizeof(int));
-	if (!fds) {
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	int *fds = xmalloc((argc - optind + 1) * sizeof(int));
 
 	// Open STDOUT
 	fds[0] = STDOUT_FILENO;
@@ -95,7 +92,7 @@ int tee_main(int argc, char *argv[]) {
 		close(fds[i]);
 	}
 	
-	free(fds);
+	xfree(fds);
 	return EXIT_SUCCESS;
 }
 

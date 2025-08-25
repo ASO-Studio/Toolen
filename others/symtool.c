@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 #define ELF_ERROR(msg) do { fprintf(stderr, "ELF Error: %s\n", msg); exit(1); } while(0)
 #define FILE_ERROR(fmt, ...) do { \
@@ -60,7 +61,7 @@ static ElfFile load_elf(const char *filename, int writable) {
 	ElfFile elf = {0};
 
 	int flags = writable ? O_RDWR : O_RDONLY;
-	int fd = open(filename, flags);
+	int fd = xopen2(filename, flags);
 	if (fd < 0) {
 		FILE_ERROR("Failed to open '%s': %s", filename, strerror(errno));
 	}
@@ -68,12 +69,12 @@ static ElfFile load_elf(const char *filename, int writable) {
 	// Get file size
 	struct stat st;
 	if (fstat(fd, &st) < 0) {
-		close(fd);
+		xclose(fd);
 		FILE_ERROR("fstat failed for '%s': %s", filename, strerror(errno));
 	}
 	
 	if (st.st_size == 0) {
-		close(fd);
+		xclose(fd);
 		FILE_ERROR("File '%s' is empty", filename);
 	}
 	
@@ -212,18 +213,14 @@ static SymbolLocation find_symbol_location(ElfFile *elf, const char *symbol_name
 static void extract_symbol_binary(ElfFile *elf, const char *symbol_name, const char *output_file) {
 	SymbolLocation loc = find_symbol_location(elf, symbol_name);
 
-	FILE *fp = fopen(output_file, "wb");
-	if (!fp) {
-		FILE_ERROR("Failed to create output file '%s': %s", output_file, strerror(errno));
-	}
-
+	FILE *fp = xfopen(output_file, "wb");
 	void *symbol_data = (char *)elf->data + loc.offset;
 	if (fwrite(symbol_data, loc.size, 1, fp) != 1) {
-		fclose(fp);
+		xfclose(fp);
 		FILE_ERROR("Failed to write symbol data to '%s': %s", output_file, strerror(errno));
 	}
-	
-	fclose(fp);
+
+	xfclose(fp);
 	printf("Successfully extracted %zu bytes of symbol '%s' to '%s'\n", 
 		   loc.size, symbol_name, output_file);
 }
@@ -232,41 +229,34 @@ static void extract_symbol_binary(ElfFile *elf, const char *symbol_name, const c
 static void restore_symbol_binary(ElfFile *elf, const char *symbol_name, const char *input_file) {
 	SymbolLocation loc = find_symbol_location(elf, symbol_name);
 
-	FILE *fp = fopen(input_file, "rb");
-	if (!fp) {
-		FILE_ERROR("Failed to open input file '%s': %s", input_file, strerror(errno));
-	}
+	FILE *fp = xfopen(input_file, "rb");
 
 	fseek(fp, 0, SEEK_END);
 	size_t file_size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
-	
+
 	// Check file size
 	if (file_size != loc.size) {
-		fclose(fp);
+		xfclose(fp);
 		FILE_ERROR("Input file size (%zu) does not match symbol size (%zu)", file_size, loc.size);
 	}
 	
 	// Read binary data
-	void *new_data = malloc(loc.size);
-	if (!new_data) {
-		fclose(fp);
-		FILE_ERROR("Memory allocation failed");
-	}
-	
+	void *new_data = xmalloc(loc.size);
+
 	if (fread(new_data, loc.size, 1, fp) != 1) {
-		free(new_data);
-		fclose(fp);
+		xfree(new_data);
+		xfclose(fp);
 		FILE_ERROR("Failed to read symbol data from '%s'", input_file);
 	}
 	
-	fclose(fp);
+	xfclose(fp);
 	
 	// Write back
 	void *symbol_data = (char *)elf->data + loc.offset;
 	memcpy(symbol_data, new_data, loc.size);
-	
-	free(new_data);
+
+	xfree(new_data);
 	printf("Successfully restored %zu bytes to symbol '%s'\n", loc.size, symbol_name);
 }
 
@@ -373,7 +363,7 @@ int symtool_main(int argc, char *argv[]) {
 		restore_symbol_binary(&elf, symbol_name, input_file);
 		
 		// Save
-		int fd = open(elf_file, O_WRONLY);
+		int fd = xopen2(elf_file, O_WRONLY);
 		if (fd < 0) {
 			FILE_ERROR("Failed to open '%s' for writing: %s", elf_file, strerror(errno));
 		}

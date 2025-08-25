@@ -10,7 +10,7 @@
 #define CRESET "\033[0m"
 
 #define LOG(...) do { \
-		fprintf(stderr, "[" CINFO "%-10s" CRESET ": ", __FILE__); \
+		fprintf(stderr, "[" CINFO "%-15s" CRESET ": ", __FILE__); \
 		fprintf(stderr, CFUNC "%-18s" CRESET "] ", __func__); \
 		fprintf(stderr, __VA_ARGS__); \
 		fflush(stderr); \

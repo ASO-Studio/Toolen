@@ -52,7 +52,16 @@ static void remove_block(void *ptr) {
 static void cleanup_all(void) {
 	LOG("Cleaning up...\n");
 	mem_block_t *curr = mem_list;
+
+#ifdef DEBUG
+	// If curr is NULL, means nothing to do
+	if (!curr) {
+		LOG("Nothing to do\n");
+	}
+#endif
+
 	while (curr) {
+		// if !curr, then here is unreachable
 		LOG("-> %p\n", curr->ptr);
 		free(curr->ptr);
 		mem_block_t *to_free = curr;
@@ -123,7 +132,7 @@ void xfree(void *ptr) {
 }
 
 // Encapsulated strdup
-char *fstrdup(const char *s) {
+char *xstrdup(const char *s) {
 	char *new_str = strdup(s);
 	if (!new_str) {
 		allocation_failed();

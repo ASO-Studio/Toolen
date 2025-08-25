@@ -3,6 +3,7 @@
 
 #include "__getch.h"
 #include "xalloc.h"
+#include "xio.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 

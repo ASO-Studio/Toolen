@@ -27,6 +27,7 @@
 
 #include "module.h"
 #include "config.h"
+#include "lib.h"
 
 // Convert file type and permission to string
 const char *file_type(mode_t mode) {
@@ -351,11 +352,11 @@ void list_directory(const char *path, Options opts) {
 		FileInfo *fi = &files[count];
 		if (lstat(full_path, &fi->st) == -1) {
 			perror("lstat");
-			free(full_path);
+			xfree(full_path);
 			continue;
 		}
 		
-		fi->name = strdup(entry->d_name);
+		fi->name = xstrdup(entry->d_name);
 		fi->path = full_path; // Storage full path
 		
 		count++;
@@ -376,10 +377,10 @@ void list_directory(const char *path, Options opts) {
 	
 	// Clean up
 	for (int i = 0; i < count; i++) {
-		free(files[i].name);
-		free(files[i].path);
+		xfree(files[i].name);
+		xfree(files[i].path);
 	}
-	free(files);
+	xfree(files);
 }
 
 // Show help informations
@@ -493,7 +494,7 @@ int ls_main(int argc, char *argv[]) {
 
 	if (path_count == 0) {
 		path_count = 1;
-		paths = malloc(sizeof(char *));
+		paths = xmalloc(sizeof(char *));
 		paths[0] = ".";
 	}
 	
@@ -518,14 +519,14 @@ int ls_main(int argc, char *argv[]) {
 			// If it is a file
 			FileInfo file;
 			// Copy file name
-			file.name = strdup(basename(strdup(paths[i])));
-			file.path = strdup(paths[i]);
+			file.name = xstrdup(basename(xstrdup(paths[i])));
+			file.path = xstrdup(paths[i]);
 			
 			if (lstat(paths[i], &file.st) == -1) {
 				fprintf(stderr, "ls: cannot access '%s': ", paths[i]);
 				perror("");
-				free(file.name);
-				free(file.path);
+				xfree(file.name);
+				xfree(file.path);
 				continue;
 			}
 			
@@ -539,12 +540,12 @@ int ls_main(int argc, char *argv[]) {
 				}
 			}
 			
-			free(file.name);
-			free(file.path);
+			xfree(file.name);
+			xfree(file.path);
 		}
 	}
 	
-	free(paths);
+	xfree(paths);
 	return ret_value;
 }
 
