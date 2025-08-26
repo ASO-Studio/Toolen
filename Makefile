@@ -75,8 +75,9 @@ endif
 
 C_FLAGS += -DCCVER='"$(shell $(CC) --version | head -n1)"' -DAPPEND='"'$(CONFIG_VERSION_APPEND)'"'
 
-OBJS = $(SOURCES:%.c=%.o)
-DEPS = $(OBJS:%.o=%.d)
+# Redirect objects and dependencies to objs/
+OBJS = $(addprefix objs/, $(SOURCES:.c=.o))
+DEPS = $(OBJS:.o=.d)
 
 OUTPUT = toolen
 
@@ -92,12 +93,14 @@ $(OUTPUT): $(OBJS)
 	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"; printf " All objects was compiled\n"
 	$(Q)$(CC) -o $(OUTPUT) $(OBJS) $(LD_FLAGS)
 
-%.o: %.c
+# Rule to compile .c files into .o files in objs/ directory
+objs/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(V)$(CC) $(C_FLAGS) $< -o $@
 
 clean:
 	$(Q)printf "[Clean] $(shell basename $(shell pwd))\n"
-	$(Q)rm -rf $(OBJS) $(OUTPUT) $(DEPS)
+	$(Q)rm -rf $(OBJS) $(OUTPUT) $(DEPS) objs/
 
 cleanall: clean kconfig_clean
 	$(Q)rm -rf .config generated .config.old

@@ -6,6 +6,7 @@ generated
 .config
 .config.old
 test
+objs
 kconfig/mconf
 kconfig/lex.zconf.c
 kconfig/zconf.hash.c
