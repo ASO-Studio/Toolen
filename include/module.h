@@ -46,6 +46,12 @@ typedef struct ModApi {
 		.next = NULL \
 	}
 
+#define REDIRECT(src, target) \
+	int target##_main (int argc, char *argv[]) {\
+		return src##_main(argc, argv); \
+	} \
+	REGISTER_MODULE(target)
+
 // Initialize
 void module_registry_init(void);
 

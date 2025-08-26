@@ -8,6 +8,7 @@
  *	Based on MIT protocol open source
  */
  
+#include "lib.h"
 #include "module.h"
 #include <string.h>
 
@@ -108,6 +109,7 @@ int run_module(const char* name, int argc, char **argv) {
 	for (ModApi *f = module_registry; f; f = f->next) {
 		if(strcmp(name, f->name) == 0){
 			suc = 0;
+			setProgramName(f->name);
 			if(f->main) {
 				suc = f->main(argc, argv);
 			}

@@ -16,11 +16,12 @@
 
 #include "module.h"
 #include "config.h"
+#include "lib.h"
 
 static void whoami_show_help() {
 	SHOW_VERSION(stderr);
-	fprintf(stderr, "Usage: whoami\n\n"
-			"Print current user name\n");
+	fprintf(stderr, "Usage: %s\n\n"
+			"Print current user name\n", getProgramName());
 }
 
 int whoami_main(int argc, char *argv[]) {
@@ -39,4 +40,5 @@ int whoami_main(int argc, char *argv[]) {
 	return 0;
 }
 
+REDIRECT(whoami, logname);
 REGISTER_MODULE(whoami);

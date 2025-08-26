@@ -28,4 +28,10 @@ int isEquation(const char *str);	// return: 1->true, 0->false
 /* Split command */
 char **parse_command(const char *input, const char *delimiters);	// return: null->false, other->true
 
+/* Get program name */
+char *getProgramName();	// return: all->program name
+
+/* Set program name */
+void setProgramName(const char *n); // Non-return
+
 #endif // _LIB_H
