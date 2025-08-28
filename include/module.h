@@ -37,8 +37,6 @@ typedef struct ModApi {
  * @param module_name (need function 'module_name_main')
  */
 #define REGISTER_MODULE(module_name) \
-	static void module_name##_init(void); \
-	static void module_name##_run(void); \
 	static ModApi _module_##module_name FEATURE_SECTION = { \
 		.name = #module_name, \
 		.main = module_name##_main, \

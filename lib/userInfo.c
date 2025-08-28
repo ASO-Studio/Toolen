@@ -76,55 +76,52 @@ bool parse_passwd_file(void) {
 	if (!fp) {
 		return false;
 	}
-	
+
 	// Free existing list if any
 	free_passwd_list();
-	
+
 	char line[1024];
 	passwd_entry_t *tail = NULL;
-	
+
 	while (fgets(line, sizeof(line), fp)) {
 		// Skip comments and empty lines
 		if (line[0] == '#' || line[0] == '\n') continue;
-		
+
 		char *token = strtok(line, ":");
 		if (!token) continue;
-		
+
 		passwd_entry_t *entry = malloc(sizeof(passwd_entry_t));
 		if (!entry) {
 			fclose(fp);
 			free_passwd_list();
 			return false;
 		}
-		
+
 		// Initialize the entry
 		entry->name = strdup(trim_whitespace(token));
 		token = strtok(NULL, ":");
-		
+
 		// Skip password field
 		token = strtok(NULL, ":");
 		if (token) entry->uid = atoi(trim_whitespace(token));
-		
+
 		token = strtok(NULL, ":");
 		if (token) entry->gid = atoi(trim_whitespace(token));
-		
+
+		// Skip GECOS
 		token = strtok(NULL, ":");
-		if (token) {
-			char *gecos = trim_whitespace(token);
-			// Skip GECOS field for now
-		}
-		
+
 		token = strtok(NULL, ":");
 		if (token) entry->home_dir = strdup(trim_whitespace(token));
-		
+
 		token = strtok(NULL, ":");
 		if (token) entry->shell = strdup(trim_whitespace(token));
-		
+
 		token = strtok(NULL, ":");
 		// Ignore any remaining fields
-		
+
 		entry->next = NULL;
-		
+
 		// Add to list
 		if (!passwd_list) {
 			passwd_list = entry;

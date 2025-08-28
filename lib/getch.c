@@ -79,7 +79,7 @@ int getch() {
 				case 'S': ch = KEY_F(4); break;
 			}
 		}
-		else if (seq[0] == '[' && seq[1] == '1' || seq[1] == '2') {
+		else if (seq[0] == '[' && (seq[1] == '1' || seq[1] == '2')) {
 			int seq3 = read_byte(20);
 			if( seq3 == -1 ) {
 				ch = KEY_ESC;

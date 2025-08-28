@@ -38,11 +38,6 @@ static off_t fdlength(int fd) {
 	return len;
 }
 
-// Generate UUID
-static void create_uuid(char *uuid) {
-	uuidGen(uuid);
-}
-
 // Show UUID
 static const char *show_uuid(const char *uuid) {
 	return uuid;

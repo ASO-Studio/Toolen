@@ -455,7 +455,6 @@ int md5sum_main(int argc, char *argv[]) {
 	bool binary_mode = false;
 	bool check_mode = false;
 	bool tag_mode = false;
-	bool text_mode = true;  /* Default */
 	bool zero_terminated = false;
 	bool ignore_missing = false;
 	bool quiet = false;
@@ -487,13 +486,11 @@ int md5sum_main(int argc, char *argv[]) {
 		switch (opt) {
 			case 'b':
 				binary_mode = true;
-				text_mode = false;
 				break;
 			case 'c':
 				check_mode = true;
 				break;
 			case 't':
-				text_mode = true;
 				binary_mode = false;
 				break;
 			case 'z':

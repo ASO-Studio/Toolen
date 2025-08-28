@@ -65,9 +65,6 @@ void module_registry_init(void) {
 	return;
 #endif
 
-	// Get numbers of functions
-	size_t count = (size_t)((char*)__stop_module_section - (char*)__start_module_section) / sizeof(ModApi);
-
 	for (ModApi *f = __start_module_section; f < __stop_module_section; f++) {
 		// Create a copy
 		ModApi *new_module = malloc(sizeof(ModApi));

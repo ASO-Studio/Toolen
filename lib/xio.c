@@ -123,13 +123,6 @@ static void open_failed(void) {
 	exit(EXIT_FAILURE);
 }
 
-// Handle allocation failure
-static void allocation_failed(void) {
-	fprintf(stderr, "Failed to allocate memory: %s\n", strerror(errno));
-	cleanup_all();
-	exit(EXIT_FAILURE);
-}
-
 // Encapsulated fopen
 FILE *xfopen(const char *filename, const char *mode) {
 	FILE *fp = fopen(filename, mode);

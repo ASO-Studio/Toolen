@@ -547,6 +547,7 @@ static void edMain(edStat *ed) {
 			int shouldExit = commandMode(ed, key);
 
 			if (shouldExit) {	// Make sure that terminal could restore
+				clearScreen();
 				return;
 			}
 

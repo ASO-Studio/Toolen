@@ -8,7 +8,7 @@
 #include "__getch.h"
 #include "xalloc.h"
 #include "xio.h"
-
+#include "defs.h"
 #include "userInfo.h"
 
 #define UNSIG(x) ((unsigned char*)x)

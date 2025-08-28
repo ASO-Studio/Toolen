@@ -21,6 +21,8 @@
 #include "module.h"
 #include "lib.h"
 
+bool verbose = false;	// For options -v
+
 // create_parent - Create parent directories for a given path
 static int create_parent(const char *path, mode_t mode) {
 	char *path_copy = strdup(path);
@@ -57,6 +59,7 @@ static int create_parent(const char *path, mode_t mode) {
 				break;
 			}
 		}
+		if (verbose) printf("mkdir: created directory '%s'\n", path_copy);
 		
 		// Restore the path separator and move to next component
 		if (temp != '\0') {
@@ -93,7 +96,6 @@ int mkdir_main(int argc, char *argv[]) {
 
 	bool makeParent = false;	// For option -p
 	mode_t perm = 0777;		// For option -m (default: 0777)
-	bool verbose = false;		// For option -v
 
 	// If argc < 2, means no arguments gave
 	if (argc < 2) {
@@ -132,7 +134,11 @@ int mkdir_main(int argc, char *argv[]) {
 		}
 	}
 
-	const char *p = NULL;
+	if (argc - optind <= 0) {
+		fprintf(stderr, "mkdir: reqiured operand\n"
+				"Try pass '--help' for more details\n");
+		return 1;
+	}
 
 	int retVal = 0;
 
@@ -141,8 +147,12 @@ int mkdir_main(int argc, char *argv[]) {
 			if (makeParent) {
 				create_parent(argv[i], perm);
 			} else {
-				if (mkdir (argv[i], perm) < 0)
-					{ perror("mkdir: cannot create directory"); retVal = 1; }
+				if (mkdir (argv[i], perm) < 0) {
+					perror("mkdir: cannot create directory");
+					retVal = 1;
+					continue;
+				}
+				if(verbose) printf("mkdir: created directory '%s'\n", argv[i]);
 			}
 		}	
 	}

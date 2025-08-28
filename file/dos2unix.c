@@ -28,7 +28,6 @@ static void dos2unix_show_help(void) {
 
 static int convert_stream(FILE *input, FILE *output) {
 	int c;
-	int prev = 0;
 
 	while ((c = fgetc(input)) != EOF) {
 		if (c == '\r') {
@@ -48,7 +47,6 @@ static int convert_stream(FILE *input, FILE *output) {
 		} else {
 			fputc(c, output);
 		}
-		prev = c;
 	}
 
 	return 0;

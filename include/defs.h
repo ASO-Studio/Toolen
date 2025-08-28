@@ -12,7 +12,7 @@
 #define aliasof(n) __attribute__((alias(n)))	// Create another name for function n
 #define align(n) __attribute__((aligned(n)))	// Memory aligned N
 #define non_used __attribute__((unused))	// Would not be used
-#define used __attribute__((used))		// Would be used
+#define fused __attribute__((used))		// The function would be used
 #define weakdef __attribute__((weak))		// Weak symbol definition
 #define fthrough __attribute__((fallthrough))	// fall-through
 
