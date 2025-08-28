@@ -5,7 +5,7 @@
 
 ## Overview
 
-Toolen is a simple GNU/Linux core tool implementation. It includes some of the more standard core features and some homebrew tools.
+Toolen is a simple GNU/Linux core tool implementation. It includes some of the standard core features and some homebrew tools.
 
 ## Prepare environment
 
