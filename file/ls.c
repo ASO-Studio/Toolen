@@ -60,18 +60,6 @@ const char *permission_str(mode_t mode) {
 	return str;
 }
 
-// Get user name
-const char *get_username(uid_t uid) {
-	struct passwd *pw = getpwuid(uid);
-	return pw ? pw->pw_name : "unknown";
-}
-
-// Get group name
-const char *get_groupname(gid_t gid) {
-	struct group *gr = getgrgid(gid);
-	return gr ? gr->gr_name : "unknown";
-}
-
 // Get terminal width
 int get_terminal_width() {
 	struct winsize w;
@@ -81,16 +69,16 @@ int get_terminal_width() {
 	return w.ws_col;
 }
 
-// 颜色定义
-#define COLOR_RESET   "\033[0m"
-#define COLOR_DIR	 "\033[1;34m"   // Blue
-#define COLOR_LINK	"\033[1;36m"   // Cyan
-#define COLOR_EXEC	"\033[1;32m"   // Green
-#define COLOR_SOCKET  "\033[1;35m"   // Purple
-#define COLOR_PIPE	"\033[33m"	 // Yellow
-#define COLOR_BLOCK   "\033[1;33m"   // Light yellow
-#define COLOR_CHAR	"\033[1;33m"   // Light yello
-#define COLOR_ORPHAN  "\033[1;31m"   // Red (Broken links)
+// Color definitions
+#define COLOR_RESET	"\033[0m"
+#define COLOR_DIR	"\033[1;34m"	// Blue
+#define COLOR_LINK	"\033[1;36m"	// Cyan
+#define COLOR_EXEC	"\033[1;32m" 	// Green
+#define COLOR_SOCKET	"\033[1;35m"	// Purple
+#define COLOR_PIPE	"\033[33m"	// Yellow
+#define COLOR_BLOCK 	"\033[1;33m"	// Light yellow
+#define COLOR_CHAR	"\033[1;33m"	// Light yello
+#define COLOR_ORPHAN	"\033[1;31m"	// Red (Broken links)
 
 // Get color from file types
 const char *get_file_color(mode_t mode, const char *path) {
@@ -105,7 +93,7 @@ const char *get_file_color(mode_t mode, const char *path) {
 	}
 	if (S_ISREG(mode)) {
 		if (mode & (S_IXUSR | S_IXGRP | S_IXOTH)) {
-			return COLOR_EXEC; // 可执行文件
+			return COLOR_EXEC; // Executable
 		}
 	}
 	if (S_ISSOCK(mode)) return COLOR_SOCKET;

@@ -1,3 +1,7 @@
+/*
+ * __getch.h - Read a charactor from stdin (Header file)
+ */
+
 #ifndef __GETCH_H
 #define __GETCH_H
 
@@ -22,7 +26,6 @@
 
 #define KEY_ALT(ch)   (ch + 1000)	// Alt + (ch)
 
-/* The main function: getch */
 int getch();
 
 #endif /* __GETCH_H */

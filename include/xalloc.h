@@ -1,5 +1,9 @@
-#ifndef _FALLOC_H
-#define _FALLOC_H
+/*
+ * xalloc.h - Wrap of *alloc functions (header files)
+ */
+
+#ifndef _XALLOC_H
+#define _XALLOC_H
 
 #include <stddef.h>
 
@@ -18,4 +22,4 @@ void xfree(void *ptr);
 // Encapsulated strdup
 char *xstrdup(const char *s);
 
-#endif
+#endif // _XALLOC_H

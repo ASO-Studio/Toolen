@@ -1,3 +1,7 @@
+/*
+ * xio.h - Wrap of I/O functions (header files)
+ */
+
 #ifndef _XIO_H
 #define _XIO_H
 
@@ -19,4 +23,4 @@ int xopen2(const char *pathname, int flags);
 // Encapsulated close
 int xclose(int fd);
 
-#endif
+#endif // _XIO_H

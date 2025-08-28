@@ -30,13 +30,7 @@ int whoami_main(int argc, char *argv[]) {
 		return 0;
 	}
 
-	struct passwd *pw = NULL;
-	pw = getpwuid(getuid());
-	if(pw == NULL) {
-		perror("whoami");
-		return 1;
-	}
-	printf("%s\n", pw->pw_name);
+	printf("%s\n", get_username(getuid()) ? : "unknown");
 	return 0;
 }
 

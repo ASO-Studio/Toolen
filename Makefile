@@ -26,7 +26,7 @@ endif
 # Static link
 #  TIPS: It will cause some warnings such as 'Using xxx in statically linked application'
 #  TODO: Fix warnings
-ifeq ($(CONFIG_STATIC_LINK),y)
+ifeq ($(CONFIG_DEF_STATIC_LINK),y)
  LD_FLAGS += -static
 endif
 

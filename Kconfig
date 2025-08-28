@@ -70,7 +70,7 @@ menu "Build options"
 		help
 			Set default C compiler
 
-	config STATIC_LINK
+	config DEF_STATIC_LINK
 		bool "Static link"
 		default n
 		help

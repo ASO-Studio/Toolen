@@ -1,3 +1,7 @@
+/*
+ * debug.h - Debug & Log system
+ */
+
 #ifndef _DEBUG_H
 #define _DEBUG_H
 

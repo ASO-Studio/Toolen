@@ -1,9 +1,15 @@
+/*
+ * lib.h - Declarations of library functions
+ */
+
 #ifndef _LIB_H
 #define _LIB_H
 
 #include "__getch.h"
 #include "xalloc.h"
 #include "xio.h"
+
+#include "userInfo.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
