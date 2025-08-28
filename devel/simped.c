@@ -508,7 +508,7 @@ static void editMode(edStat *ed, int key) {
 			break;
 		case KEY_TAB:
 			// Insert 4 spaces for 'tab'
-			insert_string(ed->current_line, ed->x, "	");
+			insert_string(ed->current_line, ed->x, "    ");
 			ed->x += 4;
 			ed->modified = 1;
 			break;
