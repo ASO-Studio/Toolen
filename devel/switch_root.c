@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 // ANSI color codes for error messages
 #define RED	 "\033[1;31m"
