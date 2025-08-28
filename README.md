@@ -53,6 +53,13 @@ make menuconfig # or make allyesconfig
 make -j$(nproc)
 ```
 
+### For help
+
+```bash
+# Use 'make help' for more details
+make help
+```
+
 ## Usage
 ```bash
 ./toolen [command|options] [args...]
