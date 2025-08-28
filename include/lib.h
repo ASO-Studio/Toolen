@@ -34,4 +34,7 @@ char *getProgramName();	// return: all->program name
 /* Set program name */
 void setProgramName(const char *n); // Non-return
 
+/* Check if program did not run with root permission */
+void isRoot();	// Non-return, NON-ROOT->EXIT(1)
+
 #endif // _LIB_H

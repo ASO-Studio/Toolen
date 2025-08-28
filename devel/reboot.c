@@ -62,6 +62,9 @@ int reboot_main(int argc, char *argv[]) {
 		}
 	}
 
+	// Check permission
+	isRoot();
+
 	int cmd = RB_AUTOBOOT;
 #if 0
 	fprintf(stderr, "Sending SIGTERM to all processes\n");

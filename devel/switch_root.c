@@ -202,7 +202,7 @@ int switch_root_main(int argc, char *argv[]) {
 		{"help", no_argument, 0, 'h'},
 		{0, 0, 0, 0}
 	};
-	
+
 	int opt;
 	while ((opt = getopt_long(argc, argv, "h", long_options, NULL)) != -1 ) {
 		if (opt == -1) break;
@@ -223,7 +223,10 @@ int switch_root_main(int argc, char *argv[]) {
 		usage();
 		return 2;
 	}
-	
+
+	// Check permission
+	isRoot();
+
 	const char *new_root = argv[optind];
 	const char *init_cmd = argv[optind + 1];
 	

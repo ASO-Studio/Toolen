@@ -34,6 +34,9 @@ int chroot_main(int argc, char *argv[]) {
 		return 0;
 	}
 
+	// Check permission
+	isRoot();
+
 	// We should change directory to NEWROOT first
 	int status = chdir(argv[1]);
 	status = chroot(".");	// Already in new root

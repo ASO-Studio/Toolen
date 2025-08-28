@@ -1,5 +1,5 @@
 /**
- *	insmod.c - Install a kernel module
+ *	insmod.c - Load a kernel module
  *
  * 	Created by RoofAlan
  *		2025/8/11
@@ -19,6 +19,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 static size_t getFdSize(int fd) {
 	struct stat st;
@@ -29,11 +30,25 @@ static size_t getFdSize(int fd) {
 	return st.st_size;
 }
 
+static void insmod_show_help() {
+	SHOW_VERSION(stderr);
+	fprintf(stderr, "Usage: insmod MODULE\n\n"
+			"Load a kernel module\n");
+}
+
 int insmod_main(int argc, char *argv[]) {
 	if(!argv[1]) {
-		fprintf(stderr, "insmod: Requires 1 argument\n");
+		fprintf(stderr, "insmod: Requires 1 argument\n"
+				"Try pass '--help' for more details\n");
 		return 1;
 	}
+
+	if (findArg(argv, argc, "--help")) {
+		insmod_show_help();
+		return 0;
+	}
+
+	isRoot();	// Must run with root
 
 	int fd = open(argv[1], O_RDONLY);
 	if(fd < 0) {
@@ -44,6 +59,7 @@ int insmod_main(int argc, char *argv[]) {
 	char *params = malloc(1024);	// Default size to allocate
 	size_t allocatedSize = 1024;
 	size_t sizeCount = 0;
+
 	// Concat all params
 	for (int i = 2; argv[i] && params; i++) {
 		sizeCount += strlen(argv[i]);

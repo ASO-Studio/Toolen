@@ -16,6 +16,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 static void rmmod_show_help() {
 	SHOW_VERSION(stderr);
@@ -81,6 +82,8 @@ int rmmod_main(int argc, char *argv[]) {
 	if (shouldForce) {
 		flags |= O_TRUNC;
 	}
+
+	isRoot();
 
 	int ret;
 	for(int i = optind; i <= argc - optind; i++) {

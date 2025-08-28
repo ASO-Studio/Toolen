@@ -42,7 +42,7 @@ __attribute__((used)) const char LICENSE[] =
 // Show help
 static void show_help() {
 	SHOW_VERSION(stderr);
-	fprintf(stderr, "Usage: toolen [command|options] [Args...]\n");
+	fprintf(stderr, "Usage: toolen [command|options] [Args]...\n");
 	fprintf(stderr,
 		"Support options: \n"
 		"  --help, -h      Show this page\n"
