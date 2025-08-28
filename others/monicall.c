@@ -324,7 +324,7 @@ int monicall_main(int argc, char **argv) {
 	addCatcher(&m, SYS_read, catch_read);
 	addCatcher(&m, SYS_exit, catch_exit);
 	addCatcher(&m, SYS_exit_group, catch_exit);
-#ifndef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
+#ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
 #endif
 
