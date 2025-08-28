@@ -75,7 +75,7 @@ ln -sf toolen 命令名称
 ```
 
 ## 待完成事务清单
-- [ ] uname: Print userspace type
-- [ ] reboot: Send SIGTERM & SIGKILL to all processes
-- [ ] reboot: Force reboot
-- [x] Fix warnings at link-time
+- [ ] uname: 打印用户空间类型
+- [ ] reboot: 向所有进程发送SIGTERM与SIGKILL信号
+- [ ] reboot: 强制重启
+- [x] 修复静态链接时的警告
