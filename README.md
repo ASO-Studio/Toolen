@@ -70,4 +70,4 @@ ln -sf toolen CommandName
 - [ ] uname: Print userspace type
 - [ ] reboot: Send SIGTERM & SIGKILL to all processes
 - [ ] reboot: Force reboot
-- [ ] Fix warnings at link-time
+- [x] Fix warnings at link-time
