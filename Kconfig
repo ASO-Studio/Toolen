@@ -70,6 +70,19 @@ menu "Build options"
 		help
 			Set default C compiler
 
+	config WALL
+		bool "Enable all warnings"
+		default n
+		help
+			Compile with -Wall
+
+	config WERROR
+		bool "Treat warnings as errors (-Werror)"
+		depends WALL
+		default n
+		help
+			Treat warnings as errors, compile with -Werror
+
 	config DEF_STATIC_LINK
 		bool "Static link"
 		default n

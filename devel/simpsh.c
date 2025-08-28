@@ -31,7 +31,7 @@ static void eprint(const char *str) {
 	fprintf(stderr, "%s: %s\n", str, strerror(errno));
 }
 
-static void itoa(unsigned int num,char *buffer){
+static fused void itoa(unsigned int num,char *buffer){
 	if(num == 0){
 		buffer[0] = '0';
 		buffer[1] = '\0';

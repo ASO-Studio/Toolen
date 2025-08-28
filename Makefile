@@ -67,6 +67,16 @@ ifeq ($(CONFIG_DEBUG_OUTPUT),y)
  C_FLAGS += -DDEBUG
 endif
 
+# Enable all warnings
+ifeq ($(CONFIG_WALL),y)
+ C_FLAGS += -Wall
+endif
+
+# Treat warnings as error (-Werror)
+ifeq ($(CONFIG_WERROR),y)
+ C_FLAGS += -Werror
+endif
+
 # Memory leak check
 ifeq ($(CONFIG_MEMLEAK_CHECK),y)
  C_FLAGS += -fsanitize=address
