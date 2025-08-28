@@ -380,7 +380,7 @@ static void displayText(edStat *ed) {
 }
 
 // Command mode
-static void commandMode(edStat *ed, int key) {
+static int commandMode(edStat *ed, int key) {
 	switch (key) {
 		case 'i':
 			ed->mode = E_EDI;
@@ -425,11 +425,11 @@ static void commandMode(edStat *ed, int key) {
 				} else {
 					if (ed->fileStat == FS_NEW)
 						remove(ed->file);
-					exit(0);
+					return 1;
 				}
 			} else if (strcmp(command, "wq") == 0) {
 				if (save_file(ed) == 0) {
-					exit(0);
+					return 1;
 				} else {
 					printf("\033[%d;1H\033[2KError saving file", ed->size_y);
 				}
@@ -439,7 +439,7 @@ static void commandMode(edStat *ed, int key) {
 				if (ed->fileStat == FS_NEW)	// If it is a new file, delete it
 					remove(ed->file);
 
-				exit(0);
+				return 1;
 			} else {
 				printf("\033[%d;1H\033[2K"
 					"Unknown command: %s", ed->size_y, command);
@@ -465,6 +465,7 @@ endCommandMode:
 			move_to_line_end(ed);
 			break;
 	}
+	return 0;
 }
 
 // Process edit mode
@@ -543,7 +544,12 @@ static void edMain(edStat *ed) {
 		int key = getch();
 		
 		if (ed->mode == E_CMD) {
-			commandMode(ed, key);
+			int shouldExit = commandMode(ed, key);
+
+			if (shouldExit) {	// Make sure that terminal could restore
+				return;
+			}
+
 		} else {
 			editMode(ed, key);
 		}
