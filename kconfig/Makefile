@@ -8,6 +8,7 @@ KCONFIG_PROJECT = Toolen
 obj = ./kconfig
 PHONY += clean menuconfig
 
+.PHONY: menucofnig allyesconfig
 menuconfig: $(obj)/mconf $(KCONFIG_TOP)
 	@bash scripts/optCmd.sh
 	@$< $(KCONFIG_TOP)

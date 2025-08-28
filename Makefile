@@ -81,6 +81,7 @@ DEPS = $(OBJS:.o=.d)
 
 OUTPUT = toolen
 
+.PHONY: all clean cleanall help
 all: check $(OUTPUT)
 
 check:
@@ -104,6 +105,14 @@ clean:
 
 cleanall: clean kconfig_clean
 	$(Q)rm -rf .config generated .config.old
+
+help:
+	$(Q)echo "  all                 make default target($(OUTPUT))"
+	$(Q)echo "  clean               clean all object files and objs/ directory"
+	$(Q)echo "  cleanall            clean all object files and .config file"
+	$(Q)echo "  menuconfig          configure in a terminal window"
+	$(Q)echo "  allyesconfig        generated a config with all commands"
+	$(Q)echo "  help                show this page"
 
 # menuconfig
 -include kconfig/Makefile
