@@ -34,9 +34,7 @@ int dirname_main(int argc, char *argv[]) {
 	}
 
 	for (int i = 1; i < argc; i++) {
-		if (argv[i] && argv[i][0] != '-') {
-			printf("%s\n", dirname(argv[i]));
-		}
+		printf("%s\n", dirname(argv[i]));
 	}
 
 	return 0;

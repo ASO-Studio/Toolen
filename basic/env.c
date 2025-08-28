@@ -25,6 +25,7 @@ static void env_show_help() {
 	fprintf(stderr,
 		"Usage: env [NAME=VALUE...] [COMMAND] [ARGS]...\n\n"
 		"Set environment for command invocation, or list environment variables\n\n"
+		"Support options:\n"
 		"  -i      Clear environment\n"
 		"  -u NAME Remove NAME from the environment\n");
 }

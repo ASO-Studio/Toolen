@@ -559,7 +559,7 @@ static void edMain(edStat *ed) {
 		} else if (ed->y >= ed->scroll_offset + ed->size_y - 1) {
 			ed->scroll_offset = ed->y - ed->size_y + 2;
 		}
-		
+
 		displayText(ed);
 	}
 }
