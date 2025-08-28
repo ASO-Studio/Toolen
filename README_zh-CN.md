@@ -3,22 +3,21 @@
   <h1 align="center">Toolen</h1>
 </div>
 
-**Language**: [English](README.md)|[中文](README_zh-CN.md)
+**语言**: [English](README.md)|[中文](README_zh-CN.md)
 
-## Overview
+## 概述
 
-Toolen is a simple GNU/Linux core tool implementation. It includes some of the standard core features and some homebrew tools.
+Toolen是一个简易的GNU/Linux核心工具实现，它包含了一些标准核心工具与一些自制工具
 
-## Prepare environment
+## 准备构建环境
 
-### Required tools & libraries
-
-1. **gcc**: GCC Version 14.0.0+ is recommended
-2. **make**: Used to build projects
+### 需要的工具
+1. **gcc**: 推荐GCC 14.0.0+
+2. **make**: 用于构建项目
 3. **ncurses**: Text-based user interface library
 4. **clang**: Optional, if you couldn't install gcc
 
-### Installation steps
+### 安装步骤
 
 **Debian/Ubuntu**
 ```bash
@@ -35,47 +34,47 @@ sudo pacman -Sy make gcc ncurses # clang
 pkg update && pkg install make clang libncurses-dev
 ```
 
-## Build steps
+## 构建步骤
 
-### Clone this project
+### 克隆该项目的仓库
 
 ```bash
 git clone https://github.com/ASO-Studio/Toolen
 ```
 
-### Configuration
+### 配置
 
 ```bash
-make menuconfig # or make allyesconfig
+make menuconfig # 或 make allyesconfig
 ```
 
-### Compile
+### 编译
 
 ```bash
 make -j$(nproc)
 ```
 
-### For help
+### 构建帮助
 
 ```bash
-# Use 'make help' for more details
+# 使用 'make help' 获取更多细节
 make help
 ```
 
-## Usage
+## 使用方法
 ```bash
-./toolen [command|options] [args...]
+./toolen [命令|选项] [参数...]
 ```
-or
+或
 ```bash
-ln -sf toolen CommandName
-./CommandName
-# For example:
+ln -sf toolen 命令名称
+./命令名称
+# 例如:
 #  ln -sf toolen echo
 #  ./echo "Hello world!"
 ```
 
-## TODO
+## 待完成事务清单
 - [ ] uname: Print userspace type
 - [ ] reboot: Send SIGTERM & SIGKILL to all processes
 - [ ] reboot: Force reboot
