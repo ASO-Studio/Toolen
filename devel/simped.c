@@ -49,7 +49,7 @@ typedef struct {
 	} fileStat;
 
 	const char *file;	// File path
-	
+
 	// Text buffer
 	Line *lines;
 	Line *current_line;
@@ -423,6 +423,8 @@ static void commandMode(edStat *ed, int key) {
 				if (ed->modified) {
 					printf("\033[%d;1H\033[2KFile modified. Use :wq to save and quit", ed->size_y);
 				} else {
+					if (ed->fileStat == FS_NEW)
+						remove(ed->file);
 					exit(0);
 				}
 			} else if (strcmp(command, "wq") == 0) {
@@ -432,6 +434,11 @@ static void commandMode(edStat *ed, int key) {
 					printf("\033[%d;1H\033[2KError saving file", ed->size_y);
 				}
 			} else if (strcmp(command, "q!") == 0) {
+				close(ed->ffd);
+
+				if (ed->fileStat == FS_NEW)	// If it is a new file, delete it
+					remove(ed->file);
+
 				exit(0);
 			} else {
 				printf("\033[%d;1H\033[2K"
