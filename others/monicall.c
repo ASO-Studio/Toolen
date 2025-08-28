@@ -163,7 +163,7 @@ void catch_read(int pid, struct user_regs_struct *regs) {
 	size_t size = regs->ARG3_REG;
 	printf("==> read(%d, %p, %zu)\n", fd, buf, size);
 }
-static void catch_open(pid_t pid, struct user_regs_struct *regs) {
+fused static void catch_open(pid_t pid, struct user_regs_struct *regs) {
 	unsigned long pathname_addr = regs->ARG1_REG;
 	int flags = regs->ARG2_REG;
 	int mode = regs->ARG3_REG;
@@ -324,7 +324,9 @@ int monicall_main(int argc, char **argv) {
 	addCatcher(&m, SYS_read, catch_read);
 	addCatcher(&m, SYS_exit, catch_exit);
 	addCatcher(&m, SYS_exit_group, catch_exit);
+#ifndef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
+#endif
 
 	startMonit(argv[1], &argv[1], m);
 
