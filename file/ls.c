@@ -511,7 +511,7 @@ int ls_main(int argc, char *argv[]) {
 			file.path = xstrdup(paths[i]);
 			
 			if (lstat(paths[i], &file.st) == -1) {
-				fprintf(stderr, "%s: cannot access '%s': ", getProgramName, paths[i]);
+				fprintf(stderr, "%s: cannot access '%s': ", getProgramName(), paths[i]);
 				perror("");
 				xfree(file.name);
 				xfree(file.path);
