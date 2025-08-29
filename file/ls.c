@@ -135,19 +135,19 @@ const char *human_readable(off_t size, bool use_human) {
 
 // Struct of options
 typedef struct {
-	bool list;	  // -l
-	bool all;	   // -a
-	bool color;	 // --color
-	bool unsorted;  // -f
-	bool directory; // Whether to display the directory itself
-	bool human;	 // -h: human readable file size
+	bool list;	// -l
+	bool all;	// -a
+	bool color;	// --color
+	bool unsorted;	// -f
+	bool directory;	// Whether to display the directory itself
+	bool human;	// -h: human readable file size
 } Options;
 
 // Struct of file
 typedef struct {
 	char *name;
 	struct stat st;
-	char *path; // Full path
+	char *path;	// Full path
 } FileInfo;
 
 // Compare string
@@ -207,21 +207,21 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 	for (int i = 0; i < count; i++) {
 		struct stat *st = &files[i].st;
 		const char *name = files[i].name;
-		
+
 		// File type and permission
 		printf("%s%s ", file_type(st->st_mode), permission_str(st->st_mode));
-		
+
 		// Numbers of hard-link
 		printf("%*d ", nlink_width, (int)st->st_nlink);
-		
+
 		// Owner
 		const char *user = get_username(st->st_uid);
 		printf("%-*s ", max_user, user);
-		
+
 		// Group
 		const char *group = get_groupname(st->st_gid);
 		printf("%-*s ", max_group, group);
-		
+
 		// Size
 		const char *size_str = human_readable(st->st_size, opts.human);
 		if (opts.human) {
@@ -231,13 +231,13 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 			// Original size
 			printf("%*s ", max_size_chars, size_str);
 		}
-		
+
 		// Change time
 		char time_buf[20];
 		struct tm *tm = localtime(&st->st_mtime);
 		strftime(time_buf, sizeof(time_buf), "%b %d %H:%M", tm);
 		printf("%s ", time_buf);
-		
+
 		// File name
 		if (opts.color) {
 			const char *color = get_file_color(st->st_mode, files[i].path);
@@ -245,7 +245,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 		} else {
 			printf("%s", name);
 		}
-		
+
 		// If it's a symbolic link, show the target
 		if (S_ISLNK(st->st_mode)) {
 			char link_target[PATH_MAX];
@@ -255,7 +255,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 				printf(" -> %s", link_target);
 			}
 		}
-		
+
 		printf("\n");
 	}
 }
@@ -267,19 +267,19 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 		int len = strlen(files[i].name);
 		if (len > max_len) max_len = len;
 	}
-	
+
 	int term_width = get_terminal_width();
 	int col_width = max_len + 2; // Column
 	int num_cols = term_width / col_width;
 	if (num_cols == 0) num_cols = 1;
-	
+
 	int num_rows = (count + num_cols - 1) / num_cols;
-	
+
 	for (int row = 0; row < num_rows; row++) {
 		for (int col = 0; col < num_cols; col++) {
 			int idx = row + col * num_rows;
 			if (idx >= count) continue;
-			
+
 			const char *name = files[idx].name;
 			if (opts.color) {
 				printf("%s%-*s%s", 
@@ -288,7 +288,7 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 			} else {
 				printf("%-*s", max_len, name);
 			}
-			
+
 			// Spaces between columns (except for the last column)
 			if (col < num_cols - 1) {
 				printf("  ");
@@ -415,21 +415,17 @@ int ls_main(int argc, char *argv[]) {
 			case 'a':
 				opts.all = true;
 				break;
-				
 			case 'l':
 				opts.list = true;
 				break;
-				
 			case 'f':
 				opts.unsorted = true;
 				opts.all = true; // -f
 				break;
-				
 			case 'r': // --human-readable or -r
 			case 'h': // -h
 				opts.human = true;
 				break;
-				
 			case 'c': // --color
 				if (optarg) {
 					if (strcmp(optarg, "always") == 0) {
@@ -448,7 +444,6 @@ int ls_main(int argc, char *argv[]) {
 					opts.color = isatty(STDOUT_FILENO);
 				}
 				break;
-				
 			case 'H': // --help
 				help_requested = true;
 				break;
@@ -456,14 +451,13 @@ int ls_main(int argc, char *argv[]) {
 				// Unknown option
 				print_help();
 				exit(EXIT_FAILURE);
-				
 			default:
 				fprintf(stderr, "%s: invalid option\n", getProgramName());
 				print_help();
 				exit(EXIT_FAILURE);
 		}
 	}
-	
+
 	// Process help and version requests
 	if (help_requested) {
 		print_help();
@@ -478,14 +472,13 @@ int ls_main(int argc, char *argv[]) {
 		}
 		paths[path_count++] = argv[i];
 	}
-	
 
 	if (path_count == 0) {
 		path_count = 1;
 		paths = xmalloc(sizeof(char *));
 		paths[0] = ".";
 	}
-	
+
 	// Process multiple paths
 	for (int i = 0; i < path_count; i++) {
 		struct stat st;
@@ -509,7 +502,7 @@ int ls_main(int argc, char *argv[]) {
 			// Copy file name
 			file.name = xstrdup(basename(xstrdup(paths[i])));
 			file.path = xstrdup(paths[i]);
-			
+
 			if (lstat(paths[i], &file.st) == -1) {
 				fprintf(stderr, "%s: cannot access '%s': ", getProgramName(), paths[i]);
 				perror("");
@@ -517,7 +510,7 @@ int ls_main(int argc, char *argv[]) {
 				xfree(file.path);
 				continue;
 			}
-			
+
 			if (opts.list) {
 				display_long_format(&file, 1, opts);
 			} else {
@@ -527,7 +520,7 @@ int ls_main(int argc, char *argv[]) {
 					printf("%s\n", file.name);
 				}
 			}
-			
+
 			xfree(file.name);
 			xfree(file.path);
 		}
