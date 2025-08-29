@@ -44,6 +44,15 @@ typedef struct ModApi {
 		.next = NULL \
 	}
 
+#define REGISTER_MODULE2(module, mname) \
+	static ModApi _module_##module FEATURE_SECTION = { \
+		.name = mname , \
+		.main = module##_main, \
+		.priority = 0,	\
+		.next = NULL \
+	}
+
+// Redirect
 #define REDIRECT(src, target) \
 	int target##_main (int argc, char *argv[]) {\
 		return src##_main(argc, argv); \
