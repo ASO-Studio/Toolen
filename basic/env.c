@@ -22,6 +22,7 @@
 extern char **environ;
 
 static void env_show_help() {
+	SHOW_VERSION(stderr);
 	fprintf(stderr,
 		"Usage: env [NAME=VALUE...] [COMMAND] [ARGS]...\n\n"
 		"Set environment for command invocation, or list environment variables\n\n"
@@ -38,6 +39,11 @@ int env_main(int argc, char **argv) {
 
 	int opr = 0;
 	bool cleanEnv = false;
+
+	if (findArg(argv, argc, "--help")) {
+		env_show_help();
+		return 0;
+	}
 
 	while ((opr = getopt(argc, argv, "iu:h")) != -1) {
 		switch (opr) {
