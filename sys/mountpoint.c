@@ -36,7 +36,7 @@ static void sys_error(const char *context) {
 /* Display help information */
 static void usage(int status) {
 	SHOW_VERSION(stderr);
-	fprintf(stderr, "Usage: mount_point [OPTION]... DIRECTORY...\n\n"
+	fprintf(stderr, "Usage: mountpoint [OPTION]... DIRECTORY...\n\n"
 		"Determine whether directories are mountpoints.\n\n"
 		"Support options:\n"
 		"  -q, --quiet      suppress output, only return exit status\n"

@@ -18,19 +18,19 @@ static int execby(const char *username, const char *program, char *const argv[])
 
 	// Set group
 	if (setgroups(0, NULL) != 0) {
-		perror("Failed to set group");
+		pplog(P_ERRNO | P_NAME, "failed to set group");
 		return -1;
 	}
 
 	// Set group ID
 	if (setgid(gid) != 0) {
-		perror("Failed to set GID");
+		pplog(P_ERRNO | P_NAME, "failed to set GID");
 		return -1;
 	}
 
 	// Set user ID
 	if (setuid(uid) != 0) {
-		perror("Failed to set UID");
+		pplog(P_ERRNO | P_NAME, "failed to set UID");
 		return -1;
 	}
 
@@ -56,8 +56,7 @@ static void execby_show_help() {
 
 int execby_main(int argc, char *argv[]) {
 	if (argc < 2) {
-		fprintf(stderr, "Usage: execby USERNAME PROGRAM [ARGS]...\n"
-				"Try pass '--help' for more details\n");
+		pplog(P_HELP, "Usage: execby USERNAME PROGRAM [ARGS]...");
 		return 1;
 	}
 
@@ -65,8 +64,7 @@ int execby_main(int argc, char *argv[]) {
 		execby_show_help();
 		return 0;
 	} else if (argc < 3) {
-		fprintf(stderr, "execby: Missing PROGRAM or USERNAME\n"
-				"Try pass '--help' for more details\n");
+		pplog(P_HELP | P_NAME, "Missing PROGRAM or USERNAME");
 		return 1;
 	}
 
@@ -75,7 +73,6 @@ int execby_main(int argc, char *argv[]) {
 	char *const *program_args = &argv[2]; // args start from argv[2]
 
 	if (execby(username, program, program_args) != 0) {
-		fprintf(stderr, "Cannot execute '%s' as user '%s'\n", program, username);
 		return 1;
 	}
 

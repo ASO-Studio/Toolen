@@ -10,6 +10,7 @@
 #include "xio.h"
 #include "defs.h"
 #include "userInfo.h"
+#include "pplog.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
