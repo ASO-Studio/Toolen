@@ -373,8 +373,8 @@ void list_directory(const char *path, Options opts) {
 
 // Show help informations
 static void print_help() {
-	SHOW_VERSION(stderr);
-	printf("Usage: ls [OPTION]... [FILE]...\n");
+	SHOW_VERSION(stdout);
+	printf("Usage: %s [OPTION]... [FILE]...\n", getProgramName());
 	printf("List information about the FILEs (the current directory by default).\n");
 	printf("\n");
 	printf("Mandatory arguments to long options are mandatory for short options too.\n");
@@ -439,7 +439,7 @@ int ls_main(int argc, char *argv[]) {
 					} else if (strcmp(optarg, "auto") == 0) {
 						opts.color = isatty(STDOUT_FILENO);
 					} else {
-						fprintf(stderr, "ls: invalid argument '%s' for --color\n", optarg);
+						fprintf(stderr, "%s: invalid argument '%s' for --color\n", getProgramName(), optarg);
 						fprintf(stderr, "Valid arguments are: 'always', 'never', 'auto'\n");
 						exit(EXIT_FAILURE);
 					}
@@ -458,7 +458,7 @@ int ls_main(int argc, char *argv[]) {
 				exit(EXIT_FAILURE);
 				
 			default:
-				fprintf(stderr, "ls: invalid option\n");
+				fprintf(stderr, "%s: invalid option\n", getProgramName());
 				print_help();
 				exit(EXIT_FAILURE);
 		}
@@ -490,7 +490,7 @@ int ls_main(int argc, char *argv[]) {
 	for (int i = 0; i < path_count; i++) {
 		struct stat st;
 		if (stat(paths[i], &st) == -1) {
-			fprintf(stderr, "ls: cannot access '%s': ", paths[i]);
+			fprintf(stderr, "%s: cannot access '%s': ", getProgramName(), paths[i]);
 			perror("");
 			ret_value = 2;
 			continue;
@@ -511,7 +511,7 @@ int ls_main(int argc, char *argv[]) {
 			file.path = xstrdup(paths[i]);
 			
 			if (lstat(paths[i], &file.st) == -1) {
-				fprintf(stderr, "ls: cannot access '%s': ", paths[i]);
+				fprintf(stderr, "%s: cannot access '%s': ", getProgramName, paths[i]);
 				perror("");
 				xfree(file.name);
 				xfree(file.path);
@@ -538,3 +538,4 @@ int ls_main(int argc, char *argv[]) {
 }
 
 REGISTER_MODULE(ls);
+REDIRECT(ls, dir);
