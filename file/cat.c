@@ -34,15 +34,6 @@ static void cat_show_help() {
 			"  -t   Show tabs as ^I\n");
 }
 
-// Check if file is a special character device
-static bool is_special_device(const char *filename) {
-	struct stat st;
-	if (stat(filename, &st) != 0) {
-		return false;
-	}
-	return S_ISCHR(st.st_mode);
-}
-
 // Handle reading from special character devices
 static void cat_special_device(int fd) {
 	// Set non-blocking mode

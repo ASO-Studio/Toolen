@@ -71,7 +71,7 @@ static void free_group_list(void) {
 	group_list = NULL;
 }
 
-bool parse_passwd_file(void) {
+static bool parse_passwd_file(void) {
 	FILE *fp = fopen("/etc/passwd", "r");
 	if (!fp) {
 		return false;
@@ -136,7 +136,7 @@ bool parse_passwd_file(void) {
 	return true;
 }
 
-bool parse_group_file(void) {
+static bool parse_group_file(void) {
 	FILE *fp = fopen("/etc/group", "r");
 	if (!fp) {
 		return false;
@@ -189,13 +189,13 @@ bool parse_group_file(void) {
 
 const char *get_username(uid_t uid) {
 	static char uid_buf[16];
-	
+
 	// Parse passwd file if not already done
 	if (!passwd_list && !parse_passwd_file()) {
 		snprintf(uid_buf, sizeof(uid_buf), "%d", uid);
 		return uid_buf;
 	}
-	
+
 	// Search for the UID
 	passwd_entry_t *current = passwd_list;
 	while (current) {
@@ -204,7 +204,7 @@ const char *get_username(uid_t uid) {
 		}
 		current = current->next;
 	}
-	
+
 	// Not found, return UID as string
 	snprintf(uid_buf, sizeof(uid_buf), "%d", uid);
 	return uid_buf;
@@ -289,6 +289,30 @@ bool get_group_info(gid_t gid, group_info_t *info) {
 	return false;
 }
 
+static int getuid_gid_name(const char *name, bool isGid) {
+	if (!passwd_list && !parse_passwd_file()) {
+		return -1;
+	}
+
+	passwd_entry_t *current = passwd_list;
+	while(current) {
+		if (strcmp(current->name, name) == 0) {
+			return isGid ? current->gid : current->uid;
+		}
+		current = current->next;
+	}
+
+	return -1;
+}
+
+uid_t getuid_name(const char *name) {
+	return getuid_gid_name(name, false);
+}
+
+gid_t getgid_name(const char *name) {
+	return getuid_gid_name(name, true);
+}
+
 void free_user_info(user_info_t *info) {
 	// This function exists for API symmetry but doesn't need to do anything
 	// since we're not allocating memory for the returned strings
@@ -306,3 +330,4 @@ void userinfo_cleanup(void) {
 	free_passwd_list();
 	free_group_list();
 }
+

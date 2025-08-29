@@ -31,8 +31,8 @@ bool get_group_info(gid_t gid, group_info_t *info);
 void free_user_info(user_info_t *info);
 void free_group_info(group_info_t *info);
 
-// File parsing functions (for internal use but exposed if needed)
-bool parse_passwd_file(void);
-bool parse_group_file(void);
+// Get UID/GID by username
+uid_t getuid_name(const char *name);
+gid_t getgid_name(const char *name);
 
 #endif /* USERINFO_H */
