@@ -14,8 +14,8 @@ Toolen是一个简易的GNU/Linux核心工具实现，它包含了一些标准�
 ### 需要的工具
 1. **gcc**: 推荐GCC 14.0.0+
 2. **make**: 用于构建项目
-3. **ncurses**: Text-based user interface library
-4. **clang**: Optional, if you couldn't install gcc
+3. **ncurses**: 基于文本的用户界面库
+4. **clang**: 可选，如果你无法安装GCC可以尝试clang
 
 ### 安装步骤
 
