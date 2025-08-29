@@ -45,7 +45,7 @@ typedef struct ModApi {
 	}
 
 #define REGISTER_MODULE2(module, mname) \
-	static ModApi _module_##module FEATURE_SECTION = { \
+	static ModApi _module2_##module FEATURE_SECTION = { \
 		.name = mname , \
 		.main = module##_main, \
 		.priority = 0,	\

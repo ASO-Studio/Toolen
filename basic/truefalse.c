@@ -21,3 +21,4 @@ int false_main(int argc, char *argv[]) {
 
 REGISTER_MODULE(true);
 REGISTER_MODULE(false);
+REGISTER_MODULE2(true, ":");
