@@ -27,7 +27,7 @@ echo "$ENABLED_CONFIGS" | while read line; do
 	var=$(echo "$line" | cut -d '=' -f 1 | sed 's/[[:space:]]//g')
 	module=$(echo "$var" | sed 's/^CONFIG_//')
 	source_file=$(echo "$module" | tr '[:upper:]' '[:lower:]').c
-	echo "	\$(shell find -name '$source_file') \\" >> $OUTPUT_FILE
+	echo "	$(find -name "$source_file") \\" >> $OUTPUT_FILE
 done
 
 sed -i '$ d' $OUTPUT_FILE
