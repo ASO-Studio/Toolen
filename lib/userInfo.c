@@ -7,7 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include "userInfo.h"
+#include "lib.h"
 
 // Internal structures
 typedef struct passwd_entry {
@@ -51,10 +51,10 @@ static void free_passwd_list(void) {
 	passwd_entry_t *current = passwd_list;
 	while (current) {
 		passwd_entry_t *next = current->next;
-		free(current->name);
-		free(current->home_dir);
-		free(current->shell);
-		free(current);
+		xfree(current->name);
+		xfree(current->home_dir);
+		xfree(current->shell);
+		xfree(current);
 		current = next;
 	}
 	passwd_list = NULL;
@@ -64,15 +64,19 @@ static void free_group_list(void) {
 	group_entry_t *current = group_list;
 	while (current) {
 		group_entry_t *next = current->next;
-		free(current->name);
-		free(current);
+		xfree(current->name);
+		xfree(current);
 		current = next;
 	}
 	group_list = NULL;
 }
 
 static bool parse_passwd_file(void) {
+#if HAVE_PASSWD
 	FILE *fp = fopen("/etc/passwd", "r");
+#else
+	FILE *fp = NULL;
+#endif
 	if (!fp) {
 		return false;
 	}
@@ -90,7 +94,7 @@ static bool parse_passwd_file(void) {
 		char *token = strtok(line, ":");
 		if (!token) continue;
 
-		passwd_entry_t *entry = malloc(sizeof(passwd_entry_t));
+		passwd_entry_t *entry = xmalloc(sizeof(passwd_entry_t));
 		if (!entry) {
 			fclose(fp);
 			free_passwd_list();
@@ -137,7 +141,11 @@ static bool parse_passwd_file(void) {
 }
 
 static bool parse_group_file(void) {
+#if HAVE_GROUP
 	FILE *fp = fopen("/etc/group", "r");
+#else
+	FILE *fp = NULL;
+#endif
 	if (!fp) {
 		return false;
 	}
@@ -155,7 +163,7 @@ static bool parse_group_file(void) {
 		char *token = strtok(line, ":");
 		if (!token) continue;
 		
-		group_entry_t *entry = malloc(sizeof(group_entry_t));
+		group_entry_t *entry = xmalloc(sizeof(group_entry_t));
 		if (!entry) {
 			fclose(fp);
 			free_group_list();

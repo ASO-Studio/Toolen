@@ -51,6 +51,17 @@ menu "System configurations"
 		default y
 		help
 			/dev/urandom device support
+	config DEF_HAVE_PASSWD
+		bool "/etc/passwd file support"
+		default y
+		help
+			/etc/passwd file support
+	config DEF_HAVE_GROUP
+		bool "/etc/group file support"
+		default y
+		help
+			/etc/passwd file support
+
 endmenu
 
 menu "Build options"
