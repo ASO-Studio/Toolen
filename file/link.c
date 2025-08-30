@@ -1,5 +1,5 @@
 /**
- *	link.c - Create a hardlink
+ *	link.c - Create a hardlink to file
  *
  * 	Created by RoofAlan
  *		2025/8/30
@@ -18,7 +18,7 @@
 static void link_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: link FILE NEWFILE\n\n"
-			"Create a hardlink\n");
+			"Create a hardlink to file\n");
 }
 
 int link_main(int argc, char *argv[]) {
