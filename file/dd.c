@@ -72,7 +72,11 @@ static void dd_show_help(void) {
 	"  ascii, ebcdic, ibm, block, unblock, lcase, ucase, sparse, swab,\n"
 	"  sync, excl, nocreat, notrunc, noerror, fdatasync, fsync\n\n"
 	"Each FLAG symbol may be:\n"
-	"  append, direct, directory, dsync, sync, fullblock, nonblock,\n"
+	"  append, "
+#ifdef O_DIRECT
+       	"direct,"
+#endif
+	" directory, dsync, sync, fullblock, nonblock,\n"
 	"  noatime, nocache, noctty, nofollow, count_bytes\n");
 }
 
@@ -152,9 +156,12 @@ static int parse_flags(const char *str, unsigned int *flag_flags) {
 	*flag_flags = 0;
 	
 	while ((token = strtok_r(rest, ",", &rest))) {
+#ifdef O_DIRECT
 		if (strcmp(token, "direct") == 0) {
 			*flag_flags |= FLAG_DIRECT;
-		} else if (strcmp(token, "dsync") == 0) {
+		} else
+#endif
+		if (strcmp(token, "dsync") == 0) {
 			*flag_flags |= FLAG_DSYNC;
 		} else if (strcmp(token, "sync") == 0) {
 			*flag_flags |= FLAG_SYNC;
@@ -320,7 +327,9 @@ int dd_main(int argc, char *argv[]) {
 	
 	// Open input file
 	int input_flags = O_RDONLY;
+#ifdef O_DIRECT
 	if (iflag_flags & FLAG_DIRECT) input_flags |= O_DIRECT;
+#endif
 	if (iflag_flags & FLAG_DSYNC) input_flags |= O_DSYNC;
 	if (iflag_flags & FLAG_SYNC) input_flags |= O_SYNC;
 	if (iflag_flags & FLAG_NONBLOCK) input_flags |= O_NONBLOCK;
@@ -339,7 +348,9 @@ int dd_main(int argc, char *argv[]) {
 	if (!(conv_flags & CONV_NOTRUNC)) {
 		output_flags |= O_TRUNC;
 	}
+#ifdef O_DIRECT
 	if (oflag_flags & FLAG_DIRECT) output_flags |= O_DIRECT;
+#endif
 	if (oflag_flags & FLAG_DSYNC) output_flags |= O_DSYNC;
 	if (oflag_flags & FLAG_SYNC) output_flags |= O_SYNC;
 	if (oflag_flags & FLAG_NONBLOCK) output_flags |= O_NONBLOCK;

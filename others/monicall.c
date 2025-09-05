@@ -3,7 +3,14 @@
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <sys/uio.h>
-#include <sys/user.h>
+
+// Check if some platforms do not have <sys/user.h>
+#if __has_include(<sys/user.h>)
+# include <sys/user.h>
+#else
+# define __NO_SYS_USER_H 1
+#endif
+
 #include <sys/syscall.h>
 #include <unistd.h>
 #include <string.h>
@@ -14,6 +21,8 @@
 #include "module.h"
 #include "lib.h"
 #include "debug.h"
+
+#ifndef __NO_SYS_USER_H
 
 typedef void (*CatcherFunc_t)(int, struct user_regs_struct*);
 
@@ -345,5 +354,13 @@ int monicall_main(int argc, char **argv) {
 	cleanupMoniCall(m);
 	return 0;
 }
+
+#else // !defined(__NO_SYS_USER_H)
+	#warning does not support on this platform
+	int monicall_main(int argc, char *argv[]) {
+		pplog(P_NAME, "does not support on this platform");
+		return 1;
+	}
+#endif // defined(__NO_SYS_USER_H)
 
 REGISTER_MODULE(monicall);

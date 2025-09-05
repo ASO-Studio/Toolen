@@ -22,10 +22,7 @@ static void link_show_help() {
 }
 
 int link_main(int argc, char *argv[]) {
-	if (argc < 3) {
-		pplog(P_NAME | P_HELP, "Need 2 arguments");
-		return 1;
-	} else if (argc > 3) {
+	if (argc > 3) {
 		pplog(P_NAME | P_HELP, "Max 2 arguments");
 		return 1;
 	}
@@ -33,6 +30,9 @@ int link_main(int argc, char *argv[]) {
 	if (argc > 1 && findArg(argv, argc, "--help")) {
 		link_show_help();
 		return 0;
+	} else if (argc < 3) {
+		pplog(P_NAME | P_HELP, "Need 2 arguments");
+		return 1;
 	}
 
 	if (link(argv[1], argv[2]) < 0) {

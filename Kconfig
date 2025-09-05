@@ -94,6 +94,12 @@ menu "Build options"
 		help
 			Treat warnings as errors, compile with -Werror
 
+	config NOWCPP
+		bool "Disable #warning support"
+		default y
+		help
+			Disable support for #warning
+
 	config DEF_STATIC_LINK
 		bool "Static link"
 		default n

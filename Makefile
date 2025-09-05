@@ -77,6 +77,11 @@ ifeq ($(CONFIG_WERROR),y)
  C_FLAGS += -Werror
 endif
 
+# Disable support for #warning
+ifeq ($(CONFIG_NOWCPP),y)
+ C_FLAGS += -Wno-cpp
+endif
+
 # Memory leak check
 ifeq ($(CONFIG_MEMLEAK_CHECK),y)
  C_FLAGS += -fsanitize=address

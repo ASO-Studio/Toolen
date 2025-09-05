@@ -16,7 +16,7 @@
 static ModApi *module_registry = NULL;
 
 /* Platform-specific segment boundary declarations */
-#if defined(__linux__) || defined(__unix__)
+#if defined(__linux__) || defined(__unix__) || defined(__gnu_hurd__)
 	// Linux/Unix: Standard GCC Symbol
 	extern ModApi __start_module_section[];
 	extern ModApi __stop_module_section[];
@@ -59,7 +59,7 @@ void module_registry_init(void) {
 	
 	//printf("Initializing module registry...\n");
 	
-#if !(defined(__linux__) || defined(__APPLE__) || (defined(_WIN32) && defined(_MSC_VER)))
+#if !(defined(__linux__) || defined(__APPLE__) || (defined(_WIN32) && defined(_MSC_VER)) || defined(__gnu_hurd__))
 	// Unsupport platforms
 	printf("WARNING: Manual registration required on this platform\n");
 	return;

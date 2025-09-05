@@ -1,5 +1,5 @@
 /**
- *	kill.c - Kill porcess (SIGTERM by default)
+ *	kill.c - Kill process (SIGTERM by default)
  *
  * 	Created by RoofAlan
  *		2025/8/24
@@ -9,102 +9,208 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "module.h"
 #include "config.h"
 
-#define _IS(s) (strcasecmp(&argv[1][1], s) == 0)
+/* Maximum signal number to consider */
+#ifdef _NSIG
+# define MAX_SIGNAL _NSIG
+#else
+# define MAX_SIGNAL 32
+#endif
 
-static void kill_show_help() {
-	SHOW_VERSION(stderr);
-	fprintf(stderr,
-		"Usage: kill [SIG] pid\n\n"
-		"Send signal to process(es)\n\n"
-		"   --list, -l  list all support signal\n");
+static const char* __ssig(int sig) {
+	switch(sig) {
+		case SIGHUP: return "HUP";
+		case SIGINT: return "INT";
+		case SIGQUIT: return "QUIT";
+		case SIGILL: return "ILL";
+		case SIGTRAP: return "TRAP";
+		case SIGABRT: return "ABRT";
+		case SIGBUS: return "BUS";
+		case SIGFPE: return "FPE";
+		case SIGKILL: return "KILL";
+		case SIGUSR1: return "USR1";
+		case SIGSEGV: return "SEGV";
+		case SIGUSR2: return "USR2";
+		case SIGPIPE: return "PIPE";
+		case SIGALRM: return "ALRM";
+		case SIGTERM: return "TERM";
+		case SIGSTKFLT: return "STKFLT";
+		case SIGCHLD: return "CHLD";
+		case SIGCONT: return "CONT";
+		case SIGSTOP: return "STOP";
+		case SIGTSTP: return "TSTP";
+		case SIGTTIN: return "TTIN";
+		case SIGTTOU: return "TTOU";
+		case SIGURG: return "URG";
+		case SIGXCPU: return "XCPU";
+		case SIGXFSZ: return "XFSZ";
+		case SIGVTALRM: return "VTALRM";
+		case SIGPROF: return "PROF";
+		case SIGWINCH: return "WINCH";
+		case SIGPWR: return "PWR";
+		case SIGSYS: return "SYS";
+#ifdef SIGPOLL
+		case SIGPOLL: return "POLL";
+#endif
+#ifdef SIGLOST
+		case SIGLOST: return "LOST";
+#endif
+#ifdef SIGUNUSED
+		case SIGUNUSED: return "UNUSED";
+#endif
+		default: break;
+	}
+	return "UNKWN";
 }
 
-static void kill_list() {
-	printf("HUP INT QUIT ILL TRAP ABRT BUS FPE KILL USR1 SEGV USR2"
-		"PIPE ALRM TERM STKFLT CHLD CONT STOP TSTP"
-		"TTIN TTOU URG XCPU XFSZ VTALRM PROF WINCH"
-		"IO PWR SYS\n");
+/* Signal name conversion */
+static int sig_name_to_num(const char *name) {
+	if (!name) return -1;
+	
+	/* Try numeric format */
+	if (isdigit(name[0])) {
+		char *end;
+		long num = strtol(name, &end, 10);
+		if (*end == '\0' && num > 0 && num < MAX_SIGNAL) 
+			return (int)num;
+	}
+	
+	/* Try with SIG prefix */
+	if (strncasecmp(name, "SIG", 3) == 0) {
+		for (int i = 1; i < MAX_SIGNAL; i++) {
+			const char *sig_name = __ssig(i);
+			if (sig_name && strcasecmp(name + 3, sig_name) == 0)
+				return i;
+		}
+	}
+	
+	/* Try without prefix */
+	for (int i = 1; i < MAX_SIGNAL; i++) {
+		const char *sig_name = strsignal(i);
+		if (sig_name && strcasecmp(name, sig_name) == 0)
+			return i;
+	}
+	
+	return -1;
+}
+
+/* List available signals */
+static void list_signals(void) {
+	for (int i = 1; i < MAX_SIGNAL; i++) {
+		const char *name = __ssig(i);
+		if (name) {
+			printf("%2d) SIG%-8s %s\n", i, name, name);
+		}
+	}
+}
+
+/* Show help information */
+static void show_help(void) {
+	SHOW_VERSION(stderr);
+	fprintf(stderr,
+		"Usage: kill [options] <pid>\n"
+		"       kill [options] -<signal> <pid>\n"
+		"       kill [options] --signal <signal> <pid>\n\n"
+		"Send signal to process(es)\n\n"
+		"Support options:\n"
+		"  -l, --list     list all supported signals\n");
 }
 
 int kill_main(int argc, char *argv[]) {
-	if(argc < 2) {
-		kill_show_help();
-		return 1;
+	if (argc < 2) {
+		show_help();
+		return EXIT_FAILURE;
 	}
 
-	pid_t pid;
-
-	if(strcmp(argv[1], "-l") == 0 || strcmp(argv[1], "--list") == 0) {
-		kill_list();
-		return 0;
-	} else if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
-		kill_show_help();
-		return 0;
+	/* Handle options */
+	for (int i = 1; i < argc; i++) {
+		if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--list") == 0) {
+			list_signals();
+			return EXIT_SUCCESS;
+		}
+		else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+			show_help();
+			return EXIT_SUCCESS;
+		}
+		else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
+			SHOW_VERSION(stdout);
+			return EXIT_SUCCESS;
+		}
 	}
-	
-	if(argv[1][0] == '-') {
-		if(!argv[2]) {
-			fprintf(stderr, "No pid gave\n");
-			return 1;
-		}
-		pid = atoi(argv[2]);
-		if(pid <= 0) {
-			fprintf(stderr, "Invalid PID: %d\n", pid);
-			return 1;
-		}
 
-		int sig = SIGTERM;
-		if(_IS("HUP") || _IS("1") || _IS("SIGHUP")) { sig = SIGHUP; }
-		if(_IS("INT") || _IS("2") || _IS("SIGINT")) { sig = SIGINT; }
-		if(_IS("QUIT") || _IS("3") || _IS("SIGQUIT")) { sig = SIGQUIT; }
-		if(_IS("ILL") || _IS("4") || _IS("SIGILL")) { sig = SIGILL; }
-		if(_IS("TRAP") || _IS("5") || _IS("SIGTRAP")) { sig = SIGTRAP; }
-		if(_IS("ABRT") || _IS("6") || _IS("SIGABRT")) { sig = SIGABRT; }
-		if(_IS("BUS") || _IS("7") || _IS("SIGBUS")) { sig = SIGBUS; }
-		if(_IS("FPE") || _IS("8") || _IS("SIGFPE")) { sig = SIGFPE; }
-		if(_IS("KILL") || _IS("9") || _IS("SIGKILL")) { sig = SIGKILL; }
-		if(_IS("USR1") || _IS("10") || _IS("SIGUSR1")) { sig = SIGUSR1; }
-		if(_IS("SEGV") || _IS("11") || _IS("SIGSEGV")) { sig = SIGSEGV; }
-		if(_IS("USR2") || _IS("12") || _IS("SIGUSR2")) { sig = SIGUSR2; }
-		if(_IS("PIPE") || _IS("13") || _IS("SIGPIPE")) { sig = SIGPIPE; }
-		if(_IS("ALRM") || _IS("14") || _IS("SIGALRM")) { sig = SIGALRM; }
-		if(_IS("TERM") || _IS("15") || _IS("SIGTERM")) { sig = SIGTERM; }
-		if(_IS("STKFLT") || _IS("16") || _IS("SIGSTKFLT")) { sig = SIGSTKFLT; }
-		if(_IS("CHLD") || _IS("17") || _IS("SIGCHLD")) { sig = SIGCHLD; }
-		if(_IS("CONT") || _IS("18") || _IS("SIGCONT")) { sig = SIGCONT; }
-		if(_IS("STOP") || _IS("19") || _IS("SIGSTOP")) { sig = SIGSTOP; }
-		if(_IS("TSTP") || _IS("20") || _IS("SIGTSTP")) { sig = SIGTSTP; }
-		if(_IS("TTIN") || _IS("21") || _IS("SIGTTIN")) { sig = SIGTTIN; }
-		if(_IS("TTOU") || _IS("22") || _IS("SIGTTOU")) { sig = SIGTTOU; }
-		if(_IS("URG") || _IS("23") || _IS("SIGURG")) { sig = SIGURG; }
-		if(_IS("XCPU") || _IS("24") || _IS("SIGXCPU")) { sig = SIGXCPU; }
-		if(_IS("XFSZ") || _IS("25") || _IS("SIGXFSZ")) { sig = SIGXFSZ; }
-		if(_IS("VTALRM") || _IS("26") || _IS("SIGVTALRM")) { sig = SIGVTALRM; }
-		if(_IS("PROF") || _IS("27") || _IS("SIGPROF")) { sig = SIGPROF; }
-		if(_IS("WINCH") || _IS("28") || _IS("SIGWINCH")) { sig = SIGWINCH; }
-		if(_IS("IO") || _IS("29") || _IS("SIGIO")) { sig = SIGIO; }
-		if(_IS("PWR") || _IS("30") || _IS("SIGPWR")) { sig = SIGPWR; }
-		if(_IS("SYS") || _IS("31") || _IS("SIGSYS")) { sig = SIGSYS; }
+	pid_t pid = 0;
+	int sig = SIGTERM;  // Default signal
+	int pid_arg_index = -1;
 
-		if (sig == -1) {
-			fprintf(stderr, "Unknown signal -- '%s'\n", argv[1]);
-			fprintf(stderr, "try pass '-l' for signal list\n");
-			return 1;
+	/* Parse signal and PID arguments */
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-') {
+			/* Handle signal specification */
+			const char *sigspec = argv[i] + 1;
+			
+			/* Skip extra '-' for long options */
+			if (sigspec[0] == '-') sigspec++;
+			
+			sig = sig_name_to_num(sigspec);
+			if (sig < 0) {
+				fprintf(stderr, "Invalid signal: %s\n", sigspec);
+				fprintf(stderr, "Use 'kill --list' for available signals\n");
+				return EXIT_FAILURE;
+			}
+		} 
+		else {
+			/* Handle PID */
+			char *end;
+			long val = strtol(argv[i], &end, 10);
+			if (*end != '\0' || val <= 0) {
+				fprintf(stderr, "Invalid PID: %s\n", argv[i]);
+				return EXIT_FAILURE;
+			}
+			
+			if (pid != 0) {
+				fprintf(stderr, "Error: Multiple PIDs specified\n");
+				return EXIT_FAILURE;
+			}
+			
+			pid = (pid_t)val;
+			pid_arg_index = i;
 		}
-	
-		if(kill(pid, sig) < 0) {
-			perror("kill");
-			return 1;
-		}
-		return 0;
 	}
-	return 0;
+
+	/* Verify PID was specified */
+	if (pid == 0) {
+		fprintf(stderr, "Error: No PID specified\n");
+		show_help();
+		return EXIT_FAILURE;
+	}
+
+	/* Send signal */
+	if (kill(pid, sig) < 0) {
+		switch (errno) {
+			case EPERM:
+				fprintf(stderr, "Permission denied to send signal to process %d\n", pid);
+				break;
+			case ESRCH:
+				fprintf(stderr, "No such process: %d\n", pid);
+				break;
+			case EINVAL:
+				fprintf(stderr, "Invalid signal: %d\n", sig);
+				break;
+			default:
+				perror("kill");
+		}
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
 }
 
 REGISTER_MODULE(kill);
