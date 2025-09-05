@@ -63,7 +63,7 @@ static const char* __ssig(int sig) {
 #ifdef SIGLOST
 		case SIGLOST: return "LOST";
 #endif
-#ifdef SIGUNUSED
+#if defined(SIGUNUSED) && SIGUNUSED != SIGSYS
 		case SIGUNUSED: return "UNUSED";
 #endif
 		default: break;
