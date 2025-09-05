@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 // CRC32 polynomial (IEEE 802.3)
 #define CRC32_POLY 0xEDB88320
@@ -44,8 +45,8 @@ static void init_crc32_table() {
 	}
 }
 
-// Calculate CRC32 for data buffer
-static uint32_t calculate_crc32(const void *data, size_t length) {
+// Calculate CRC32 for data buffer (unused)
+fused static uint32_t calculate_crc32(const void *data, size_t length) {
 	const uint8_t *bytes = (const uint8_t *)data;
 	uint32_t crc = 0xFFFFFFFF;
 	

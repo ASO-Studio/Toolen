@@ -16,11 +16,11 @@
 #include <unistd.h>
 #include <errno.h>
 #include <getopt.h>
-#include <linux/limits.h>
 #include <sys/sysmacros.h>
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 /* Display error message in coreutils style */
 static void error_msg(const char *msg) {

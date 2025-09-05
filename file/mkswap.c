@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include <sys/syscall.h>
 #include <sys/mman.h>
-#include <linux/fs.h>
 
 #include "config.h"
 #include "module.h"

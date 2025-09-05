@@ -37,6 +37,12 @@ static void insmod_show_help() {
 }
 
 int insmod_main(int argc, char *argv[]) {
+#if !defined(SYS_init_module)
+	#warning SYS_init_module does not support on this platform
+	pplog(P_NAME, "does not support on this platform");
+	return 1;
+#else
+
 	if(!argv[1]) {
 		fprintf(stderr, "insmod: Requires 1 argument\n"
 				"Try pass '--help' for more details\n");
@@ -70,8 +76,13 @@ int insmod_main(int argc, char *argv[]) {
 		strcat(params, argv[i]);
 	}
 
+#ifdef SYS_finit_module
 	int rc;
 	rc = syscall(SYS_finit_module, fd, params, 0);
+#else
+	int rc = -1;
+	errno = ENOSYS;
+#endif
 
 	if (rc && (fd == 0 || errno == ENOSYS)) {
 		size_t fdsize = getFdSize(fd);
@@ -96,6 +107,7 @@ int insmod_main(int argc, char *argv[]) {
 	free(params);
 	close(fd);
 	return 0;
+#endif
 }
 
 REGISTER_MODULE(insmod);

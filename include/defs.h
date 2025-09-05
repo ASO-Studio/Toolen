@@ -5,6 +5,10 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
+#if __has_include(<linux/limits.h>)
+# include <linux/limits.h>
+#endif
+
 #define unalign __attribute__((packed))		// No alignment
 #define nonret __attribute__((noreturn))	// No return
 #define initary __attribute__((constructor))	// Would be executed before main
@@ -15,5 +19,9 @@
 #define fused __attribute__((used))		// The function would be used
 #define weakdef __attribute__((weak))		// Weak symbol definition
 #define fthrough __attribute__((fallthrough))	// fall-through
+
+#ifndef PATH_MAX
+# define PATH_MAX 1024
+#endif
 
 #endif // _DEFS_H

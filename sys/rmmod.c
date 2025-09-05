@@ -29,6 +29,11 @@ static void rmmod_show_help() {
 }
 
 int rmmod_main(int argc, char *argv[]) {
+#if !defined(SYS_delete_module)
+	#warning SYS_delete_module does not support on this platform
+	pplog(P_NAME, "does not suppprt on this platform");
+	return 1;
+#else
 
 	if(argc < 2) {
 		fprintf(stderr, "Usage: rmmod [options] ModuleName ...\n");
@@ -95,6 +100,7 @@ int rmmod_main(int argc, char *argv[]) {
 	}
 
 	return 0;
+#endif
 }
 
 REGISTER_MODULE(rmmod);
