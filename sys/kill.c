@@ -148,7 +148,6 @@ int kill_main(int argc, char *argv[]) {
 
 	pid_t pid = 0;
 	int sig = SIGTERM;  // Default signal
-	int pid_arg_index = -1;
 
 	/* Parse signal and PID arguments */
 	for (int i = 1; i < argc; i++) {
@@ -181,7 +180,6 @@ int kill_main(int argc, char *argv[]) {
 			}
 			
 			pid = (pid_t)val;
-			pid_arg_index = i;
 		}
 	}
 

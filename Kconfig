@@ -96,7 +96,7 @@ menu "Build options"
 
 	config NOWCPP
 		bool "Disable #warning support"
-		default y
+		default n
 		help
 			Disable support for #warning
 
