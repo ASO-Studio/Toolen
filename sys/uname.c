@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/utsname.h>
 #include <unistd.h>
 #include <pwd.h>
@@ -113,9 +114,16 @@ int uname_main(int argc, char *argv[]) {
 		printf("%s ", uts.version);
 	if(toShow.machine)	// Print machine
 		printf("%s ", uts.machine);
-	// TODO: Print userspace type
-	if(toShow.userspace)
-		printf("GNU/Linux ");	// Print GNU/Linux by default
+	if(toShow.userspace) {
+		if (strcasecmp(uts.sysname, "Linux") == 0) {
+			if (strstr(uts.release, "android")) {	// Android Linux Kernel
+				printf("Android ");
+			} else	// Others: GNU/Linux
+				printf("GNU/Linux ");
+		} else {
+			printf("GNU ");
+		}
+	}
 
 	printf("\b \b\n");
 
