@@ -10,7 +10,12 @@
  */
 
 #include <stdio.h>
-#include <libgen.h>
+
+#if __has_include(<libgen.h>)
+# include <libgen.h>
+#else
+# define NO_LIBGEN 1
+#endif
 
 #include "config.h"
 #include "module.h"
@@ -35,7 +40,13 @@ int basename_main(int argc, char *argv[]) {
 	}
 
 	for (int i = 1; i < argc; i++) {
-		printf("%s\n", basename(argv[i]));
+		printf("%s\n",
+#ifndef NO_LIBGEN
+				basename(argv[i])
+#else // !NO_LIBGEN
+				lib_basename(argv[i]);
+#endif // NO_LIBGEN
+				);
 	}
 
 	return 0;

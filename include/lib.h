@@ -44,4 +44,10 @@ void setProgramName(const char *n); // Non-return
 /* Check if program did not run with root permission */
 void isRoot();	// Non-return, NON-ROOT->EXIT(1)
 
+/* basename() implementation */
+char *lib_basename(char *path);
+
+/* dirname() implementation */
+char *lib_dirname(char *path);
+
 #endif // _LIB_H

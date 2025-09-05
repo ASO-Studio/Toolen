@@ -1,5 +1,5 @@
 /**
- *	basename.c - Show directory portion of path
+ *	dirname.c - Show directory portion of path
  *
  * 	Created by RoofAlan
  *		2025/8/24
@@ -9,7 +9,12 @@
  */
 
 #include <stdio.h>
-#include <libgen.h>
+
+#if __has_include(<libgen.h>)
+# include <libgen.h>
+#else
+# define NO_LIBGEN
+#endif
 
 #include "config.h"
 #include "module.h"
@@ -34,7 +39,13 @@ int dirname_main(int argc, char *argv[]) {
 	}
 
 	for (int i = 1; i < argc; i++) {
-		printf("%s\n", dirname(argv[i]));
+		printf("%s\n",
+#ifndef NO_LIBGEN
+				dirname(argv[i])
+#else // !NO_LIBGEN
+				lib_dirname(argv[i])
+#endif // NO_LIBGEN
+				);
 	}
 
 	return 0;
