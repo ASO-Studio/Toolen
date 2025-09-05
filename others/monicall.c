@@ -31,6 +31,16 @@ typedef struct MoniStruct {
 # define ARG2_REG rsi
 # define ARG3_REG rdx
 # define ARG4_REG r10
+# define ARG5_REG r8
+# define ARG6_REG r9
+
+# define SYSCALL_NUM32 eax
+# define ARG1_REG32 ebx
+# define ARG2_REG32 ecx
+# define ARG3_REG32 edx
+# define ARG4_REG32 esi
+# define ARG5_REG32 edi
+# define ARG6_REG32 ebp
 
 // Definitions for aarch64
 #elif defined(__aarch64__)
@@ -40,10 +50,12 @@ typedef struct MoniStruct {
 # define ARG2_REG regs[1]
 # define ARG3_REG regs[2]
 # define ARG4_REG regs[3]
+# define ARG5_REG regs[4]
+# define ARG6_REG regs[5]
 
 // Others: unsupported
 #else
-# error "Unsupported architecture"
+# error "Unsupported architecture, please disable this command"
 #endif
 
 // Add a syscall catcher
