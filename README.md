@@ -3,7 +3,7 @@
   <h1 align="center">Toolen</h1>
 </div>
 
-**Language**: [English](README.md)|[中文](README_zh-CN.md)
+**Language**: *English*|[中文](README_zh-CN.md)
 
 ## Overview
 
