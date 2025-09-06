@@ -180,7 +180,7 @@ static void catch_write(pid_t pid, struct user_regs_struct *regs) {
 
 void catch_read(int pid, struct user_regs_struct *regs) {
 	int fd = regs->ARG1_REG;
-	void *buf = (void*)regs->ARG1_REG;
+	void *buf = (void*)regs->ARG2_REG;
 	size_t size = regs->ARG3_REG;
 	printf("==> read(%d, %p, %zu)\n", fd, buf, size);
 }
@@ -224,6 +224,11 @@ done:
 static void catch_exit(pid_t pid, struct user_regs_struct *regs) {
 	int status = (int)regs->ARG1_REG;
 	printf("==> exit(%d)\n", status);
+}
+
+static void catch_exit_group(pid_t pid, struct user_regs_struct *regs) {
+	int status = (int)regs->ARG1_REG;
+	printf("==> exit_group(%d)\n", status);
 }
 
 static void catch_openat(pid_t pid, struct user_regs_struct *regs) {
@@ -344,7 +349,7 @@ int monicall_main(int argc, char **argv) {
 	addCatcher(&m, SYS_openat, catch_openat);
 	addCatcher(&m, SYS_read, catch_read);
 	addCatcher(&m, SYS_exit, catch_exit);
-	addCatcher(&m, SYS_exit_group, catch_exit);
+	addCatcher(&m, SYS_exit_group, catch_exit_group);
 #ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
 #endif
