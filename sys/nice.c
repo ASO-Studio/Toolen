@@ -43,7 +43,7 @@ int nice_main(int argc, char *argv[]) {
 	int i = 1;
 	for (; i < argc; i++) {
 		if (strcmp(argv[i], "-n") == 0) {
-			if (!argv[i+1]) {
+			if (!argv[i+1]) {	// -n [NULL]
 				pplog(P_NAME | P_HELP, "missing number");
 				return 1;
 			} else {
