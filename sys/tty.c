@@ -1,5 +1,5 @@
 /**
- *	tty.c - 
+ *	tty.c - Show filename of terminal connected to stdin
  *
  * 	Created by RoofAlan
  *		2025/8/26
