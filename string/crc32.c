@@ -138,8 +138,7 @@ static int check_file(const char *filename) {
 	int format_errors = 0;
 	int mismatches = 0;
 	int total = 0;
-	int valid = 0;
-	
+
 	if (strcmp(filename, "-") == 0) {
 		file = stdin;
 	} else {
@@ -190,7 +189,6 @@ static int check_file(const char *filename) {
 		
 		// Compare results
 		if (actual_crc == expected_crc) {
-			valid++;
 			if (!status_mode && !quiet_mode) {
 				printf("%s: OK\n", file_path);
 			}
