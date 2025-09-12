@@ -44,7 +44,7 @@ static void add_block_fd(int fd) {
 	LOG("Adding fd: %d\n", fd);
 	io_block_t *new_block = (io_block_t *)malloc(sizeof(io_block_t));
 	if (!new_block) {
-		fprintf(stderr, "%s: Cannot allocate memory for management structure\n", getProgramName);
+		fprintf(stderr, "%s: Cannot allocate memory for management structure\n", getProgramName());
 		exit(EXIT_FAILURE);
 	}
 
