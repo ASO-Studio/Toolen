@@ -1,6 +1,6 @@
 /*
  * module.h - Module registration
- * Support Platforms: Linux/macOS/Windows (GCC/Clang/MSVC)
+ * Support Platforms: Linux/macOS/Windows/Hurd (GCC/Clang/MSVC)
  */
 #pragma once
 
@@ -44,6 +44,11 @@ typedef struct ModApi {
 		.next = NULL \
 	}
 
+/**
+ * Module registration macro 2
+ * @param module_name (need function 'module_name_main')
+ * @param mname (need a string name for this module)
+ */
 #define REGISTER_MODULE2(module, mname) \
 	static ModApi _module2_##module FEATURE_SECTION = { \
 		.name = mname , \
@@ -51,6 +56,12 @@ typedef struct ModApi {
 		.priority = 0,	\
 		.next = NULL \
 	}
+
+/**
+ * Module entry macro
+ * @param name (Would expend to 'name_main')
+ */
+#define M_ENTRY(name) int name##_main(int argc, char *argv[])
 
 // Redirect
 #define REDIRECT(src, target) \

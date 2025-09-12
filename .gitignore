@@ -5,6 +5,7 @@ bin
 generated
 .config
 .config.old
+.clangd
 test
 objs
 kconfig/mconf

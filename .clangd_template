@@ -1,0 +1,12 @@
+---
+CompileFlags:
+  Add:
+    - "-Wall"
+    - "-Wextra"
+    - "-Werror"
+    - "-I${workspaceFolder}/include"
+
+Diagnostics:
+  ClangTidy:
+    FastCheckFilter: Strict
+...
