@@ -21,6 +21,6 @@ int xopen(const char *pathname, int flags, mode_t mode);
 int xopen2(const char *pathname, int flags);
 
 // Encapsulated close
-int xclose(int fd);
+void xclose(int fd);
 
 #endif // _XIO_H

@@ -7,6 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "lib.h"
 #include "debug.h"
 
 // Memory block node structure
@@ -23,7 +24,7 @@ static void add_block(void *ptr) {
 	mem_block_t *new_block = (mem_block_t *)malloc(sizeof(mem_block_t));
 	if (!new_block) {
 		// If even the management node allocation fails, exit directly
-		fprintf(stderr, "Fatal error: Cannot allocate memory for management structure\n");
+		fprintf(stderr, "%s: Cannot allocate memory for management structure\n", getProgramName());
 		exit(EXIT_FAILURE);
 	}
 
@@ -83,7 +84,7 @@ static void cleanup_all(void) {
 
 // Handle allocation failure
 static void allocation_failed(void) {
-	fprintf(stderr, "Failed to allocate memory: %s\n", strerror(errno));
+	fprintf(stderr, "%s: Failed to allocate memory: %s\n", getProgramName(), strerror(errno));
 	cleanup_all();
 	exit(EXIT_FAILURE);
 }

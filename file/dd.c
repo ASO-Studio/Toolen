@@ -119,7 +119,7 @@ static off_t parse_size(const char *str) {
 }
 
 static int parse_conv(const char *str, unsigned int *conv_flags) {
-	char *copy = strdup(str);
+	char *copy = xstrdup(str);
 	char *token;
 	char *rest = copy;
 	
@@ -139,17 +139,17 @@ static int parse_conv(const char *str, unsigned int *conv_flags) {
 		} else if (strcmp(token, "sparse") == 0) {
 			*conv_flags |= CONV_SPARSE;
 		} else {
-			free(copy);
+			xfree(copy);
 			return -1; // Unknown conversion
 		}
 	}
 	
-	free(copy);
+	xfree(copy);
 	return 0;
 }
 
 static int parse_flags(const char *str, unsigned int *flag_flags) {
-	char *copy = strdup(str);
+	char *copy = xstrdup(str);
 	char *token;
 	char *rest = copy;
 	
@@ -170,12 +170,12 @@ static int parse_flags(const char *str, unsigned int *flag_flags) {
 		} else if (strcmp(token, "noatime") == 0) {
 			*flag_flags |= FLAG_NOATIME;
 		} else {
-			free(copy);
+			xfree(copy);
 			return -1; // Unknown flag
 		}
 	}
 	
-	free(copy);
+	xfree(copy);
 	return 0;
 }
 
@@ -315,16 +315,16 @@ int dd_main(int argc, char *argv[]) {
 			return 1;
 		}
 	}
-	
+
 	// If bs is specified, it overrides both ibs and obs
 	if (bs > 0) {
 		ibs = bs;
 		obs = bs;
 	}
-	
+
 	// Record start time for statistics
 	gettimeofday(&start_time, NULL);
-	
+
 	// Open input file
 	int input_flags = O_RDONLY;
 #ifdef O_DIRECT
@@ -336,11 +336,7 @@ int dd_main(int argc, char *argv[]) {
 	if (iflag_flags & FLAG_NOATIME) input_flags |= O_NOATIME;
 	
 	if (input_file) {
-		input_fd = open(input_file, input_flags);
-		if (input_fd < 0) {
-			fprintf(stderr, "dd: failed to open '%s': %s\n", input_file, strerror(errno));
-			return 1;
-		}
+		input_fd = xopen2(input_file, input_flags);
 	}
 	
 	// Open output file
@@ -357,20 +353,15 @@ int dd_main(int argc, char *argv[]) {
 	if (oflag_flags & FLAG_NOATIME) output_flags |= O_NOATIME;
 	
 	if (output_file) {
-		output_fd = open(output_file, output_flags, 0644);
-		if (output_fd < 0) {
-			fprintf(stderr, "dd: failed to open '%s': %s\n", output_file, strerror(errno));
-			if (input_file) close(input_fd);
-			return 1;
-		}
+		output_fd = xopen(output_file, output_flags, 0644);
 	}
 	
 	// Skip input blocks if requested
 	if (skip > 0) {
 		if (lseek(input_fd, skip * ibs, SEEK_SET) < 0) {
 			fprintf(stderr, "dd: failed to skip %ld blocks: %s\n", skip, strerror(errno));
-			if (input_file) close(input_fd);
-			if (output_file) close(output_fd);
+			if (input_file) xclose(input_fd);
+			if (output_file) xclose(output_fd);
 			return 1;
 		}
 	}
@@ -379,24 +370,15 @@ int dd_main(int argc, char *argv[]) {
 	if (seek > 0) {
 		if (lseek(output_fd, seek * obs, SEEK_SET) < 0) {
 			fprintf(stderr, "dd: failed to seek %ld blocks: %s\n", seek, strerror(errno));
-			if (input_file) close(input_fd);
-			if (output_file) close(output_fd);
+			if (input_file) xclose(input_fd);
+			if (output_file) xclose(output_fd);
 			return 1;
 		}
 	}
 	
 	// Allocate buffers for data transfer
-	char *inbuf = malloc(ibs);
-	char *outbuf = malloc(obs);
-	if (!inbuf || !outbuf) {
-		fprintf(stderr, "dd: failed to allocate buffers: %s\n", strerror(errno));
-		free(inbuf);
-		free(outbuf);
-		if (input_file) close(input_fd);
-		if (output_file) close(output_fd);
-		return 1;
-	}
-	
+	char *inbuf = xmalloc(ibs);
+	char *outbuf = xmalloc(obs);
 	// Copy data
 	off_t blocks_copied = 0;
 	ssize_t bytes_read;
@@ -410,42 +392,42 @@ int dd_main(int argc, char *argv[]) {
 				continue;
 			} else {
 				fprintf(stderr, "dd: read error: %s\n", strerror(errno));
-				free(inbuf);
-				free(outbuf);
-				if (input_file) close(input_fd);
-				if (output_file) close(output_fd);
+				xfree(inbuf);
+				xfree(outbuf);
+				if (input_file) xclose(input_fd);
+				if (output_file) xclose(output_fd);
 				return 1;
 			}
 		}
-		
+
 		if (bytes_read == 0) {
 			break; // EOF
 		}
-		
+
 		// Handle sync conversion (pad with zeros)
 		if ((conv_flags & CONV_SYNC) && bytes_read < ibs) {
 			memset(inbuf + bytes_read, 0, ibs - bytes_read);
 			bytes_read = ibs;
 		}
-		
+
 		total_records_in++;
 		total_bytes += bytes_read;
-		
+
 		// Handle sparse conversion
 		if ((conv_flags & CONV_SPARSE) && is_zero_buffer(inbuf, bytes_read)) {
 			if (lseek(output_fd, bytes_read, SEEK_CUR) < 0) {
 				fprintf(stderr, "dd: seek error: %s\n", strerror(errno));
-				free(inbuf);
-				free(outbuf);
-				if (input_file) close(input_fd);
-				if (output_file) close(output_fd);
+				xfree(inbuf);
+				xfree(outbuf);
+				if (input_file) xclose(input_fd);
+				if (output_file) xclose(output_fd);
 				return 1;
 			}
 			total_records_out++;
 			blocks_copied++;
 			continue;
 		}
-		
+
 		// Write data (handle different input and output block sizes)
 		ssize_t bytes_to_write = bytes_read;
 		ssize_t bytes_written = 0;
@@ -453,14 +435,14 @@ int dd_main(int argc, char *argv[]) {
 		while (bytes_to_write > 0) {
 			ssize_t chunk_size = (bytes_to_write > obs) ? obs : bytes_to_write;
 			memcpy(outbuf, inbuf + bytes_written, chunk_size);
-			
+
 			ssize_t written = write(output_fd, outbuf, chunk_size);
 			if (written < 0) {
 				fprintf(stderr, "dd: write error: %s\n", strerror(errno));
-				free(inbuf);
-				free(outbuf);
-				if (input_file) close(input_fd);
-				if (output_file) close(output_fd);
+				xfree(inbuf);
+				xfree(outbuf);
+				if (input_file) xclose(input_fd);
+				if (output_file) xclose(output_fd);
 				return 1;
 			}
 			
@@ -494,10 +476,10 @@ int dd_main(int argc, char *argv[]) {
 	}
 	
 	// Cleanup
-	free(inbuf);
-	free(outbuf);
-	if (input_file) close(input_fd);
-	if (output_file) close(output_fd);
+	xfree(inbuf);
+	xfree(outbuf);
+	if (input_file) xclose(input_fd);
+	if (output_file) xclose(output_fd);
 	
 	return 0;
 }

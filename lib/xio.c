@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "lib.h"
 #include "debug.h"
 
 // I/O block node structure
@@ -28,7 +29,7 @@ static void add_block_file(FILE *fp) {
 	LOG("Adding file: %p\n", fp);
 	io_block_t *new_block = (io_block_t *)malloc(sizeof(io_block_t));
 	if (!new_block) {
-		fprintf(stderr, "Fatal error: Cannot allocate memory for management structure\n");
+		fprintf(stderr, "%s: Cannot allocate memory for management structure\n", getProgramName());
 		exit(EXIT_FAILURE);
 	}
 
@@ -43,7 +44,7 @@ static void add_block_fd(int fd) {
 	LOG("Adding fd: %d\n", fd);
 	io_block_t *new_block = (io_block_t *)malloc(sizeof(io_block_t));
 	if (!new_block) {
-		fprintf(stderr, "Fatal error: Cannot allocate memory for management structure\n");
+		fprintf(stderr, "%s: Cannot allocate memory for management structure\n", getProgramName);
 		exit(EXIT_FAILURE);
 	}
 
@@ -118,7 +119,7 @@ static void cleanup_all(void) {
 
 // Handle open failure
 static void open_failed(void) {
-	fprintf(stderr, "Failed to open file: %s\n", strerror(errno));
+	fprintf(stderr, "%s: Failed to open file: %s\n", getProgramName(), strerror(errno));
 	cleanup_all();
 	exit(EXIT_FAILURE);
 }
