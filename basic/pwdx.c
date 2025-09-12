@@ -23,7 +23,7 @@ static void pwdx_show_help() {
 			"Print working directory of processes list on command line\n");
 }
 
-int pwdx_main(int argc, char *argv[]) {
+M_ENTRY(pwdx) {
 	if (argc < 2) {
 		pplog(P_HELP | P_NAME, "Need 1 argument");
 		return 1;

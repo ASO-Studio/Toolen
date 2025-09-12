@@ -86,7 +86,7 @@ static void echo_show_help() {
 		"  -n      Print without drawing new line\n");
 }
 
-int echo_main(int argc, char *argv[]) {
+M_ENTRY(echo) {
 	if(!argv[1]) {
 		printf("\n");
 		return 0;

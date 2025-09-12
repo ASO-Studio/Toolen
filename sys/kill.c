@@ -124,7 +124,7 @@ static void show_help(void) {
 		"  -l, --list     list all supported signals\n");
 }
 
-int kill_main(int argc, char *argv[]) {
+M_ENTRY(kill) {
 	if (argc < 2) {
 		show_help();
 		return EXIT_FAILURE;

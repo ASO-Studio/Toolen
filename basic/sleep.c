@@ -60,7 +60,7 @@ static void show_usleep_help() {
 			"Wait before exiting\n");
 }
 
-int sleep_main(int argc, char **argv) {
+M_ENTRY(sleep) {
 	if(argc < 2) {
 		fprintf(stderr, "sleep: Need an argument\n");
 		fprintf(stderr, "Try pass '--help' for more details\n");
@@ -81,7 +81,7 @@ int sleep_main(int argc, char **argv) {
 	return 0;
 }
 
-int usleep_main(int argc, char **argv) {
+M_ENTRY(usleep) {
 	if(argc < 2) {
 		fprintf(stderr, "usleep: Need an argument\n");
 		fprintf(stderr, "Try pass '--help' for more details\n");

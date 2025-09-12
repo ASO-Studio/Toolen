@@ -30,7 +30,7 @@ static void reboot_show_help() {
 			"Tips: If you're using systemd as a init program, we don't recommand you use this.\n");
 }
 
-int reboot_main(int argc, char *argv[]) {
+M_ENTRY(reboot) {
 	int opt;
 	int opt_index = 0;
 	static struct option opts[] = {

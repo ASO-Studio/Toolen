@@ -26,7 +26,7 @@ static void dirname_show_help() {
 			"Show directory portion of path\n");
 }
 
-int dirname_main(int argc, char *argv[]) {
+M_ENTRY(dirname) {
 	if (argc < 2) {
 		fprintf(stderr, "dirname: Need 1 argument\n"
 				"Try pass '--help' for more details\n");

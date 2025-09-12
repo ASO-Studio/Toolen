@@ -82,7 +82,7 @@ static void mkdir_show_help() {
 			"  -v	  Verbose output(--verbose)\n");
 }
 
-int mkdir_main(int argc, char *argv[]) {
+M_ENTRY(mkdir) {
 	int opt;
 	int option_index = 0;
 

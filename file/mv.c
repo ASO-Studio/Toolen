@@ -343,7 +343,7 @@ static void parse_update_type(const char *update) {
 }
 
 // Main logic for mv command
-int mv_main(int argc, char *argv[]) {
+M_ENTRY(mv) {
 	static const struct option long_opts[] = {
 		{"backup", optional_argument, NULL, 'B'},
 		{"debug", no_argument, NULL, 'D'},

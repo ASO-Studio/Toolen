@@ -239,7 +239,7 @@ static void print_help(const char *prog_name) {
 	fprintf(stderr, "  <output_decryptor>: Path for the generated decryptor (e.g., decrypt.c)\n");
 }
 
-int encsh_main(int argc, char *argv[]) {
+M_ENTRY(encsh) {
 	// Check command-line arguments
 	if (argc != 4) {
 		print_help(argv[0]);

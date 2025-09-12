@@ -11,7 +11,7 @@
 
 void isRoot() {
 	if (getuid() != 0) {
-		fprintf(stderr, "%s: Need root\n", getProgramName());
+		fprintf(stderr, "%s: Need root (Try pass '--help')\n", getProgramName());
 		exit(1);
 	}
 }

@@ -23,7 +23,7 @@ static void tty_show_help() {
 			"  -s Exit code only\n");
 }
 
-int tty_main(int argc, char *argv[]) {
+M_ENTRY(tty) {
 	char *t = ttyname(0);
 	int ret = !t;
 

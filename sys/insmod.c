@@ -36,7 +36,7 @@ static void insmod_show_help() {
 			"Load a kernel module\n");
 }
 
-int insmod_main(int argc, char *argv[]) {
+M_ENTRY(insmod) {
 #if !defined(SYS_init_module)
 	#warning SYS_init_module does not support on this platform
 	pplog(P_NAME, "does not support on this platform");

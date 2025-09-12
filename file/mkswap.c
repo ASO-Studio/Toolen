@@ -42,7 +42,7 @@ static const char *show_uuid(const char *uuid) {
 	return uuid;
 }
 
-int mkswap_main(int argc, char *argv[]) {
+M_ENTRY(mkswap) {
 	int opt;
 	char *label = NULL;
 	char *device = NULL;

@@ -128,7 +128,7 @@ static int remove_directory(const char *path, int force, int interactive, int ve
 	return 0;
 }
 
-int rm_main(int argc, char *argv[]) {
+M_ENTRY(rm) {
 	int opt;
 	int force = 0, interactive = 0, recursive = 0, verbose = 0;
 

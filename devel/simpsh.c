@@ -96,7 +96,7 @@ static void __sigint_callback(int sig) {
 	draw_prompt();
 }
 
-int simpsh_main(int argc, char *argv[]) {
+M_ENTRY(simpsh) {
 	int retValue = 0;
 	char cmdBuf[2048];
 	int inputFd = 0;

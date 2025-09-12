@@ -27,7 +27,7 @@ static void basename_show_help() {
 			"Return non-directory portion of a pathname removing suffix.\n");
 }
 
-int basename_main(int argc, char *argv[]) {
+M_ENTRY(basename) {
 	if (argc < 2) {
 		fprintf(stderr, "basename: Need 1 argument\n"
 				"Try pass '--help' for more details\n");

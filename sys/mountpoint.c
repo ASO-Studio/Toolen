@@ -87,7 +87,7 @@ static int is_mountpoint(const char *dir, dev_t *devno) {
 	return (st_dir.st_dev != st_parent.st_dev) ? 1 : 0;
 }
 
-int mountpoint_main(int argc, char *argv[]) {
+M_ENTRY(mountpoint) {
 	int quiet = 0;		  // Quiet mode flag
 	int devno_mode = 0;	 // Device number output mode
 	int exit_status = 0;	// Program exit status

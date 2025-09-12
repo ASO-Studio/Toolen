@@ -22,7 +22,7 @@ static void sync_show_help() {
 			"Write pending cached data to disk, blocking until done\n");
 }
 
-int sync_main(int argc, char *argv[]) {
+M_ENTRY(sync) {
 	// Parse arguments
 	if (findArg(argv, argc, "--help")) {
 		sync_show_help();

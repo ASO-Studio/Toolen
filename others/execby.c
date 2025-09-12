@@ -54,7 +54,7 @@ static void execby_show_help() {
 			"Execute PROGRAM as user USERNAME\n");
 }
 
-int execby_main(int argc, char *argv[]) {
+M_ENTRY(execby) {
 	if (argc < 2) {
 		pplog(P_HELP, "Usage: execby USERNAME PROGRAM [ARGS]...");
 		return 1;

@@ -24,7 +24,7 @@ static void mkfifo_show_help() {
 }
 
 // Main functions
-int mkfifo_main(int argc, char *argv[]) {
+M_ENTRY(mkfifo) {
 	if(!argv[1]) {
 		fprintf(stderr, "mkfifo: no argument gave\n"
 				"Try pass '--help' for more details\n");

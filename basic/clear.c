@@ -20,7 +20,7 @@ static void clear_show_help() {
 		"Clear screen\n");
 }
 
-int clear_main(int argc, char *argv[]) {
+M_ENTRY(clear) {
 	if (argv[1]) {
 		if(strcmp(argv[1], "--help") == 0) {
 			clear_show_help();

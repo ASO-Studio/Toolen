@@ -76,7 +76,7 @@ static long get_nproc_procfs() {
 	return count;
 }
 
-int nproc_main(int argc, char *argv[]) {
+M_ENTRY(nproc) {
 	int all = 0;
 	long ignore = 0;
 	long nproc;

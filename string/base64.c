@@ -193,7 +193,7 @@ static int base64_decode(FILE *input, FILE *output, int ignore_garbage) {
 /**
  * Main function: parse arguments and dispatch encode/decode
  */
-int base64_main(int argc, char *argv[]) {
+M_ENTRY(base64) {
 	int decode = 0;		  // 1 = decode mode, 0 = encode mode
 	int ignore_garbage = 0;  // 1 = skip invalid characters when decoding
 	int wrap = DEFAULT_WRAP; // Line wrap length for encoding

@@ -30,7 +30,7 @@ static void tee_show_help() {
 }
 
 // Main function
-int tee_main(int argc, char *argv[]) {
+M_ENTRY(tee) {
 	int append = 0;
 	int opt;
 

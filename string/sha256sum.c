@@ -730,7 +730,7 @@ static int compute_mode(int argc, char *argv[]) {
  * @param argv Array of command-line arguments
  * @return Exit status
  */
-int sha256sum_main(int argc, char *argv[]) {
+M_ENTRY(sha256sum) {
 	// Parse command-line arguments
 	if (parse_args(argc, argv) != 0) {
 		return 1;

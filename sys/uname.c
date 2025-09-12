@@ -34,7 +34,7 @@ static void uname_show_help() {
 			"  -o  Userspace type\n");
 }
 
-int uname_main(int argc, char *argv[]) {
+M_ENTRY(uname) {
 
 	int opt;
 	int opt_index = 0;

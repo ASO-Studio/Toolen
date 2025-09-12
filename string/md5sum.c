@@ -451,7 +451,7 @@ static void print_help() {
 	printf("    --help         display this help and exit\n");
 }
 
-int md5sum_main(int argc, char *argv[]) {
+M_ENTRY(md5sum) {
 	bool binary_mode = false;
 	bool check_mode = false;
 	bool tag_mode = false;

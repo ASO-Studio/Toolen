@@ -582,7 +582,7 @@ static void simped_show_help() {
 			"  :q!  Quit and don't save the content\n");
 }
 
-int simped_main(int argc, char *argv[]) {
+M_ENTRY(simped) {
 	if (argc < 2) {
 		fprintf(stderr, "Usage: simped FILE\n"
 						"Try pass '--help' for more details\n");

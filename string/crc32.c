@@ -235,7 +235,7 @@ static int check_file(const char *filename) {
 	return mismatches > 0 ? 1 : 0;
 }
 
-int crc32_main(int argc, char *argv[]) {
+M_ENTRY(crc32) {
 	// Initialize CRC table
 	init_crc32_table();
 	

@@ -26,7 +26,7 @@ static void arch_show_help() {
 			"Print machine(hardware) name, same as uname -m\n");
 }
 
-int arch_main(int argc, char *argv[]) {
+M_ENTRY(arch) {
 	if (argc >= 2 && findArg(argv, argc, "--help")) {
 		arch_show_help();
 		return 0;

@@ -80,7 +80,7 @@ static int convert_file(const char *filename) {
 	return result;
 }
 
-int dos2unix_main(int argc, char *argv[]) {
+M_ENTRY(dos2unix) {
 	int i;
 	int exit_status = 0;
 	

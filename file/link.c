@@ -21,7 +21,7 @@ static void link_show_help() {
 			"Create a hardlink to file\n");
 }
 
-int link_main(int argc, char *argv[]) {
+M_ENTRY(link) {
 	if (argc > 3) {
 		pplog(P_NAME | P_HELP, "Max 2 arguments");
 		return 1;

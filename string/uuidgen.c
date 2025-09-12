@@ -20,7 +20,7 @@ static void uuidgen_show_help() {
 			"Generate a UUID (Version 4)\n");
 }
 
-int uuidgen_main(int argc, char *argv[]) {
+M_ENTRY(uuidgen) {
 	if(argc > 1 && findArg(argv, argc, "--help")) {
 		uuidgen_show_help();
 		return 0;

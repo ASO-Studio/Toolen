@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <sys/uio.h>
@@ -329,7 +330,7 @@ static void monicall_show_help() {
 			"Captures system calls that are called when the program is executed\n");
 }
 
-int monicall_main(int argc, char **argv) {
+M_ENTRY(monicall) {
 	if (argc < 2) {
 		fprintf(stderr, "Usage: monicall PROGRAM [ARGS]...\n"
 				"Try pass '--help' for more details\n");

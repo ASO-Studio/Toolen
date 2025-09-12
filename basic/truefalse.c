@@ -11,11 +11,11 @@
 #include "config.h"
 #include "module.h"
 
-int true_main(int argc, char *argv[]) {
+M_ENTRY(true) {
 	return 0;
 }
 
-int false_main(int argc, char *argv[]) {
+M_ENTRY(false) {
 	return 1;
 }
 

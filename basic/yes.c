@@ -22,7 +22,7 @@ static void yes_show_help() {
 		"  --help  show this page\n");
 }
 
-int yes_main(int argc, char *argv[]) {
+M_ENTRY(yes) {
 	const char *strToShow = "y";
 
 	if (argv[1] && argv[1][0] == '-') {	// It's an option

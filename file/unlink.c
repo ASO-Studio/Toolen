@@ -21,7 +21,7 @@ static void unlink_show_help() {
 			"Delete one file\n");
 }
 
-int unlink_main(int argc, char *argv[]) {
+M_ENTRY(unlink) {
 	if (argc < 2) {
 		fprintf(stderr, "unlink: Need 1 argument\n"
 				"Try pass '--help' for more details\n");

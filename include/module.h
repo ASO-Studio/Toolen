@@ -61,7 +61,7 @@ typedef struct ModApi {
  * Module entry macro
  * @param name (Would expend to 'name_main')
  */
-#define M_ENTRY(name) int name##_main(int argc, char *argv[])
+#define M_ENTRY(name) int name##_main(int argc, char *argv[])	// It may not be used :(
 
 // Redirect
 #define REDIRECT(src, target) \

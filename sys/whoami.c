@@ -24,7 +24,7 @@ static void whoami_show_help() {
 			"Print current user name\n", getProgramName());
 }
 
-int whoami_main(int argc, char *argv[]) {
+M_ENTRY(whoami) {
 	if(argv[1] && strcmp(argv[1], "--help") == 0) {
 		whoami_show_help();
 		return 0;

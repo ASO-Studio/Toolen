@@ -23,7 +23,7 @@ static void swapon_show_help() {
 			"  -p      Priority (highest priority areas allocated first)\n");
 }
 
-int swapon_main(int argc, char *argv[]) {
+M_ENTRY(swapon) {
 	int opt;
 	int discard_flag = 0;
 	int priority = -1;  // Default: no priority specified
@@ -57,6 +57,9 @@ int swapon_main(int argc, char *argv[]) {
 			return EXIT_FAILURE;
 		}
 	}
+
+	// Check permission
+	isRoot();
 
 	// Verify filename argument exists
 	if (optind >= argc) {

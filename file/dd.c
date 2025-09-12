@@ -223,7 +223,7 @@ static int is_zero_buffer(const char *buf, size_t len) {
 	return 1;
 }
 
-int dd_main(int argc, char *argv[]) {
+M_ENTRY(dd) {
 	char *input_file = NULL;
 	char *output_file = NULL;
 	off_t ibs = DEFAULT_BLOCK_SIZE;	// Input block size

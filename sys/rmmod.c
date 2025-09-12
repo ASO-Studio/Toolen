@@ -28,7 +28,7 @@ static void rmmod_show_help() {
 			"  -h, --help  Show this page\n");
 }
 
-int rmmod_main(int argc, char *argv[]) {
+M_ENTRY(rmmod) {
 #if !defined(SYS_delete_module)
 	#warning SYS_delete_module does not support on this platform
 	pplog(P_NAME, "does not suppprt on this platform");

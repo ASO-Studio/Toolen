@@ -122,7 +122,7 @@ static void truncate_show_help() {
 			"  -s, --size=SIZE   set file size (e.g., 10K, 5M, 1G)\n");
 }
 
-int truncate_main(int argc, char *argv[]) {
+M_ENTRY(truncate) {
 	bool no_create = false;
 	off_t size = 0;
 	const char *size_str = NULL;

@@ -587,7 +587,7 @@ static int compute_mode(int argc, char *argv[]) {
  * @param argv Argument array
  * @return Exit status
  */
-int sha224sum_main(int argc, char *argv[]) {
+M_ENTRY(sha224sum) {
 	if (parse_args(argc, argv) != 0) return 1;
 	if (flag_help) { print_help(); return 0; }
 	return flag_check ? check_mode(argc, argv) : compute_mode(argc, argv);

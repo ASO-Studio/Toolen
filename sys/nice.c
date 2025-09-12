@@ -27,7 +27,7 @@ static void nice_show_help() {
 			"  -n NUM  Add given adjustment to priority (default 10)\n");
 }
 
-int nice_main(int argc, char *argv[]) {
+M_ENTRY(nice) {
 	if (argc < 2) {
 		pplog(P_NAME | P_HELP, "missing program");
 		return 1;

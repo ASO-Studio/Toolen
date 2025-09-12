@@ -31,7 +31,7 @@ static void env_show_help() {
 		"  -u NAME Remove NAME from the environment\n");
 }
 
-int env_main(int argc, char **argv) {
+M_ENTRY(env) {
 	int i = 1;
 	char **new_environ = NULL;
 	int env_count = 0;

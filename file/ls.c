@@ -387,7 +387,7 @@ static void print_help() {
 	printf("	  --help		  display this help and exit\n");
 }
 
-int ls_main(int argc, char *argv[]) {
+M_ENTRY(ls) {
 	Options opts = {0};
 	char **paths = NULL;
 	int path_count = 0;

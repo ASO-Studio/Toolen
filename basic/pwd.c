@@ -24,7 +24,7 @@ static void pwd_show_help() {
 			"  -L   Print from environment($PWD)\n");
 }
 
-int pwd_main(int argc, char *argv[]) {
+M_ENTRY(pwd) {
 	int opt;
 	int opt_index = 0;
 	struct option opts[] = {

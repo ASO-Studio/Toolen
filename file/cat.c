@@ -119,7 +119,7 @@ static void cat_regular_file(int fd) {
 }
 
 // Main function
-int cat_main(int argc, char *argv[]) {
+M_ENTRY(cat) {
 	int opt;
 	int optidx = 0;
 	struct option opts[] = {

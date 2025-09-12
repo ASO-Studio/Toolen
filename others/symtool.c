@@ -276,7 +276,7 @@ static void symtool_show_help() {
 	printf("  symtool restore -s main -i new_main.bin program.elf\n");
 }
 
-int symtool_main(int argc, char *argv[]) {
+M_ENTRY(symtool) {
 	if (argc < 2) {
 		symtool_show_help();
 		return 1;

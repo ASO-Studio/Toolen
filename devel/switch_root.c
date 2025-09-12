@@ -197,7 +197,7 @@ static void execute_init(const char *init_path, char *argv[]) {
 	_exit(EXIT_FAILURE);  // Use _exit to avoid flushing stdio buffers
 }
 
-int switch_root_main(int argc, char *argv[]) {
+M_ENTRY(switch_root) {
 	// Parse command-line options
 	static struct option long_options[] = {
 		{"help", no_argument, 0, 'h'},

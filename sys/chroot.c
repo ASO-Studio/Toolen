@@ -21,7 +21,7 @@ static void chroot_show_help() {
 			"Run command in NEWROOT (default run /bin/sh)\n");
 }
 
-int chroot_main(int argc, char *argv[]) {
+M_ENTRY(chroot) {
 	if(argc < 2) {
 		fprintf(stderr, "chroot: requires 1 argument\n"
 				"Try pass '--help' for more details\n");
