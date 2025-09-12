@@ -154,7 +154,7 @@ char *xstrdup(const char *s) {
 // Initialization function
 __attribute__((constructor))
 static void init_xalloc(void) {
-	LOG("initializing...\n");
+	LOG("initializing XALLOC...\n");
 	// Register cleanup function to be called automatically on program exit
 	atexit(cleanup_all);
 	LOG("success\n");

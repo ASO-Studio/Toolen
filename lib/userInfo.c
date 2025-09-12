@@ -6,8 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <stdbool.h>
+#if LIBNSS || ANDROID_NSS
+# include <grp.h>
+# include <pwd.h>
+#endif
 
 #include "lib.h"
+#include "debug.h"
 
 // Internal structures
 typedef struct passwd_entry {
@@ -178,7 +184,7 @@ static bool parse_group_file(void) {
 		token = strtok(NULL, ":");
 		if (token) entry->gid = atoi(trim_whitespace(token));
 		
-		// Skip member list
+	// Skip member list
 		entry->next = NULL;
 		
 		// Add to list
@@ -198,6 +204,10 @@ static bool parse_group_file(void) {
 const char *get_username(uid_t uid) {
 	static char uid_buf[16];
 
+#if ANDROID_NSS || LIBNSS
+	snprintf(uid_buf, sizeof(uid_buf), "%s", getpwuid(uid)->pw_name);
+#else
+
 	// Parse passwd file if not already done
 	if (!passwd_list && !parse_passwd_file()) {
 		snprintf(uid_buf, sizeof(uid_buf), "%d", uid);
@@ -215,12 +225,16 @@ const char *get_username(uid_t uid) {
 
 	// Not found, return UID as string
 	snprintf(uid_buf, sizeof(uid_buf), "%d", uid);
+#endif
 	return uid_buf;
 }
 
 const char *get_groupname(gid_t gid) {
 	static char gid_buf[16];
-	
+
+#if ANDROID_NSS || LIBNSS
+	snprintf(gid_buf, sizeof(gid_buf), "%s", getgrgid(gid)->gr_name);
+#else
 	// Parse group file if not already done
 	if (!group_list && !parse_group_file()) {
 		snprintf(gid_buf, sizeof(gid_buf), "%d", gid);
@@ -235,9 +249,10 @@ const char *get_groupname(gid_t gid) {
 		}
 		current = current->next;
 	}
-	
+
 	// Not found, return GID as string
 	snprintf(gid_buf, sizeof(gid_buf), "%d", gid);
+#endif
 	return gid_buf;
 }
 
@@ -298,6 +313,9 @@ bool get_group_info(gid_t gid, group_info_t *info) {
 }
 
 static int getuid_gid_name(const char *name, bool isGid) {
+#if ANDROID_NSS || LIBNSS
+	return isGid ? getgrnam(name)->gr_gid : getpwnam(name)->pw_uid;
+#else
 	if (!passwd_list && !parse_passwd_file()) {
 		return -1;
 	}
@@ -309,7 +327,7 @@ static int getuid_gid_name(const char *name, bool isGid) {
 		}
 		current = current->next;
 	}
-
+#endif
 	return -1;
 }
 
@@ -339,3 +357,15 @@ void userinfo_cleanup(void) {
 	free_group_list();
 }
 
+#ifdef DEBUG
+
+initary
+void __userInfo__ () {
+#if LIBNSS || ANDROID_NSS
+	LOG("Name Service Switch(NSS) enabled\n");
+#else
+	LOG("Name Service Switch(NSS) disabled\n");
+#endif
+}
+
+#endif

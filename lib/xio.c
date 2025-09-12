@@ -170,7 +170,7 @@ void xclose(int fd) {
 // Initialization function
 __attribute__((constructor))
 static void init_xio(void) {
-	LOG("initializing...\n");
+	LOG("initializing XIO...\n");
 	atexit(cleanup_all);
 	LOG("success\n");
 }

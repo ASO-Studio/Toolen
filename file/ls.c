@@ -326,7 +326,7 @@ void list_directory(const char *path, Options opts) {
 		// Allocate memory
 		if (count >= capacity) {
 			capacity = capacity ? capacity * 2 : 16;
-			files = realloc(files, capacity * sizeof(FileInfo));
+			files = xrealloc(files, capacity * sizeof(FileInfo));
 		}
 		
 		// Create full path
@@ -468,7 +468,7 @@ int ls_main(int argc, char *argv[]) {
 		// Add path
 		if (path_count >= path_capacity) {
 			path_capacity = path_capacity ? path_capacity * 2 : 4;
-			paths = realloc(paths, path_capacity * sizeof(char *));
+			paths = xrealloc(paths, path_capacity * sizeof(char *));
 		}
 		paths[path_count++] = argv[i];
 	}
