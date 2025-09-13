@@ -235,6 +235,7 @@ static void MD5_Transform(unsigned int state[4], const unsigned char block[64]) 
 
 /* Compute MD5 hash of a file */
 static int compute_file_md5(const char *filename, unsigned char digest[16], bool binary_mode) {
+	(void)binary_mode;
 	MD5_CTX ctx;
 	unsigned char buffer[4096];
 	ssize_t bytes_read;

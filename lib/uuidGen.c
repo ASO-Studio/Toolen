@@ -29,7 +29,7 @@ void uuidGen(char *uuid) {
 	// If /dev/urandom is invalid, try fallback
 	if (fd < 0) {
 		srand(time(NULL) ^ getpid());
-		for (int i = 0; i < sizeof(bytes); i++) {
+		for (unsigned long i = 0; i < sizeof(bytes); i++) {
 			bytes[i] = rand() & 0xFF;
 		}
 	}

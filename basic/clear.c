@@ -21,6 +21,7 @@ static void clear_show_help() {
 }
 
 M_ENTRY(clear) {
+	(void)argc;
 	if (argv[1]) {
 		if(strcmp(argv[1], "--help") == 0) {
 			clear_show_help();

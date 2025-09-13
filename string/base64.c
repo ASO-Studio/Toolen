@@ -158,19 +158,19 @@ static int base64_decode(FILE *input, FILE *output, int ignore_garbage) {
 			}
 			
 			// Calculate output bytes based on padding
-			int output_bytes = 3 - padding;
-			
+			unsigned long output_bytes = 3 - padding;
+
 			// Decode 4 base64 characters into 3 bytes
 			decoded[0] = (decode_table[buffer[0]] << 2) | (decode_table[buffer[1]] >> 4);
-			
+
 			if (output_bytes > 1) {
 				decoded[1] = ((decode_table[buffer[1]] & 0x0F) << 4) | (decode_table[buffer[2]] >> 2);
 			}
-			
+
 			if (output_bytes > 2) {
 				decoded[2] = ((decode_table[buffer[2]] & 0x03) << 6) | decode_table[buffer[3]];
 			}
-			
+
 			// Write decoded bytes to output
 			if (fwrite(decoded, 1, output_bytes, output) != output_bytes) {
 				return -1;

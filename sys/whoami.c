@@ -25,7 +25,7 @@ static void whoami_show_help() {
 }
 
 M_ENTRY(whoami) {
-	if(argv[1] && strcmp(argv[1], "--help") == 0) {
+	if(findArg(argv, argc, "--help")) {
 		whoami_show_help();
 		return 0;
 	}

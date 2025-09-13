@@ -102,7 +102,7 @@ static Line* init_line() {
 
 // Insert charactor in line
 static void insert_char(Line *line, int pos, char c) {
-	if (pos < 0 || pos > line->length) return;
+	if (pos < 0 || pos > (int)line->length) return;
 	
 	line->text = realloc(line->text, line->length + 2);
 	memmove(line->text + pos + 1, line->text + pos, line->length - pos + 1);
@@ -112,7 +112,7 @@ static void insert_char(Line *line, int pos, char c) {
 
 // Insert string in line
 static void insert_string(Line *line, int pos, const char *str) {
-	if (pos < 0 || pos > line->length) return;
+	if (pos < 0 || pos > (int)line->length) return;
 	
 	size_t len = strlen(str);
 	line->text = realloc(line->text, line->length + len + 1);
@@ -123,7 +123,7 @@ static void insert_string(Line *line, int pos, const char *str) {
 
 // Delete charactor in line
 static void delete_char(Line *line, int pos) {
-	if (pos < 0 || pos >= line->length) return;
+	if (pos < 0 || pos >= (int)line->length) return;
 	
 	memmove(line->text + pos, line->text + pos + 1, line->length - pos);
 	line->length--;
@@ -134,7 +134,7 @@ static void delete_char(Line *line, int pos) {
 static void splitLine(edStat *ed, Line *line, int pos) {
 	Line *new_line = init_line();
 	
-	if (pos < line->length) {
+	if (pos < (int)line->length) {
 		new_line->length = line->length - pos;
 		new_line->text = realloc(new_line->text, new_line->length + 1);
 		memcpy(new_line->text, line->text + pos, new_line->length);
@@ -239,7 +239,7 @@ static int save_file(edStat *ed) {
 	
 	Line *current = ed->lines;
 	while (current) {
-		if (write(ed->ffd, current->text, current->length) != current->length) return 1;
+		if (write(ed->ffd, current->text, current->length) != (ssize_t)current->length) return 1;
 		if (current->next && write(ed->ffd, "\n", 1) != 1) return 1;
 		current = current->next;
 	}
@@ -306,7 +306,7 @@ static void move_cursor(edStat *ed, int dx, int dy) {
 	if (dx != 0) {
 		ed->x += dx;
 		if (ed->x < 0) ed->x = 0;
-		if (ed->x > ed->current_line->length) ed->x = ed->current_line->length;
+		if (ed->x > (int)ed->current_line->length) ed->x = ed->current_line->length;
 	}
 
 	if (dy != 0) {
@@ -314,14 +314,14 @@ static void move_cursor(edStat *ed, int dx, int dy) {
 			ed->current_line = ed->current_line->prev;
 			ed->y--;
 
-			if (ed->x > ed->current_line->length)
+			if (ed->x > (int)ed->current_line->length)
 				ed->x = ed->current_line->length;
 		}
 		else if (dy > 0 && ed->current_line->next) {
 			ed->current_line = ed->current_line->next;
 			ed->y++;
 
-			if (ed->x > ed->current_line->length)
+			if (ed->x > (int)ed->current_line->length)
 				ed->x = ed->current_line->length;
 		}
 	}
@@ -405,7 +405,7 @@ static int commandMode(edStat *ed, int key) {
 					pos--;
 					printf("\b \b");
 					fflush(stdout);
-				} else if (isprint(c) && pos < sizeof(command) - 1) {
+				} else if (isprint(c) && (size_t)pos < sizeof(command) - 1) {
 					command[pos++] = c;
 					putchar(c);
 					fflush(stdout);

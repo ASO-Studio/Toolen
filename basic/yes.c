@@ -23,6 +23,7 @@ static void yes_show_help() {
 }
 
 M_ENTRY(yes) {
+	(void)argc;
 	const char *strToShow = "y";
 
 	if (argv[1] && argv[1][0] == '-') {	// It's an option

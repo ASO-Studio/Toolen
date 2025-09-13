@@ -97,6 +97,7 @@ static void __sigint_callback(int sig) {
 }
 
 M_ENTRY(simpsh) {
+	(void)argc; (void)argv;
 	int retValue = 0;
 	char cmdBuf[2048];
 	int inputFd = 0;

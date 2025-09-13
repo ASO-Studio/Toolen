@@ -160,7 +160,8 @@ int compare_files(const void *a, const void *b) {
 // Displays long-form information
 void display_long_format(FileInfo *files, int count, Options opts) {
 	// Calculate the maximum width for alignment
-	int max_nlink = 0, max_size = 0, max_user = 0, max_group = 0;
+	unsigned long max_nlink = 0, max_user = 0, max_group = 0;
+	long max_size = 0;
 	int max_size_chars = 0; // Human-readable size character length
 	long total_blocks = 0;
 	
@@ -196,7 +197,7 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 	
 	// Convert to string length
 	char nlink_buf[20];
-	sprintf(nlink_buf, "%d", max_nlink);
+	sprintf(nlink_buf, "%lu", max_nlink);
 	int nlink_width = strlen(nlink_buf);
 	
 	// Total number of blocks printed (if there are multiple files)
@@ -216,11 +217,11 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 
 		// Owner
 		const char *user = get_username(st->st_uid);
-		printf("%-*s ", max_user, user);
+		printf("%-*s ", (int)max_user, user);
 
 		// Group
 		const char *group = get_groupname(st->st_gid);
-		printf("%-*s ", max_group, group);
+		printf("%-*s ", (int)max_group, group);
 
 		// Size
 		const char *size_str = human_readable(st->st_size, opts.human);

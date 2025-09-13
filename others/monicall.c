@@ -180,11 +180,13 @@ static void catch_write(pid_t pid, struct user_regs_struct *regs) {
 }
 
 void catch_read(int pid, struct user_regs_struct *regs) {
+	(void)pid;
 	int fd = regs->ARG1_REG;
 	void *buf = (void*)regs->ARG2_REG;
 	size_t size = regs->ARG3_REG;
 	printf("==> read(%d, %p, %zu)\n", fd, buf, size);
 }
+
 fused static void catch_open(pid_t pid, struct user_regs_struct *regs) {
 	unsigned long pathname_addr = regs->ARG1_REG;
 	int flags = regs->ARG2_REG;
@@ -195,7 +197,7 @@ fused static void catch_open(pid_t pid, struct user_regs_struct *regs) {
 	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
 		valid = 0;
 	} else {
-		for (int i = 0; i < sizeof(pathname) - 1; ) {
+		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
 			unsigned long addr = pathname_addr + i;
 			addr &= ~(sizeof(long) - 1);
 			errno = 0;
@@ -205,7 +207,7 @@ fused static void catch_open(pid_t pid, struct user_regs_struct *regs) {
 				break;
 			}
 
-			for (int j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
+			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
 				char c = (char)((val >> (j * 8)) & 0xFF);
 				if (c == '\0') goto done;
 				pathname[i] = c;
@@ -223,11 +225,13 @@ done:
 
 
 static void catch_exit(pid_t pid, struct user_regs_struct *regs) {
+	(void)pid;
 	int status = (int)regs->ARG1_REG;
 	printf("==> exit(%d)\n", status);
 }
 
 static void catch_exit_group(pid_t pid, struct user_regs_struct *regs) {
+	(void)pid;
 	int status = (int)regs->ARG1_REG;
 	printf("==> exit_group(%d)\n", status);
 }
@@ -243,7 +247,7 @@ static void catch_openat(pid_t pid, struct user_regs_struct *regs) {
 	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
 		valid = 0;
 	} else {
-		for (int i = 0; i < sizeof(pathname) - 1; ) {
+		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
 			unsigned long addr = pathname_addr + i;
 			addr &= ~(sizeof(long) - 1);
 			errno = 0;
@@ -253,7 +257,7 @@ static void catch_openat(pid_t pid, struct user_regs_struct *regs) {
 				break;
 			}
 
-			for (int j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
+			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
 				char c = (char)((val >> (j * 8)) & 0xFF);
 				if (c == '\0') goto done;
 				pathname[i] = c;
@@ -270,6 +274,7 @@ done:
 }
 
 static void catch_close(int pid, struct user_regs_struct *regs) {
+	(void)pid;
 	int fd = regs->ARG1_REG;
 	printf("==> close(%d)\n", fd);
 }

@@ -69,7 +69,7 @@ endif
 
 # Enable all warnings
 ifeq ($(CONFIG_WALL),y)
- C_FLAGS += -Wall
+ C_FLAGS += -Wall -Wextra
 endif
 
 # Treat warnings as error (-Werror)
@@ -119,7 +119,7 @@ clean:
 	$(Q)rm -rf $(OBJS) $(OUTPUT) $(DEPS) objs/
 
 cleanall: clean kconfig_clean
-	$(Q)rm -rf .config generated .config.old
+	$(Q)rm -rf .config generated .config.old .clangd
 
 gen.clangd:
 	$(Q)$(RM) -f .clangd

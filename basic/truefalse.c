@@ -12,10 +12,12 @@
 #include "module.h"
 
 M_ENTRY(true) {
+	(void)argc; (void)argv;
 	return 0;
 }
 
 M_ENTRY(false) {
+	(void)argc; (void)argv;
 	return 1;
 }
 
