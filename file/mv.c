@@ -167,15 +167,16 @@ static int need_update(const char *src, const char *dest) {
 	switch (opts.update_type) {
 		case UPDATE_ALL: return 1;
 		case UPDATE_NONE: return 0;
-		case UPDATE_NONE_FAIL: die("mv: cannot overwrite '%s' (--update=none-fail)", dest);
+		case UPDATE_NONE_FAIL: die("mv: cannot overwrite '%s' (--update=none-fail)", dest); break;
 		case UPDATE_OLDER: {
 			struct stat src_st, dest_st;
 			if (stat(src, &src_st) != 0 || stat(dest, &dest_st) != 0)
 				die("mv: failed to stat files for update check");
 			return src_st.st_mtime > dest_st.st_mtime; 
 		}
-		default: return 1;
+		default: break;
 	}
+	return 1;
 }
 
 // Copy content from source file to destination file

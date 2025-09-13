@@ -113,6 +113,7 @@ M_ENTRY(mountpoint) {
 			break;
 		case 'h':
 			usage(EXIT_SUCCESS);  // Show help
+			break;
 		default:
 			usage(EXIT_FAILURE);  // Invalid option
 		}
