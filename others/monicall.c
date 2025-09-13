@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <fcntl.h>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <sys/uio.h>
@@ -25,7 +26,8 @@
 
 #ifndef __NO_SYS_USER_H
 
-typedef void (*CatcherFunc_t)(int, struct user_regs_struct*);
+typedef unsigned long long int regval_t;
+typedef void (*CatcherFunc_t)(int, regval_t *args);
 
 typedef struct MoniStruct {
 	CatcherFunc_t Catcher;
@@ -36,6 +38,7 @@ typedef struct MoniStruct {
 // Definitions for x86_64
 #if defined(__x86_64__)
 
+# define SYSCALL_RETVAL  rax
 # define SYSCALL_NUM_REG orig_rax
 # define ARG1_REG rdi
 # define ARG2_REG rsi
@@ -55,6 +58,7 @@ typedef struct MoniStruct {
 // Definitions for aarch64
 #elif defined(__aarch64__)
 
+# define SYSCALL_RETVAL  regs[0]
 # define SYSCALL_NUM_REG regs[8]
 # define ARG1_REG regs[0]
 # define ARG2_REG regs[1]
@@ -111,7 +115,7 @@ static void cleanupMoniCall(MoniCall *m) {
 static char *read_data(pid_t pid, void *addr, size_t size) {
 	if (addr == NULL || size == 0) return NULL;
 
-	char *data = malloc(size + 1);
+	char *data = xmalloc(size + 1);
 	if (!data) return NULL;
 
 	// Read by bytes
@@ -119,12 +123,41 @@ static char *read_data(pid_t pid, void *addr, size_t size) {
 		errno = 0;
 		long val = ptrace(PTRACE_PEEKDATA, pid, addr + i, NULL);
 		if (val == -1 && errno != 0) {
-			free(data);
+			xfree(data);
 			return NULL;
 		}
 		data[i] = (char)(val & 0xFF); // Get low byte
 	}
 	data[size] = '\0';
+	return data;
+}
+
+// Read string from memory
+static char *read_string_data(pid_t pid, void *addr) {
+	if (addr == NULL) return NULL;
+
+	long val = 1;
+	size_t count = 0;
+	size_t si = 1024;
+	char *data = xmalloc(1024);
+	if (!data) return NULL;
+
+	// Read by bytes
+	for (count = 0; (val = ptrace(PTRACE_PEEKDATA, pid, addr + count, NULL)) != 0; count++) {
+		if (count >= si) {
+			si += 1024;
+			data = xrealloc(data, si);
+		}
+
+		errno = 0;
+		if (val == -1 && errno != 0) {
+			xfree(data);
+			return NULL;
+		}
+		data[count] = (char)(val & 0xFF); // Get low byte
+	}
+
+	data[count] = '\0';
 	return data;
 }
 
@@ -135,148 +168,6 @@ static fused int set_register(pid_t pid, struct user_regs_struct *regs) {
 		.iov_len = sizeof(*regs)
 	};
 	return ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov);
-}
-
-// Catch syscall: write
-static void catch_write(pid_t pid, struct user_regs_struct *regs) {
-	int fd = regs->ARG1_REG;
-	void *buf = (void *)regs->ARG2_REG;
-	size_t size = regs->ARG3_REG;
-
-	char *data = read_data(pid,buf,size);
-
-	char *escaped_data = malloc(size * 4 + 1);
-	if (escaped_data == NULL) {
-		printf("write(%d, \"%.*s\", %zu)\n", fd, (int)size, data, size);
-		free(data);
-		return;
-	}
-
-	int pos = 0;
-	for (size_t i = 0; i < size; i++) {
-		if (data[i] == '\n') {
-			escaped_data[pos++] = '\\';
-			escaped_data[pos++] = 'n';
-		} else if (data[i] == '\t') {
-			escaped_data[pos++] = '\\';
-			escaped_data[pos++] = 't';
-		} else if (data[i] < 32 || data[i] >= 127) {
-			pos += sprintf(escaped_data + pos, "\\x%02x", (unsigned char)data[i]);
-		} else {
-			escaped_data[pos++] = data[i];
-		}
-	}
-	escaped_data[pos] = '\0';
-
-	// Print result
-	if (size > 64) {
-		printf("==> write(%d, \"%.64s...\", %zu)\n", fd, escaped_data, size);
-	} else {
-		printf("==> write(%d, \"%s\", %zu)\n", fd, escaped_data, size);
-	}
-
-	free(data);
-	free(escaped_data);
-}
-
-void catch_read(int pid, struct user_regs_struct *regs) {
-	(void)pid;
-	int fd = regs->ARG1_REG;
-	void *buf = (void*)regs->ARG2_REG;
-	size_t size = regs->ARG3_REG;
-	printf("==> read(%d, %p, %zu)\n", fd, buf, size);
-}
-
-fused static void catch_open(pid_t pid, struct user_regs_struct *regs) {
-	unsigned long pathname_addr = regs->ARG1_REG;
-	int flags = regs->ARG2_REG;
-	int mode = regs->ARG3_REG;
-	char pathname[256] = {0};
-	int valid = 1;
-
-	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
-		valid = 0;
-	} else {
-		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
-			unsigned long addr = pathname_addr + i;
-			addr &= ~(sizeof(long) - 1);
-			errno = 0;
-			long val = ptrace(PTRACE_PEEKDATA, pid, (void*)addr, NULL);
-			if (val == -1 && errno != 0) {
-				valid = 0;
-				break;
-			}
-
-			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
-				char c = (char)((val >> (j * 8)) & 0xFF);
-				if (c == '\0') goto done;
-				pathname[i] = c;
-			}
-		}
-	}
-
-done:
-	if (valid && pathname[0] != '\0') {
-		printf("==> open(\"%s\", 0x%x, 0%o)\n", pathname, flags, mode);
-	} else {
-		printf("==> open(0x%lx, 0x%x, 0%o)\n", pathname_addr, flags, mode);
-	}
-}
-
-
-static void catch_exit(pid_t pid, struct user_regs_struct *regs) {
-	(void)pid;
-	int status = (int)regs->ARG1_REG;
-	printf("==> exit(%d)\n", status);
-}
-
-static void catch_exit_group(pid_t pid, struct user_regs_struct *regs) {
-	(void)pid;
-	int status = (int)regs->ARG1_REG;
-	printf("==> exit_group(%d)\n", status);
-}
-
-static void catch_openat(pid_t pid, struct user_regs_struct *regs) {
-	unsigned long cwd = regs->ARG1_REG;
-	unsigned long pathname_addr = regs->ARG2_REG;
-	int flags = regs->ARG3_REG;
-	//int mode = regs->ARG4_REG;
-	char pathname[256] = {0};
-	int valid = 1;
-
-	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
-		valid = 0;
-	} else {
-		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
-			unsigned long addr = pathname_addr + i;
-			addr &= ~(sizeof(long) - 1);
-			errno = 0;
-			long val = ptrace(PTRACE_PEEKDATA, pid, (void*)addr, NULL);
-			if (val == -1 && errno != 0) {
-				valid = 0;
-				break;
-			}
-
-			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
-				char c = (char)((val >> (j * 8)) & 0xFF);
-				if (c == '\0') goto done;
-				pathname[i] = c;
-			}
-		}
-	}
-
-done:
-	if (valid && pathname[0] != '\0') {
-		printf("==> openat(0x%lx, \"%s\", 0x%x)\n", cwd, pathname, flags);
-	} else {
-		printf("==> openat(0x%lx, 0x%lx, 0x%x)\n", cwd, pathname_addr, flags);
-	}
-}
-
-static void catch_close(int pid, struct user_regs_struct *regs) {
-	(void)pid;
-	int fd = regs->ARG1_REG;
-	printf("==> close(%d)\n", fd);
 }
 
 static int startMonit(const char *filename, char **argv, MoniCall *m) {
@@ -313,13 +204,39 @@ static int startMonit(const char *filename, char **argv, MoniCall *m) {
 
 			// Execute catcher
 			CatcherFunc_t catcher = findCatcher(m, syscall_num);
+
+			regval_t args[6];
+			args[0] = regs.ARG1_REG;
+			args[1] = regs.ARG2_REG;
+			args[2] = regs.ARG3_REG;
+			args[3] = regs.ARG4_REG;
+			args[4] = regs.ARG5_REG;
+			args[5] = regs.ARG6_REG;
 			if (catcher) {
-				catcher(child_pid, &regs);
+				catcher(child_pid, args);
 			}
 
 			// Continue
 			ptrace(PTRACE_SYSCALL, child_pid, NULL, NULL);
 			waitpid(child_pid, &status, 0);
+
+			// Wait for syscall exit
+			if (!WIFSTOPPED(status) || WSTOPSIG(status) != (SIGTRAP | 0x80)) {
+				printf("  = ?\n");
+				break;
+			}
+
+			// Get registers
+			if (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &iov) == -1) break;
+
+			if (catcher) {
+				long retd = regs.SYSCALL_RETVAL;
+				if (retd > 999) {
+					printf("  = 0x%lx\n", retd);
+				} else {
+					printf("  = %ld\n", retd);
+				}
+			}
 		}
 
 		// Detach
@@ -333,6 +250,183 @@ static void monicall_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: monicall PROGRAM [ARGS]...\n\n"
 			"Captures system calls that are called when the program is executed\n");
+}
+
+// Catch: write
+static void catch_write(pid_t pid, regval_t *args) {
+	int fd = args[0];
+	void *buf = (void *)args[1];
+	size_t size = args[2];
+
+	char *data = read_data(pid,buf,size);
+
+	char *escaped_data = xmalloc(size * 4 + 1);
+	if (escaped_data == NULL) {
+		printf("write(%d, \"%.*s\", %zu)", fd, (int)size, data, size);
+		xfree(data);
+		return;
+	}
+
+	int pos = 0;
+	for (size_t i = 0; i < size; i++) {
+		if (data[i] == '\n') {
+			escaped_data[pos++] = '\\';
+			escaped_data[pos++] = 'n';
+		} else if (data[i] == '\t') {
+			escaped_data[pos++] = '\\';
+			escaped_data[pos++] = 't';
+		} else if (data[i] < 32 || data[i] >= 127) {
+			pos += sprintf(escaped_data + pos, "\\x%02x", (unsigned char)data[i]);
+		} else {
+			escaped_data[pos++] = data[i];
+		}
+	}
+	escaped_data[pos] = '\0';
+
+	// Print result
+	if (size > 64) {
+		printf("==> write(%d, \"%.64s...\", %zu)", fd, escaped_data, size);
+	} else {
+		printf("==> write(%d, \"%s\", %zu)", fd, escaped_data, size);
+	}
+
+	xfree(data);
+	xfree(escaped_data);
+}
+
+// Catch: read
+static void catch_read(int pid, regval_t *args) {
+	(void)pid;
+	int fd = args[0];
+	void *buf = (void*)args[1];
+	size_t size = args[3];
+	printf("==> read(%d, %p, %zu)", fd, buf, size);
+}
+
+// Catch: open (x86_64)
+static fused void catch_open(pid_t pid, regval_t *args) {
+	unsigned long pathname_addr = args[0];
+	int flags = args[1];
+	int mode = args[2];
+	char pathname[256] = {0};
+	int valid = 1;
+
+	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
+		valid = 0;
+	} else {
+		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
+			unsigned long addr = pathname_addr + i;
+			addr &= ~(sizeof(long) - 1);
+			errno = 0;
+			long val = ptrace(PTRACE_PEEKDATA, pid, (void*)addr, NULL);
+			if (val == -1 && errno != 0) {
+				valid = 0;
+				break;
+			}
+
+			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
+				char c = (char)((val >> (j * 8)) & 0xFF);
+				if (c == '\0') goto done;
+				pathname[i] = c;
+			}
+		}
+	}
+
+done:
+	if (valid && pathname[0] != '\0') {
+		printf("==> open(\"%s\", 0x%x, 0%o)", pathname, flags, mode);
+	} else {
+		printf("==> open(0x%lx, 0x%x, 0%o)", pathname_addr, flags, mode);
+	}
+}
+
+// Catch: exit
+static void catch_exit(pid_t pid, regval_t *args) {
+	(void)pid;
+	int status = (int)args[0];
+	printf("==> exit(%d)", status);
+}
+
+// Catch: exit_group
+static void catch_exit_group(pid_t pid, regval_t *args) {
+	(void)pid;
+	int status = (int)args[0];
+	printf("==> exit_group(%d)", status);
+}
+
+// Catch: openat
+static void catch_openat(pid_t pid, regval_t *args) {
+	unsigned long cwd = args[0];
+	unsigned long pathname_addr = args[1];
+	int flags = args[2];
+	int mode = args[3];
+
+	char pathname[256] = {0};
+	int valid = 1;
+
+	if (pathname_addr < 0x1000 || pathname_addr >= 0x800000000000) {
+		valid = 0;
+	} else {
+		for (unsigned long i = 0; i < sizeof(pathname) - 1; ) {
+			unsigned long addr = pathname_addr + i;
+			addr &= ~(sizeof(long) - 1);
+			errno = 0;
+			long val = ptrace(PTRACE_PEEKDATA, pid, (void*)addr, NULL);
+			if (val == -1 && errno != 0) {
+				valid = 0;
+				break;
+			}
+
+			for (unsigned long j = 0; j < sizeof(long) && i < sizeof(pathname)-1; j++, i++) {
+				char c = (char)((val >> (j * 8)) & 0xFF);
+				if (c == '\0') goto done;
+				pathname[i] = c;
+			}
+		}
+	}
+
+done:
+	if (valid && pathname[0] != '\0') {
+		printf("==> openat(0x%lx, \"%s\", 0x%x", cwd, pathname, flags);
+	} else {
+		printf("==> openat(0x%lx, 0x%lx, 0x%x", cwd, pathname_addr, flags);
+	}
+
+	if (flags & O_CREAT) {
+		printf(", %04d", mode);
+	}
+	printf(")");
+}
+
+// Catch: close
+static void catch_close(int pid, regval_t *args) {
+	(void)pid;
+	int fd = args[0];
+	printf("==> close(%d)", fd);
+}
+
+// Catch: brk
+static void catch_brk(int pid, regval_t *args) {
+	(void)pid;
+	if (args[0] != 0) {
+		printf("==> brk(%llx)", args[0]);
+	} else {
+		printf("==> brk(NULL)");
+	}
+}
+
+// Catch: access
+static void catch_access(int pid, regval_t *args) {
+	void *buf = (void*)args[0];
+	int flag = args[1];
+
+	char *path = read_string_data(pid, buf);
+	if (path) {
+		printf("==> access(\"%s\", %d)", path, flag);
+		xfree(path);
+	} else {
+		printf("==> access(%p, %d)", path, flag);
+	}
 }
 
 M_ENTRY(monicall) {
@@ -356,6 +450,8 @@ M_ENTRY(monicall) {
 	addCatcher(&m, SYS_read, catch_read);
 	addCatcher(&m, SYS_exit, catch_exit);
 	addCatcher(&m, SYS_exit_group, catch_exit_group);
+	addCatcher(&m, SYS_brk, catch_brk);
+	addCatcher(&m, SYS_access, catch_access);
 #ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
 #endif
@@ -368,7 +464,7 @@ M_ENTRY(monicall) {
 
 #else // !defined(__NO_SYS_USER_H)
 	#warning does not support on this platform
-	int monicall_main(int argc, char *argv[]) {
+	M_ENTRY(monicall) {
 		pplog(P_NAME, "does not support on this platform");
 		return 1;
 	}
