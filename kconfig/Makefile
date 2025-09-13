@@ -8,12 +8,21 @@ KCONFIG_PROJECT = Toolen
 obj = ./kconfig
 PHONY += clean menuconfig
 
+GENER = bash scripts/finalGen.sh .config generated/sources.mk && bash scripts/genDefs.sh .config generated/defs.mk
+
 .PHONY: menucofnig allyesconfig
 menuconfig: $(obj)/mconf $(KCONFIG_TOP)
 	@bash scripts/optCmd.sh
 	@$< $(KCONFIG_TOP)
-	@bash scripts/finalGen.sh .config generated/sources.mk
-	@bash scripts/genDefs.sh .config generated/defs.mk
+	@$(GENER)
+
+android_config:
+	@cp kconfig/android_config ./.config
+	@$(GENER)
+
+android_static_config:
+	@cp kconfig/android_static_config ./.config
+	@$(GENER)
 
 allyesconfig:
 	@bash scripts/optCmd.sh
