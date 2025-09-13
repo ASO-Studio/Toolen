@@ -132,6 +132,8 @@ help:
 	$(Q)echo "  clean               clean all object files and objs/ directory"
 	$(Q)echo "  cleanall            clean all object files and .config file"
 	$(Q)echo "  menuconfig          configure in a terminal window"
+	$(Q)echo "  android_config      generate a config file for Android"
+	$(Q)echo "  android_static_config  same as 'android_config', but statically linked"
 	$(Q)echo "  allyesconfig        generate a config with all commands"
 	$(Q)echo "  gen.clangd          generate .clangd file for editors"
 	$(Q)echo "  help                show this page"
