@@ -389,7 +389,7 @@ static void catch_openat(pid_t pid, regval_t *args) {
 
 done:
 	if (valid && pathname[0] != '\0') {
-		printf("==> openat(0x%d, \"%s\", 0x%x", cwd, pathname, flags);
+		printf("==> openat(%d, \"%s\", 0x%x", cwd, pathname, flags);
 	} else {
 		printf("==> openat(%d, 0x%lx, 0x%x", cwd, pathname_addr, flags);
 	}
@@ -485,6 +485,47 @@ static void catch_munmap(int pid, regval_t *args) {
 	printf("==> munmap(0x%llx, %zu)", addr, size);
 }
 
+// Catch: mlock
+static void catch_mlock(int pid, regval_t *args) {
+	(void)pid;
+	regval_t addr = args[0];
+	size_t size = args[1];
+
+	printf("==> mlock(0x%llx, %zu)", addr, size);
+}
+
+// Catch: munlock
+static void catch_munlock(int pid, regval_t *args) {
+	(void)pid;
+	regval_t addr = args[0];
+	size_t size = args[1];
+
+	printf("==> munlock(0x%llx, %zu)", addr, size);
+}
+
+// Catch: mlockall
+static void catch_mlockall(int pid, regval_t *args) {
+	(void)pid;
+	int flags = args[0];
+
+	printf("==> mlockall(%d)", flags);
+}
+
+// Catch: munlockall
+static void catch_munlockall(int pid, regval_t *args) {
+	(void)pid; (void)args;
+	printf("==> munlockall()");
+}
+
+// Catch: mprotect
+static void catch_mprotect(int pid, regval_t *args) {
+	(void)pid;
+	regval_t addr = args[0];
+	size_t size = args[1];
+	int prot = args[2];
+	printf("==> mprotect(0x%llx, %zu, %d)", addr, size, prot);
+}
+
 M_ENTRY(monicall) {
 	if (argc < 2) {
 		fprintf(stderr, "Usage: monicall PROGRAM [ARGS]...\n"
@@ -510,6 +551,11 @@ M_ENTRY(monicall) {
 	addCatcher(&m, SYS_lseek, catch_lseek);
 	addCatcher(&m, SYS_mmap, catch_mmap);
 	addCatcher(&m, SYS_munmap, catch_munmap);
+	addCatcher(&m, SYS_mlock, catch_mlock);
+	addCatcher(&m, SYS_munlock, catch_munlock);
+	addCatcher(&m, SYS_mlockall, catch_mlockall);
+	addCatcher(&m, SYS_munlockall, catch_munlockall);
+	addCatcher(&m, SYS_mprotect, catch_mprotect);
 	addCatcher(&m, SYS_faccessat, catch_faccessat);
 #ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
