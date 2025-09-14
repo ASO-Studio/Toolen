@@ -232,9 +232,9 @@ static int startMonit(const char *filename, char **argv, MoniCall *m) {
 			if (catcher) {
 				long retd = regs.SYSCALL_RETVAL;
 				if (retd > 999) {
-					printf("  = 0x%lx\n", retd);
+					printf("\t  = 0x%lx\n", retd);
 				} else {
-					printf("  = %ld\n", retd);
+					printf("\t  = %ld\n", retd);
 				}
 			}
 		}
@@ -429,6 +429,43 @@ static void catch_access(int pid, regval_t *args) {
 	}
 }
 
+// Catch: lseek
+static void catch_lseek(int pid, regval_t *args) {
+	(void)pid;
+	int fd = args[0];
+	off_t off = args[1];
+	int whence = args[2];
+
+	printf("==> lseek(%d, %ld, %d)", fd, off, whence);
+}
+
+// Catch: mmap
+static void catch_mmap(int pid, regval_t *args) {
+	(void)pid;
+	regval_t addr = args[0];
+	size_t len = args[1];
+	int prot = args[2];
+	int flags = args[3];
+	int fd = args[4];
+	off_t off = args[5];
+
+	if (addr != 0) {
+		printf("==> mmap(0x%llx", addr);
+	} else {
+		printf("==> mmap(NULL");
+	}
+	printf(", %zu, %d, %d, %d, %ld)", len, prot, flags, fd, off);
+}
+
+// Catch: munmap
+static void catch_munmap(int pid, regval_t *args) {
+	(void)pid;
+	regval_t addr = args[0];
+	size_t size = args[1];
+
+	printf("==> munmap(0x%llx, %zu)", addr, size);
+}
+
 M_ENTRY(monicall) {
 	if (argc < 2) {
 		fprintf(stderr, "Usage: monicall PROGRAM [ARGS]...\n"
@@ -452,6 +489,9 @@ M_ENTRY(monicall) {
 	addCatcher(&m, SYS_exit_group, catch_exit_group);
 	addCatcher(&m, SYS_brk, catch_brk);
 	addCatcher(&m, SYS_access, catch_access);
+	addCatcher(&m, SYS_lseek, catch_lseek);
+	addCatcher(&m, SYS_mmap, catch_mmap);
+	addCatcher(&m, SYS_munmap, catch_munmap);
 #ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
 #endif
