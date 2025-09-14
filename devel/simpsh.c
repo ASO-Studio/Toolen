@@ -16,6 +16,7 @@
 #include <string.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
+#include <ctype.h>
 #include <errno.h>
 #include <signal.h>
 
@@ -96,27 +97,81 @@ static void __sigint_callback(int sig) {
 	draw_prompt();
 }
 
+// Remove comments from string
+void remove_comments(char* str) {
+	if (!str) return;
+
+	char* write_ptr = str;
+	int in_1quotes = 0;
+	int in_2quotes = 0;
+
+	for (char* p = str; *p; p++) {
+		if (*p == '"' && ! !in_1quotes) {
+			in_2quotes = !in_2quotes;
+			*write_ptr++ = *p;
+		} else if (*p == '\'' && !in_2quotes) {
+			in_1quotes = !in_1quotes;
+			*write_ptr++ = *p;
+		} else if (*p == '#' && !in_1quotes && !in_2quotes)
+			break;
+		else
+			*write_ptr++ = *p;
+	}
+
+	while (write_ptr > str) {
+		if (isspace(*(write_ptr-1)))
+			write_ptr--;
+		else
+			break;
+	}
+	*write_ptr = '\0';
+}
+
+static void simpsh_show_help() {
+	SHOW_VERSION(stderr);
+	fprintf(stderr, "Usage: simpsh [FILE]\n\n"
+			"A simple shell program\n");
+}
+
 M_ENTRY(simpsh) {
-	(void)argc; (void)argv;
+	if (findArg(argv, argc, "--help")) {
+		simpsh_show_help();
+		return 0;
+	}
+
+	const char *inputFile = argv[1];
 	int retValue = 0;
 	char cmdBuf[2048];
+	FILE *inputFp = NULL;
 	int inputFd = 0;
-	signal(SIGINT, __sigint_callback);
+
+	if (!inputFile) {
+		signal(SIGINT, __sigint_callback);
+	} else {
+		inputFp = xfopen(inputFile, "r");
+	}
 
 	while(1) {
 		padz(cmdBuf, sizeof(cmdBuf));
 
 		// Like ./simpsh <<< cmd
-		if (isatty(inputFd)) {
+		if (isatty(inputFd) && !inputFile) {
 			draw_prompt();
 		}
 
-		size_t readsize = read(inputFd, cmdBuf, sizeof(cmdBuf));
-		if (readsize <= 1) {
-			continue;
+		if (!inputFile) {
+			size_t readsize = read(inputFd, cmdBuf, sizeof(cmdBuf));
+			if (readsize <= 1) {
+				continue;
+			}
+			cmdBuf[readsize - 1] = '\0';
+		} else {
+			if (!fgets(cmdBuf, sizeof(cmdBuf), inputFp))
+				break;
 		}
-		cmdBuf[readsize - 1] = '\0';
 
+		// Remove all comments in sentence
+		remove_comments(cmdBuf);
 
 		// Like:
 		//  echo a; echo b
@@ -212,7 +267,9 @@ lineExec:
 		// Built-in commands
 		if (cmdStruct[0]) {
 			if (scmp(cmdStruct[0], "exit")) {
-				sprint("exit\n");
+				if (!inputFile)
+					sprint("exit\n");
+
 				if(cmdStruct[1])
 					retValue = atoi(cmdStruct[1]);
 				freeCmdStruct(cmdStruct);
