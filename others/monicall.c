@@ -303,8 +303,9 @@ static void catch_read(int pid, regval_t *args) {
 	printf("==> read(%d, %p, %zu)", fd, buf, size);
 }
 
-// Catch: open (x86_64)
-static fused void catch_open(pid_t pid, regval_t *args) {
+#ifdef SYS_open
+// Catch: open
+static void catch_open(pid_t pid, regval_t *args) {
 	unsigned long pathname_addr = args[0];
 	int flags = args[1];
 	int mode = args[2];
@@ -339,6 +340,7 @@ done:
 		printf("==> open(0x%lx, 0x%x, 0%o)", pathname_addr, flags, mode);
 	}
 }
+#endif // SYS_open
 
 // Catch: exit
 static void catch_exit(pid_t pid, regval_t *args) {
@@ -356,7 +358,7 @@ static void catch_exit_group(pid_t pid, regval_t *args) {
 
 // Catch: openat
 static void catch_openat(pid_t pid, regval_t *args) {
-	unsigned long cwd = args[0];
+	int cwd = args[0];
 	unsigned long pathname_addr = args[1];
 	int flags = args[2];
 	int mode = args[3];
@@ -387,9 +389,9 @@ static void catch_openat(pid_t pid, regval_t *args) {
 
 done:
 	if (valid && pathname[0] != '\0') {
-		printf("==> openat(0x%lx, \"%s\", 0x%x", cwd, pathname, flags);
+		printf("==> openat(0x%d, \"%s\", 0x%x", cwd, pathname, flags);
 	} else {
-		printf("==> openat(0x%lx, 0x%lx, 0x%x", cwd, pathname_addr, flags);
+		printf("==> openat(%d, 0x%lx, 0x%x", cwd, pathname_addr, flags);
 	}
 
 	if (flags & O_CREAT) {
@@ -415,6 +417,7 @@ static void catch_brk(int pid, regval_t *args) {
 	}
 }
 
+#ifdef SYS_access
 // Catch: access
 static void catch_access(int pid, regval_t *args) {
 	void *buf = (void*)args[0];
@@ -426,6 +429,22 @@ static void catch_access(int pid, regval_t *args) {
 		xfree(path);
 	} else {
 		printf("==> access(%p, %d)", path, flag);
+	}
+}
+#endif // SYS_access
+
+// Catch: faccessat
+static void catch_faccessat(int pid, regval_t *args) {
+	int cwd = args[0];
+	void *buf = (void*)args[1];
+	int flag = args[2];
+
+	char *path = read_string_data(pid, buf);
+	if (path) {
+		printf("==> faccessat(%d, \"%s\", %d)", cwd, path, flag);
+		xfree(path);
+	} else {
+		printf("==> faccessat(%d, %p, %d)", cwd, path, flag);
 	}
 }
 
@@ -488,12 +507,15 @@ M_ENTRY(monicall) {
 	addCatcher(&m, SYS_exit, catch_exit);
 	addCatcher(&m, SYS_exit_group, catch_exit_group);
 	addCatcher(&m, SYS_brk, catch_brk);
-	addCatcher(&m, SYS_access, catch_access);
 	addCatcher(&m, SYS_lseek, catch_lseek);
 	addCatcher(&m, SYS_mmap, catch_mmap);
 	addCatcher(&m, SYS_munmap, catch_munmap);
+	addCatcher(&m, SYS_faccessat, catch_faccessat);
 #ifdef SYS_open	// On some devices(such as Android(Aarch64), .e.g, they dont have SYS_open)
 	addCatcher(&m, SYS_open, catch_open);
+#endif
+#ifdef SYS_access
+	addCatcher(&m, SYS_access, catch_access);
 #endif
 
 	startMonit(argv[1], &argv[1], m);
