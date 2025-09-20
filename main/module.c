@@ -11,6 +11,7 @@
 #include "lib.h"
 #include "module.h"
 #include <string.h>
+#include <unistd.h>
 
 /* Global module registry header pointer */
 static ModApi *module_registry = NULL;
@@ -45,7 +46,7 @@ static void insert_sorted(ModApi *new_module) {
 	while (current->next && current->next->priority <= new_module->priority) {
 		current = current->next;
 	}
-	
+
 	new_module->next = current->next;
 	current->next = new_module;
 }
@@ -80,11 +81,21 @@ void module_registry_init(void) {
 // Print all functions
 void list_all_modules(void) {
 	module_registry_init();
+	int isOutTty = 0;
+	if (isatty(STDOUT_FILENO)) {
+		isOutTty = 1;
+	}
 
 	for (ModApi *f = module_registry; f; f = f->next) {
-		printf("%s ", f->name);
+		printf("%s", f->name);
+		if (isOutTty)
+			printf(" ");
+		else
+			printf("\n");
+		
 	}
-	printf("\n");
+	if (isOutTty)
+		printf("\n");
 }
 
 int find_module(const char *name) {

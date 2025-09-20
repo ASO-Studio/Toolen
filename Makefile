@@ -105,14 +105,15 @@ OUTPUT = toolen
 all: check $(OUTPUT)
 
 check:
-	$(Q)if [ ! -f "generated/sources.mk" ]; then \
+	@if [ ! -f "generated/sources.mk" ]; then \
 		echo "No sources.mk file found, please run 'make menuconfig' or 'make allyesconfig' first!"; \
 		exit 1; \
 	fi
 
 $(OUTPUT): $(OBJS)
-	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"; printf " All objects was compiled\n"
+	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"
 	$(Q)$(CC) -o $(OUTPUT) $(OBJS) $(LD_FLAGS)
+	$(Q)printf " All objects was compiled\n"
 
 # Rule to compile .c files into .o files in objs/ directory
 objs/%.o: %.c
