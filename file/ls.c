@@ -21,7 +21,6 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <stdbool.h>
-#include <errno.h>
 #include <libgen.h>
 #include <getopt.h>
 
@@ -106,21 +105,21 @@ const char *get_file_color(mode_t mode, const char *path) {
 // Convert file size to human readable
 const char *human_readable(off_t size, bool use_human) {
 	static char buffer[32];
-	
+
 	if (!use_human) {
 		snprintf(buffer, sizeof(buffer), "%lld", (long long)size);
 		return buffer;
 	}
-	
+
 	const char *units[] = {"B", "K", "M", "G", "T", "P", "E", "Z", "Y"};
 	int unit_index = 0;
 	double display_size = (double)size;
-	
+
 	while (display_size >= 1024 && unit_index < (int)(sizeof(units) / sizeof(units[0])) - 1) {
 		display_size /= 1024;
 		unit_index++;
 	}
-	
+
 	// Determine the accuracy according to the size
 	if (unit_index == 0) {
 		snprintf(buffer, sizeof(buffer), "%lld", (long long)display_size);
@@ -129,7 +128,7 @@ const char *human_readable(off_t size, bool use_human) {
 	} else {
 		snprintf(buffer, sizeof(buffer), "%.0f%s", display_size, units[unit_index]);
 	}
-	
+
 	return buffer;
 }
 
@@ -168,19 +167,19 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 	// Collect the maximum value
 	for (int i = 0; i < count; i++) {
 		if (files[i].st.st_nlink > max_nlink) max_nlink = files[i].st.st_nlink;
-		
+
 		// Original size
 		if (files[i].st.st_size > max_size) max_size = files[i].st.st_size;
-		
+
 		const char *user = get_username(files[i].st.st_uid);
 		const char *group = get_groupname(files[i].st.st_gid);
-		
+
 		if (strlen(user) > max_user) max_user = strlen(user);
 		if (strlen(group) > max_group) max_group = strlen(group);
-		
+
 		total_blocks += files[i].st.st_blocks;
 	}
-	
+
 	// Calculate the maximum width of a human-readable size
 	if (opts.human) {
 		for (int i = 0; i < count; i++) {
@@ -199,12 +198,12 @@ void display_long_format(FileInfo *files, int count, Options opts) {
 	char nlink_buf[20];
 	sprintf(nlink_buf, "%lu", max_nlink);
 	int nlink_width = strlen(nlink_buf);
-	
+
 	// Total number of blocks printed (if there are multiple files)
 	if (count > 1) {
 		printf("total %ld\n", total_blocks / 2);
 	}
-	
+
 	for (int i = 0; i < count; i++) {
 		struct stat *st = &files[i].st;
 		const char *name = files[i].name;
@@ -282,20 +281,24 @@ void display_simple_format(FileInfo *files, int count, Options opts) {
 			if (idx >= count) continue;
 
 			const char *name = files[idx].name;
-			if (opts.color) {
-				printf("%s%-*s%s", 
-					   get_file_color(files[idx].st.st_mode, files[idx].path),
-					   max_len, name, COLOR_RESET);
+			if (isatty(STDOUT_FILENO)) {
+				if (opts.color) {
+					printf("%s%-*s%s", 
+						   get_file_color(files[idx].st.st_mode, files[idx].path),
+						   max_len, name, COLOR_RESET);
+				} else {
+					printf("%-*s", max_len, name);
+				}
+				// Spaces between columns (except for the last column)
+				if (col < num_cols - 1) {
+					printf("  ");
+				}
 			} else {
-				printf("%-*s", max_len, name);
-			}
-
-			// Spaces between columns (except for the last column)
-			if (col < num_cols - 1) {
-				printf("  ");
+				printf("%s\n", name);
 			}
 		}
-		printf("\n");
+		if (isatty(STDOUT_FILENO))
+			printf("\n");
 	}
 }
 
