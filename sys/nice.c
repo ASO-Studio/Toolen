@@ -41,13 +41,14 @@ M_ENTRY(nice) {
 	}
 
 	int i = 1;
-	for (; i < argc; i++) {
+	for (; i < argc - 1; i++) {
 		if (strcmp(argv[i], "-n") == 0) {
 			if (!argv[i+1]) {	// -n [NULL]
 				pplog(P_NAME | P_HELP, "missing number");
 				return 1;
 			} else {
 				prio = atoi(argv[++i]);
+				i++;
 				break;
 			}
 		}
@@ -58,7 +59,8 @@ M_ENTRY(nice) {
 		return 1;
 	}
 
-	execvp(argv[i+1], &argv[i+1]);
+	LOG("Program: %s\n", argv[i]);
+	execvp(argv[i], &argv[i]);
 	pplog(P_NAME | P_ERRNO, "cannot execute program");
 
 	return 0;
