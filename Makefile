@@ -1,5 +1,10 @@
-V=@printf "\033[J  Compiling ==> $(shell basename $<) ...\n"; printf " Compiling all objects...\r";
-Q=@
+ifeq ($(VERBOSE),)
+ V=@printf "\033[J  Compiling ==> $(shell basename $<) ...\n"; printf " Compiling all objects...\r";
+ Q=@
+else
+ V=
+ Q=
+endif
 
 HOSTCC = gcc
 CC = gcc
