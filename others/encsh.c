@@ -1,5 +1,5 @@
 /**
- *	enc.c - Encrypt a shell script
+ *	encsh.c - Encrypt a shell script
  *
  * 	Created by YangZlib
  *	Modified by RoofAlan
