@@ -17,26 +17,32 @@ menuconfig: $(obj)/mconf $(KCONFIG_TOP)
 	@$(GENER)
 
 android_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/android_config ./.config
 	@$(GENER)
 
 android_static_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/android_static_config ./.config
 	@$(GENER)
 
 gnu_hurd_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/gnu_hurd_config ./.config
 	@$(GENER)
 
 gnu_hurd_static_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/gnu_hurd_static_config ./.config
 	@$(GENER)
 
 common_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/common_config ./.config
 	@$(GENER)
 
 common_static_config:
+	@bash scripts/optCmd.sh
 	@cp kconfig/common_static_config ./.config
 	@$(GENER)
 

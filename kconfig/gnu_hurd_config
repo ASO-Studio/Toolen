@@ -31,6 +31,7 @@ CONFIG_rm=y
 CONFIG_SYS_CMDS=y
 CONFIG_kill=y
 CONFIG_tty=y
+CONFIG_id=y
 CONFIG_whoami=y
 # CONFIG_insmod is not set
 CONFIG_mountpoint=y
