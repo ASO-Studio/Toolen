@@ -7,7 +7,7 @@ CONFIG_BASIC_CMDS=y
 CONFIG_basename=y
 CONFIG_pwd=y
 CONFIG_env=y
-# CONFIG_pwdx is not set
+CONFIG_pwdx=y
 CONFIG_truefalse=y
 CONFIG_clear=y
 CONFIG_yes=y
