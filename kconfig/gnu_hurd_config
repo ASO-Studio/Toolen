@@ -1,0 +1,96 @@
+#
+# Automatically generated make config: don't edit
+# Toolen version: KCONFIG_VERSION
+# Sat Sep 20 17:16:38 2025
+#
+CONFIG_BASIC_CMDS=y
+CONFIG_basename=y
+CONFIG_pwd=y
+CONFIG_env=y
+# CONFIG_pwdx is not set
+CONFIG_truefalse=y
+CONFIG_clear=y
+CONFIG_yes=y
+CONFIG_sleep=y
+CONFIG_echo=y
+CONFIG_dirname=y
+CONFIG_FILE_CMDS=y
+CONFIG_mkswap=y
+CONFIG_cat=y
+CONFIG_unlink=y
+CONFIG_dd=y
+CONFIG_mv=y
+CONFIG_link=y
+CONFIG_dos2unix=y
+CONFIG_mkfifo=y
+CONFIG_truncate=y
+CONFIG_sync=y
+CONFIG_mkdir=y
+CONFIG_ls=y
+CONFIG_rm=y
+CONFIG_SYS_CMDS=y
+CONFIG_kill=y
+CONFIG_tty=y
+CONFIG_whoami=y
+# CONFIG_insmod is not set
+CONFIG_mountpoint=y
+CONFIG_tee=y
+# CONFIG_rmmod is not set
+CONFIG_nproc=y
+CONFIG_uname=y
+CONFIG_chroot=y
+CONFIG_swapoff=y
+CONFIG_arch=y
+CONFIG_nice=y
+CONFIG_swapon=y
+CONFIG_STR_CMDS=y
+CONFIG_base64=y
+CONFIG_sha224sum=y
+CONFIG_crc32=y
+CONFIG_md5sum=y
+CONFIG_sha256sum=y
+CONFIG_sha1sum=y
+CONFIG_uuidgen=y
+CONFIG_OTHER_CMDS=y
+CONFIG_encsh=y
+CONFIG_execby=y
+# CONFIG_monicall is not set
+CONFIG_symtool=y
+CONFIG_DEVEL_CMDS=y
+# CONFIG_switch_root is not set
+# CONFIG_reboot is not set
+CONFIG_simped=y
+CONFIG_simpsh=y
+
+#
+# Global settings
+#
+
+#
+# System configurations
+#
+CONFIG_DEF_HAVE_URANDOM=y
+CONFIG_DEF_HAVE_PASSWD=y
+CONFIG_DEF_HAVE_GROUP=y
+# CONFIG_DEF_ANDROID_NSS is not set
+
+#
+# Build options
+#
+CONFIG_VERSION_APPEND=""
+CONFIG_HOST_C_CPLR="gcc"
+CONFIG_C_CPLR="gcc"
+CONFIG_WALL=y
+CONFIG_WERROR=y
+# CONFIG_NOWCPP is not set
+# CONFIG_DEF_STATIC_LINK is not set
+# CONFIG_STRIP is not set
+CONFIG_DEF_LIBNSS=y
+CONFIG_COMPILE_LICENSE=y
+
+#
+# Debug options
+#
+# CONFIG_DEBUG_SPT is not set
+# CONFIG_DEBUG_OUTPUT is not set
+# CONFIG_MEMLEAK_CHECK is not set

@@ -24,6 +24,22 @@ android_static_config:
 	@cp kconfig/android_static_config ./.config
 	@$(GENER)
 
+gnu_hurd_config:
+	@cp kconfig/gnu_hurd_config ./.config
+	@$(GENER)
+
+gnu_hurd_static_config:
+	@cp kconfig/gnu_hurd_static_config ./.config
+	@$(GENER)
+
+common_config:
+	@cp kconfig/common_config ./.config
+	@$(GENER)
+
+common_static_config:
+	@cp kconfig/common_static_config ./.config
+	@$(GENER)
+
 allyesconfig:
 	@bash scripts/optCmd.sh
 	@bash scripts/allYes.sh
