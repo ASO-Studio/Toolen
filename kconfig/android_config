@@ -17,6 +17,7 @@ CONFIG_pwdx=y
 CONFIG_FILE_CMDS=y
 CONFIG_ls=y
 CONFIG_mkfifo=y
+CONFIG_fwalk=y
 CONFIG_mv=y
 CONFIG_mkswap=y
 CONFIG_sync=y

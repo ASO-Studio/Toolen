@@ -23,6 +23,7 @@ CONFIG_mv=y
 CONFIG_link=y
 CONFIG_dos2unix=y
 CONFIG_mkfifo=y
+CONFIG_fwalk=y
 CONFIG_truncate=y
 CONFIG_sync=y
 CONFIG_mkdir=y
