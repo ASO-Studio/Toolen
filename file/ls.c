@@ -8,6 +8,7 @@
  *	Based on MIT protocol open source
  */
 
+#define _GNU_SOURCE // For asprintf
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
