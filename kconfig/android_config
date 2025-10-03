@@ -58,6 +58,7 @@ CONFIG_encsh=y
 CONFIG_symtool=y
 CONFIG_monicall=y
 CONFIG_execby=y
+# CONFIG_rport is not set
 CONFIG_DEVEL_CMDS=y
 CONFIG_reboot=y
 # CONFIG_switch_root is not set

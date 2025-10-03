@@ -56,6 +56,7 @@ CONFIG_uuidgen=y
 CONFIG_OTHER_CMDS=y
 CONFIG_encsh=y
 CONFIG_execby=y
+CONFIG_rport=y
 CONFIG_monicall=y
 CONFIG_symtool=y
 CONFIG_DEVEL_CMDS=y
