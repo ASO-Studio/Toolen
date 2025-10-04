@@ -119,6 +119,7 @@ check:
 		exit 1; \
 	fi
 
+$(OBJS): .config
 $(OUTPUT): $(OBJS)
 	$(Q)printf "  Linking ==> $(OUTPUT)...        \n"
 	$(Q)$(CC) -o $(OUTPUT) $(OBJS) $(LD_FLAGS)
