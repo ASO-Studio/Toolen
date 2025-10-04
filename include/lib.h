@@ -53,4 +53,7 @@ char *lib_dirname(char *path);
 /* Get terminal size */
 int getTerminalSize(int *col, int *row);
 
+/* Line edit */
+char *xreadline(const char *pmpt);
+
 #endif // _LIB_H

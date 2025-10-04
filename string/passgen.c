@@ -64,7 +64,7 @@ static int display_passwords() {
 
 			count++;
 			if (prefix) {
-				printf("%-3zu: ", count);
+				printf("%3zu: ", count);
 			}
 
 			char *s = randomStr();
