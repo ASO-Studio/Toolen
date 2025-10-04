@@ -20,6 +20,7 @@
 
 static size_t len = 10;
 static size_t num = 25;
+static int prefix = 0;
 
 static char* randomStr() {
 	struct timespec ts;
@@ -51,19 +52,36 @@ static int display_passwords() {
 		return 1;
 	}
 
-	int __numLine = max_x / len - 1;
-	int numLine = __numLine == 0 ? 1 : __numLine;
+	// Calculate how many passwords can fit per line
+	int col_width = prefix ? (len + 5) : (len + 1); // +5 for "XX: " prefix
+	int num_per_line = max_x / col_width;
+	num_per_line = num_per_line == 0 ? 1 : num_per_line;
 
-	for (size_t i = 0; i < num; i ++) {
-		for (int j = 0; j < numLine; j++) {
+	size_t count = 0;
+	while (count < num) {
+		for (int i = 0; i < num_per_line; i++) {
+			if (count >= num) break;
+
+			count++;
+			if (prefix) {
+				printf("%-3zu: ", count);
+			}
+
 			char *s = randomStr();
-
-			printf("%s ", s);
-
+			printf("%s", s);
 			xfree(s);
-		}
 
-		printf("\n");
+			// Add space unless it's the last item in line
+			if (i < num_per_line - 1) {
+				printf(" ");
+			}
+			if (prefix) {
+				printf("\n");
+			}
+		}
+		if (!prefix) {
+			printf("\n");
+		}
 	}
 
 	return 0;
@@ -75,7 +93,8 @@ static void passgen_show_help() {
 			"Generate human-readable passwords\n\n"
 			"Support options:\n"
 			"  -l,--length NUM  Set the passwords length(default=10)\n"
-			"  -n,--number NUM  Set the number of the passwords(default=50)\n");
+			"  -n,--number NUM  Set the number of the passwords(default=50)\n"
+			"  -p,--prefix	  Print prefix\n");
 }
 
 M_ENTRY(passgen) {
@@ -84,17 +103,21 @@ M_ENTRY(passgen) {
 	static struct option long_options[] = {
 		{"length", required_argument, NULL, 'l'},
 		{"number", required_argument, NULL, 'n'},
+		{"prefix", no_argument, NULL, 'p'},
 		{"help", no_argument, NULL, 'h'},
 		{NULL, 0, NULL, 0},
 	};
 
-	while((opt = getopt_long(argc, argv, "l:n:h", long_options, &optidx)) != -1) {
+	while((opt = getopt_long(argc, argv, "l:n:ph", long_options, &optidx)) != -1) {
 		switch(opt) {
 			case 'l':
 				len = strtoul(optarg, NULL, 0);
 				break;
 			case 'n':
 				num = strtoul(optarg, NULL, 0);
+				break;
+			case 'p':
+				prefix = 1;
 				break;
 			case 'h':
 				passgen_show_help();
@@ -107,6 +130,15 @@ M_ENTRY(passgen) {
 				abort();
 				break;
 		}
+	}
+
+	if (num == 0) {
+		pplog(P_NAME, "Number must > 0!");
+		return 1;
+	}
+	if (len < 5) {
+		pplog(P_NAME, "Length must > 5!");
+		return 1;
 	}
 
 	display_passwords();
