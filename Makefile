@@ -29,8 +29,6 @@ endif
 
 # Parse build options
 # Static link
-#  TIPS: It will cause some warnings such as 'Using xxx in statically linked application'
-#  TODO: Fix warnings
 ifeq ($(CONFIG_DEF_STATIC_LINK),y)
  LD_FLAGS += -static
 endif
@@ -70,6 +68,10 @@ endif
 # Debug output
 ifeq ($(CONFIG_DEBUG_OUTPUT),y)
  C_FLAGS += -DDEBUG
+endif
+
+ifeq ($(CONFIG_32BITS),y)
+ C_FLAGS += -m32
 endif
 
 # Enable all warnings

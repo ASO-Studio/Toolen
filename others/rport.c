@@ -19,6 +19,7 @@ static void rport_show_help() {
 }
 
 M_ENTRY(rport) {
+#if defined(__x86_64__) || defined(__i386__)
 	if (findArg(argv, argc, "--help")) {
 		rport_show_help();
 		return 0;
@@ -56,6 +57,10 @@ M_ENTRY(rport) {
 		}
 	}
 	return 0;
+#else
+	fprintf(stderr, "This command only supports the x86(_64) architecture\n");
+	return 1;
+#endif
 }
 
 REGISTER_MODULE(rport);

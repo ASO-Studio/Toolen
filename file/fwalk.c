@@ -20,16 +20,21 @@
 #include "lib.h"
 
 #define F_VERBOSE (1 << 0)
+#define F_SIZE (1 << 1)
 
 static size_t flags = 0;
 static long total_size = 0;
 
 static int display_files(const char *fpath, const struct stat *sb, int typeflag) {
-	if (typeflag == FTW_F && (flags & F_VERBOSE)) {
-		printf("File: %-40s Size: %ld bytes\n", fpath, sb->st_size);
-		total_size += sb->st_size;
-	} else if (typeflag == FTW_F) {
-		printf("%s\n", fpath);
+	if (typeflag == FTW_F) {
+		if (flags & F_VERBOSE) {
+			printf("File: %s Size: %ld bytes\n", fpath, sb->st_size);
+			total_size += sb->st_size;
+		} else if (flags & F_SIZE) {
+			printf("%ld %s\n", sb->st_size, fpath);
+		} else {
+			printf("%s\n", fpath);
+		}
 	}
 	return 0;
 }
@@ -39,19 +44,21 @@ static void fwalk_show_help() {
 	fprintf(stderr, "Usage: fwalk [OPTIONS] [DIR]\n\n"
 			"Walk through the dieectory tree that is loacted under the current directory or DIR\n\n"
 			"Support options:\n"
-			"  -v,--verbose  Verbose output\n");
+			"  -v,--verbose  Verbose output\n"
+			"  -s,--size     Print size\n");
 }
 
-int fwalk_main(int argc, char *argv[]) {
+M_ENTRY(fwalk) {
 	int opt;
 	int optidx = 0;
 	static struct option long_options[] = {
 		{"verbose", no_argument, NULL, 'v'},
+		{"size", no_argument, NULL, 's'},
 		{"help", no_argument, NULL, 'h'},
 		{NULL, 0, NULL, 0}
 	};
 
-	while ((opt = getopt_long(argc, argv, "vh", long_options, &optidx)) != -1) {
+	while ((opt = getopt_long(argc, argv, "vsh", long_options, &optidx)) != -1) {
 		switch(opt) {
 			case 'v':
 				flags |= F_VERBOSE;
@@ -59,6 +66,9 @@ int fwalk_main(int argc, char *argv[]) {
 			case 'h':
 				fwalk_show_help();
 				return 0;
+				break;
+			case 's':
+				flags |= F_SIZE;
 				break;
 			case '?':
 				pplog(P_HELP | P_NAME, "Failed to parse arguments");

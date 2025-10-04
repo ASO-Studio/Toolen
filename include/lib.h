@@ -50,4 +50,7 @@ char *lib_basename(char *path);
 /* dirname() implementation */
 char *lib_dirname(char *path);
 
+/* Get terminal size */
+int getTerminalSize(int *col, int *row);
+
 #endif // _LIB_H

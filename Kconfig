@@ -76,16 +76,24 @@ menu "Build options"
 		default ""
 		help
 			Set local version that append to Toolen release
+
 	config HOST_C_CPLR
 		string "Host C Compiler"
 		default "gcc"
 		help
 			Set host C compiler
+
 	config C_CPLR
 		string "C Compiler"
 		default "gcc"
 		help
 			Set default C compiler
+
+	config 32BITS
+		bool "32 Bits support"
+		default n
+		help
+			Compile with '-m32'
 
 	config WALL
 		bool "Enable all warnings"
