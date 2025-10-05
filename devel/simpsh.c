@@ -22,6 +22,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "debug.h"
 #include "lib.h"
 
 static void sprint(const char *str) {
@@ -78,16 +79,20 @@ static void freeCmdStruct(char **cmdStruct) {
 	xfree(cmdStruct);
 }
 
-static void draw_prompt() {
-	if(!getenv("PS1") || getenv("PS1")[0] == '\0') {
-		if(getuid() == 0) {
-			sprint("# ");
+static const char *get_prompt() {
+	if (!getenv("PS1") || getenv("PS1")[0] == '\0') {
+		if (getuid() == 0) {
+			return "# ";
 		} else {
-			sprint("$ ");
+			return "$ ";
 		}
 	} else {
-		sprint(getenv("PS1"));
+		return getenv("PS1");
 	}
+}
+
+static void draw_prompt() {
+	sprint(get_prompt());
 }
 
 static void __sigint_callback(int sig) {
@@ -155,16 +160,25 @@ M_ENTRY(simpsh) {
 		padz(cmdBuf, sizeof(cmdBuf));
 
 		// Like ./simpsh <<< cmd
+#if !XREADLINE
 		if (isatty(inputFd) && !inputFile) {
 			draw_prompt();
 		}
+#endif
 
+	
 		if (!inputFile) {
+#if XREADLINE
+			char *templ = xreadline(get_prompt());
+			strncpy(cmdBuf, templ, sizeof(cmdBuf));
+			xfree(templ);
+#else
 			size_t readsize = read(inputFd, cmdBuf, sizeof(cmdBuf));
 			if (readsize <= 1) {
 				continue;
 			}
 			cmdBuf[readsize - 1] = '\0';
+#endif
 		} else {
 			if (!fgets(cmdBuf, sizeof(cmdBuf), inputFp))
 				break;
@@ -183,13 +197,13 @@ M_ENTRY(simpsh) {
 		char **pipeCommands;
 		int pipeCount = 0;
 
-		char **lines = parse_command(cmdBuf, ";\n");
+		char **lines = parse_command(cmdBuf, ";\n", 0);
 		if (!lines[0])
 			continue;
 
 lineExec:
 		// Parse pipe commands
-		pipeCommands = parse_command(lines[lineCount], "|");
+		pipeCommands = parse_command(lines[lineCount], "|", 0);
 		pipeCount = 0;
 		for(pipeCount = 0; pipeCommands[pipeCount]; pipeCount++);
 		
@@ -232,8 +246,9 @@ lineExec:
 						close(pipefds[j*2 + 1]);
 					}
 
+					LOG("Executing pipe command: %s\n", pipeCommands[i]);
 					// Execute command
-					char **cmdArgs = parse_command(pipeCommands[i], " \t");
+					char **cmdArgs = parse_command(pipeCommands[i], " \t", 1);
 					execvp(cmdArgs[0], cmdArgs);
 					eprint("execvp");
 					_exit(1);
@@ -262,7 +277,7 @@ lineExec:
 		
 		freeCmdStruct(pipeCommands);
 
-		char **cmdStruct = parse_command(lines[lineCount], " \t");
+		char **cmdStruct = parse_command(lines[lineCount], " \t", 1);
 
 		// Built-in commands
 		if (cmdStruct[0]) {

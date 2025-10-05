@@ -126,6 +126,12 @@ menu "Build options"
 		help
 			Strip symbols in final executable
 
+	config DEF_XREADLINE
+		bool "Enable xreadline support"
+		default y
+		help
+			Use readline.c
+
 	if !DEF_STATIC_LINK
 	config DEF_LIBNSS
 		bool "libnss support"

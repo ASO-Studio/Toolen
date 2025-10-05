@@ -33,7 +33,7 @@ char *execInPipe(const char *command, char *const *args);	// return: command out
 int isEquation(const char *str);	// return: 1->true, 0->false
 
 /* Split command */
-char **parse_command(const char *input, const char *delimiters);	// return: null->false, other->true
+char **parse_command(const char *input, const char *delimiters, int remove_quotes);	// return: null->false, other->true
 
 /* Get program name */
 char *getProgramName();	// return: all->program name
