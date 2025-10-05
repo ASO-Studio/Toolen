@@ -126,6 +126,8 @@ menu "Build options"
 		help
 			Strip symbols in final executable
 
+	# Some libraries
+	comment "Libraries"
 	config DEF_XREADLINE
 		bool "Enable xreadline support"
 		default y
@@ -139,6 +141,8 @@ menu "Build options"
 		help
 			Enable Name Service Switch(NSS) support
 	endif
+
+	comment "Others"
 
 	# MIT LICENSE
 	config COMPILE_LICENSE
