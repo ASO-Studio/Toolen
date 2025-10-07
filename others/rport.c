@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
-#include <sys/io.h>
+
+#if __has_include(<sys/io.h>)
+# include <sys/io.h>
+#endif
 
 #include "config.h"
 #include "module.h"
