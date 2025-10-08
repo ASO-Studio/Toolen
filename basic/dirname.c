@@ -28,8 +28,7 @@ static void dirname_show_help() {
 
 M_ENTRY(dirname) {
 	if (argc < 2) {
-		fprintf(stderr, "dirname: Need 1 argument\n"
-				"Try pass '--help' for more details\n");
+		pplog(P_NAME | P_HELP, "Need 1 argument");
 		return 1;
 	}
 

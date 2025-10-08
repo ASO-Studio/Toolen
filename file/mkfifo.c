@@ -15,6 +15,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 // Show help
 static void mkfifo_show_help() {
@@ -26,8 +27,7 @@ static void mkfifo_show_help() {
 // Main functions
 M_ENTRY(mkfifo) {
 	if(!argv[1]) {
-		fprintf(stderr, "mkfifo: no argument gave\n"
-				"Try pass '--help' for more details\n");
+		pplog(P_NAME | P_HELP, "Need arguments");
 	} else if (strcmp(argv[1], "--help") == 0) {
 		mkfifo_show_help();
 		return 0;

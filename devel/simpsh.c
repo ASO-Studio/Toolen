@@ -135,7 +135,7 @@ void remove_comments(char* str) {
 static void simpsh_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: simpsh [FILE]\n\n"
-			"A simple shell program\n");
+			"A simple and non-POSIX shell program\n");
 }
 
 M_ENTRY(simpsh) {
@@ -396,3 +396,4 @@ checkAgain:
 }
 
 REGISTER_MODULE(simpsh);
+REDIRECT(simpsh, sh);

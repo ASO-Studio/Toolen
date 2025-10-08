@@ -14,6 +14,7 @@
 
 #include "config.h"
 #include "module.h"
+#include "lib.h"
 
 // Convert string to seconds
 static unsigned long toSecond(const char *tm) {
@@ -62,8 +63,7 @@ static void show_usleep_help() {
 
 M_ENTRY(sleep) {
 	if(argc < 2) {
-		fprintf(stderr, "sleep: Need an argument\n");
-		fprintf(stderr, "Try pass '--help' for more details\n");
+		pplog(P_NAME | P_HELP, "Need an argument");
 		return 1;
 	}
 
@@ -83,8 +83,7 @@ M_ENTRY(sleep) {
 
 M_ENTRY(usleep) {
 	if(argc < 2) {
-		fprintf(stderr, "usleep: Need an argument\n");
-		fprintf(stderr, "Try pass '--help' for more details\n");
+		pplog(P_NAME | P_HELP, "Need an argument");
 		return 1;
 	}
 

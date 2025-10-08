@@ -13,6 +13,7 @@
 
 #include "module.h"
 #include "config.h"
+#include "lib.h"
 
 static void yes_show_help() {
 	SHOW_VERSION(stderr);
@@ -31,8 +32,7 @@ M_ENTRY(yes) {
 			yes_show_help();
 			return 0;
 		} else {
-			fprintf(stderr, "Unknown option -- '%s'\n", argv[1]);
-			fprintf(stderr, "Try pass '--help' for more details\n");
+			pplog(P_HELP, "Unknown option -- '%s'", argv[1]);
 			return 1;
 		}
 	} else if (argv[1]) {
