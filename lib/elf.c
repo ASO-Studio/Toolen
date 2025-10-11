@@ -151,8 +151,12 @@ void is_stripped(ElfFileInfo *f, ElfInfo *ei, Elf64_Ehdr ehdr, Elf32_Ehdr ehdr32
 		if (shdr.sh_type == SHT_SYMTAB ||   // Symbol table
 			shdr.sh_type == SHT_DYNSYM ||   // Dynamic symbol table
 			shdr.sh_type == SHT_STRTAB ||   // String table
-			shdr.sh_type == SHT_PROGBITS) { // Program data
-			
+			shdr.sh_type == SHT_PROGBITS || // Program data
+			shdr32.sh_type == SHT_SYMTAB ||   // Symbol table(32)
+			shdr32.sh_type == SHT_DYNSYM ||   // Dynamic symbol table(32)
+			shdr32.sh_type == SHT_STRTAB ||   // String table(32)
+			shdr32.sh_type == SHT_PROGBITS) { // Program data(32)
+
 			// Read sections
 			char name[64] = {0};
 			Elf64_Shdr strtab;
