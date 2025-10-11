@@ -61,6 +61,7 @@ M_ENTRY(rport) {
 	}
 	return 0;
 #else
+	(void)argc; (void)argv;
 	fprintf(stderr, "This command only supports the x86(_64) architecture\n");
 	return 1;
 #endif
