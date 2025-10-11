@@ -118,8 +118,8 @@ static void cleanup_all(void) {
 }
 
 // Handle open failure
-static void open_failed(void) {
-	fprintf(stderr, "%s: Failed to open file: %s\n", getProgramName(), strerror(errno));
+static void open_failed(const char *file) {
+	fprintf(stderr, "%s: %s: %s\n", getProgramName(), file, strerror(errno));
 	cleanup_all();
 	exit(EXIT_FAILURE);
 }
@@ -128,7 +128,7 @@ static void open_failed(void) {
 FILE *xfopen(const char *filename, const char *mode) {
 	FILE *fp = fopen(filename, mode);
 	if (!fp) {
-		open_failed();
+		open_failed(filename);
 	}
 	add_block_file(fp);
 	return fp;
@@ -145,7 +145,7 @@ void xfclose(FILE *fp) {
 int xopen(const char *pathname, int flags, mode_t mode) {
 	int fd = open(pathname, flags, mode);
 	if (fd < 0) {
-		open_failed();
+		open_failed(pathname);
 	}
 	add_block_fd(fd);
 	return fd;
@@ -155,7 +155,7 @@ int xopen(const char *pathname, int flags, mode_t mode) {
 int xopen2(const char *pathname, int flags) {
 	int fd = open(pathname, flags);
 	if (fd < 0) {
-		open_failed();
+		open_failed(pathname);
 	}
 	add_block_fd(fd);
 	return fd;

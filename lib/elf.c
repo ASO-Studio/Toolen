@@ -11,6 +11,17 @@
 
 #include "lib.h"
 
+int isElf(const char *file) {
+	int fd = xopen2(file, O_RDONLY);
+
+	// Read magic number
+	char ident[16];
+	read(fd, ident, sizeof(ident));
+
+	xclose(fd);
+	return memcmp(ident, ELFMAG, SELFMAG) == 0;
+}
+
 int openElf(ElfFileInfo *f, const char *name) {
 	f->fd = xopen2(name, O_RDONLY);
 

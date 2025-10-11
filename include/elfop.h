@@ -27,6 +27,9 @@ typedef struct {
 	int debug_info;	// Have debug info
 } ElfInfo;
 
+/* Check if a file is an ELF */
+int isElf(const char *file);
+
 /* Open ELF*/
 int openElf(ElfFileInfo *, const char *name);
 
