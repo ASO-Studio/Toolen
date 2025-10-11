@@ -63,12 +63,22 @@ static const char *getMachineName(int em) {
 		case EM_SPARCV9: return "Sparc V9 64-bit";
 		case EM_IA_64: return "Intel Merced";
 		case EM_X86_64: return "x86-64";
+	#ifdef EM_8051
 		case EM_8051: return "Intel 8051";
+	#endif
+	#ifdef EM_QDSP6
 		case EM_QDSP6: return "Qualcomm DSP6";
+	#endif
 		case EM_AARCH64: return "AArch64";
+	#ifdef EM_STM8
 		case EM_STM8: return "STM 8";
+	#endif
+	#ifdef EM_CUDA
 		case EM_CUDA: return "Nvidia CUDA";
+	#endif
+	#ifdef EM_RISCV
 		case EM_AMDGPU: return "AMD GPU";
+	#endif
 		case EM_RISCV: return "RISC-V";
 		case EM_BPF: return "Linux BPF";
 		case EM_LOONGARCH: return "Loongarch";
