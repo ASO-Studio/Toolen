@@ -76,7 +76,7 @@ static const char *getMachineName(int em) {
 	#ifdef EM_CUDA
 		case EM_CUDA: return "Nvidia CUDA";
 	#endif
-	#ifdef EM_RISCV
+	#ifdef EM_AMDGPU
 		case EM_AMDGPU: return "AMD GPU";
 	#endif
 		case EM_RISCV: return "RISC-V";
