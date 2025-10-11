@@ -10,7 +10,7 @@
 #include "lib.h"
 #include "debug.h"
 
-static void rport_show_help() {
+static fused void rport_show_help() {
 	SHOW_VERSION(stderr);
 	fprintf(stderr, "Usage: rport <read|write> <...>\n\n"
 			"Read/Write a byte from/to PORT(s)\n\n"
