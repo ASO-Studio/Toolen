@@ -118,7 +118,7 @@ static const char *getOSABIName(int oabi) {
 	return "Unknown";
 }
 
-static char *getInterrupter(ElfFileInfo *f, ElfInfo *ei, Elf64_Ehdr ehdr, Elf32_Ehdr ehdr32) {
+static char *getInterpreter(ElfFileInfo *f, ElfInfo *ei, Elf64_Ehdr ehdr, Elf32_Ehdr ehdr32) {
 	int phnum = 0;
 	if (!(ei->dynamic))	// Static executables dont have interruptor
 		return NULL;
@@ -291,7 +291,7 @@ int parseElf(ElfFileInfo *f, ElfInfo *ei) {
 
 	if (ei->dynamic) {
 		// Get the interrupter
-		ei->inter = getInterrupter(f, ei, ehdr, ehdr32);
+		ei->inter = getInterpreter(f, ei, ehdr, ehdr32);
 	}
 
 	// If it has interrupter, change the type to 'executable'

@@ -22,7 +22,7 @@ typedef struct {
 	const char *type;	// ELF Type
 	int pie;	// Is PIE
 	int dynamic;	// Is dynamic
-	char *inter;	// Interrupter
+	char *inter;	// Interpreter
 	int stripped;	// Is stripped
 	int debug_info;	// Have debug info
 } ElfInfo;

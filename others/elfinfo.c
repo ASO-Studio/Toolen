@@ -67,7 +67,7 @@ static int display_file(const char *file) {
 	if (ei.dynamic) {
 		printf(" dynamically linked");
 		if (ei.inter) {
-			printf(", interrupter %s", ei.inter);
+			printf(", interpreter %s", ei.inter);
 			xfree(ei.inter);
 		}
 	} else  printf(" statically linked");
