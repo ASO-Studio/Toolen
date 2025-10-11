@@ -11,6 +11,7 @@
 #include "defs.h"
 #include "userInfo.h"
 #include "pplog.h"
+#include "elfop.h"
 
 #define UNSIG(x) ((unsigned char*)x)
 
