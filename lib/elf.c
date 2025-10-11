@@ -77,6 +77,26 @@ static const char *getTypeName(int et) {
 	return "Unknown";
 }
 
+static const char *getOSABIName(int oabi) {
+	switch(oabi) {
+		case ELFOSABI_SYSV: return "SYSV";
+		case ELFOSABI_HPUX: return "HPUX";
+		case ELFOSABI_NETBSD: return "NetBSD";
+		case ELFOSABI_GNU: return "GNU";
+		case ELFOSABI_SOLARIS: return "Solaris";
+		case ELFOSABI_AIX: return "AIX";
+		case ELFOSABI_FREEBSD: return "FreeBSD";
+		case ELFOSABI_TRU64: return "TRU64";
+		case ELFOSABI_MODESTO: return "Modesto";
+		case ELFOSABI_OPENBSD: return "OpenBSD";
+		case ELFOSABI_ARM_AEABI: return "ARM EABI";
+		case ELFOSABI_ARM: return "ARM";
+		case ELFOSABI_STANDALONE: return "Standalone";
+		default: break;
+	}
+	return "Unknown";
+}
+
 static char *getInterrupter(ElfFileInfo *f, ElfInfo *ei, Elf64_Ehdr ehdr, Elf32_Ehdr ehdr32) {
 	int phnum = 0;
 	if (!(ei->dynamic))	// Static executables dont have interruptor
@@ -229,6 +249,9 @@ int parseElf(ElfFileInfo *f, ElfInfo *ei) {
 
 	// Get the OS ABI of the ELF
 	ei->osabi = f->ident[EI_OSABI];
+
+	// Get the OS ABI Name of the ELF
+	ei->abiName = getOSABIName(ei->osabi);
 
 	// Get the version of the ELF
 	ei->version = ei->b32 ? ehdr32.e_version : ehdr.e_version;

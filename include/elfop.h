@@ -17,6 +17,7 @@ typedef struct {
 	} endian;	// Endian
 	int osabi;	// OS ABI
 	int version;	// Version
+	const char *abiName;	// Name of the OS ABI
 	const char *machine;	// Machine
 	const char *type;	// ELF Type
 	int pie;	// Is PIE

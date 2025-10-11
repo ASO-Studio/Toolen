@@ -37,7 +37,7 @@ M_ENTRY(elfinfo) {
 	printf(" %s", ei.endian == B_ENDIAN ? "MSB" :
 				(ei.endian == L_ENDIAN ? "LSB" : "Invalid-Endian"));
 	if (ei.pie)	printf(" PIE");
-	printf(" %s, %s, version %d,", ei.type, ei.machine, ei.version);
+	printf(" %s, %s, version %d (%s),", ei.type, ei.machine, ei.version, ei.abiName);
 	if (ei.dynamic) {
 		printf(" dynamically linked");
 		if (ei.inter) {
