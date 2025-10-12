@@ -13,6 +13,8 @@
 
 int isElf(const char *file) {
 	int fd = xopen2(file, O_RDONLY);
+	if (fd < 0)
+		return 0;
 
 	// Read magic number
 	char ident[16];

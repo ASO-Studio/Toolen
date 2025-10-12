@@ -12,6 +12,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #include "config.h"
 #include "module.h"
@@ -75,6 +76,12 @@ static int display_elf(const char *file) {
 }
 
 static int display_file(const char *file) {
+	if (access(file, F_OK) != 0) {
+		errno = ENOENT;
+		pplog(P_NAME | P_ERRNO, "%s", file);
+		return 1;
+	}
+
 	xioDisableExit();
 	if (isElf(file)) {
 		xioEnableExit();
