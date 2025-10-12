@@ -22,4 +22,10 @@ void xfree(void *ptr);
 // Encapsulated strdup
 char *xstrdup(const char *s);
 
+// Disable exit
+void xallocDisableExit();
+
+// Enable exit
+void xallocEnableExit();
+
 #endif // _XALLOC_H

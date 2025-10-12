@@ -12,6 +12,9 @@
 #include "lib.h"
 #include "debug.h"
 
+// Should exit (default = 1)
+static int __eexit = 1;
+
 // I/O block node structure
 typedef struct io_block {
 	enum { FILE_TYPE, FD_TYPE } type;
@@ -120,8 +123,10 @@ static void cleanup_all(void) {
 // Handle open failure
 static void open_failed(const char *file) {
 	fprintf(stderr, "%s: %s: %s\n", getProgramName(), file, strerror(errno));
-	cleanup_all();
-	exit(EXIT_FAILURE);
+	if (__eexit) {
+		cleanup_all();
+		exit(EXIT_FAILURE);
+	}
 }
 
 // Encapsulated fopen
@@ -129,6 +134,7 @@ FILE *xfopen(const char *filename, const char *mode) {
 	FILE *fp = fopen(filename, mode);
 	if (!fp) {
 		open_failed(filename);
+		return fp;
 	}
 	add_block_file(fp);
 	return fp;
@@ -146,6 +152,7 @@ int xopen(const char *pathname, int flags, mode_t mode) {
 	int fd = open(pathname, flags, mode);
 	if (fd < 0) {
 		open_failed(pathname);
+		return fd;
 	}
 	add_block_fd(fd);
 	return fd;
@@ -156,6 +163,7 @@ int xopen2(const char *pathname, int flags) {
 	int fd = open(pathname, flags);
 	if (fd < 0) {
 		open_failed(pathname);
+		return fd;
 	}
 	add_block_fd(fd);
 	return fd;
@@ -166,6 +174,14 @@ void xclose(int fd) {
 	if (fd >= 0) {
 		remove_block_fd(fd);
 	}
+}
+
+// Control whether to exit when meet error(s)
+void xioDisableExit() {
+	__eexit = 0;
+}
+void xioEnableExit() {
+	__eexit = 1;
 }
 
 // Initialization function

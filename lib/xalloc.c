@@ -10,6 +10,9 @@
 #include "lib.h"
 #include "debug.h"
 
+// Should exit (default = 1)
+static int __eexit = 1;
+
 // Memory block node structure
 typedef struct mem_block {
 	void *ptr;
@@ -85,8 +88,10 @@ static void cleanup_all(void) {
 // Handle allocation failure
 static void allocation_failed(void) {
 	fprintf(stderr, "%s: Failed to allocate memory: %s\n", getProgramName(), strerror(errno));
-	cleanup_all();
-	exit(EXIT_FAILURE);
+	if (__eexit) {
+		cleanup_all();
+		exit(EXIT_FAILURE);
+	}
 }
 
 // Encapsulated malloc
@@ -94,6 +99,7 @@ void *xmalloc(size_t size) {
 	void *ptr = malloc(size);
 	if (!ptr) {
 		allocation_failed();
+		return ptr;
 	}
 	add_block(ptr);
 	return ptr;
@@ -104,6 +110,7 @@ void *xcalloc(size_t num, size_t size) {
 	void *ptr = calloc(num, size);
 	if (!ptr) {
 		allocation_failed();
+		return ptr;
 	}
 	add_block(ptr);
 	return ptr;
@@ -119,6 +126,7 @@ void *xrealloc(void *ptr, size_t size) {
 	void *new_ptr = realloc(ptr, size);
 	if (!new_ptr) {
 		allocation_failed();
+		return ptr;
 	}
 	
 	// Update pointer in linked list
@@ -147,9 +155,18 @@ char *xstrdup(const char *s) {
 	char *new_str = strdup(s);
 	if (!new_str) {
 		allocation_failed();
+		return new_str;
 	}
 	add_block(new_str);
 	return new_str;
+}
+
+// Control whether to exit when meet error(s)
+void xallocDisableExit() {
+	__eexit = 0;
+}
+void xallocEnableExit() {
+	__eexit = 1;
 }
 
 // Initialization function

@@ -23,4 +23,10 @@ int xopen2(const char *pathname, int flags);
 // Encapsulated close
 void xclose(int fd);
 
+// Disable exit
+void xioDisableExit();
+
+// Enable exit
+void xioEnableExit();
+
 #endif // _XIO_H
