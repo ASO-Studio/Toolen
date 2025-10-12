@@ -380,7 +380,6 @@ M_ENTRY(mv) {
 			case 'U': parse_update_type(optarg); break;
 			case 'u': parse_update_type("older"); break;
 			case 'h': print_help(); break;
-			case 'V': JUST_VERSION(); break;
 			default: die("Try '%s --help' for more information.", argv[0]);
 		}
 	}

@@ -33,9 +33,16 @@
 # define APPEND ""
 #endif
 
-#define SHOW_VERSION(stream) fprintf(stream, \
+#define __SHOW_VERSION(stream) fprintf(stream, \
 		PROGRAM_NAME " " VERSION APPEND \
 		" (" CCVER ", "  PLATFORM  ")\n")
+
+// Print Version string
+void show_version(FILE *stream);
+
+// To make program smaller
+#define SHOW_VERSION(stream) show_version(stream);
+
 #define JUST_VERSION()	printf(PROGRAM_NAME " " \
 		VERSION APPEND" " COPYRIGHT "\n")
 
