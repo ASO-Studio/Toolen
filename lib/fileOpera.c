@@ -7,13 +7,7 @@
 
 int isDirectory(const char *p) {
 	struct stat st;
-	if (stat(p, &st) < 0) {
+	if (stat(p, &st) < 0)
 		return 0;
-	}
-	if (S_ISDIR(st.st_mode)) {
-		return 1;
-	}	
-	else {
-		return 0;
-	}
+	return S_ISDIR(st.st_mode);
 }

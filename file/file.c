@@ -100,6 +100,11 @@ static int display_file(const char *file) {
 
 	printf("%s: ", file);
 
+	if (isDirectory(file)) {
+		printf("directory\n");
+		return 0;
+	}
+
 	// Zip
 	if (memcmp(mg, "PK""\x03\x04", 4) == 0) {
 		printf("Zip compressed data\n");
