@@ -70,10 +70,6 @@ ifeq ($(CONFIG_DEBUG_OUTPUT),y)
  C_FLAGS += -DDEBUG
 endif
 
-ifeq ($(CONFIG_32BITS),y)
- C_FLAGS += -m32
-endif
-
 # Enable all warnings
 ifeq ($(CONFIG_WALL),y)
  C_FLAGS += -Wall -Wextra
